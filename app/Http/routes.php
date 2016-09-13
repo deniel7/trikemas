@@ -16,26 +16,50 @@ Route::get('/', function () {
     return redirect('login');
 });
 
-    // Authentication routes
-    Route::get('login', 'Auth\AuthController@getLogin');
-    Route::post('login', 'Auth\AuthController@postLogin');
-    Route::get('logout', 'Auth\AuthController@getLogout');
+// Authentication routes
+Route::get('login', 'Auth\AuthController@getLogin');
+Route::post('login', 'Auth\AuthController@postLogin');
+Route::get('logout', 'Auth\AuthController@getLogout');
 
-    // Registration routes (tidak digunakan)
-    // Route::get('register', 'Auth\AuthController@getRegister');
-    // Route::post('register', 'Auth\AuthController@postRegister');
+// Registration routes (tidak digunakan)
+// Route::get('register', 'Auth\AuthController@getRegister');
+// Route::post('register', 'Auth\AuthController@postRegister');
 
-    Route::group(['middleware' => 'auth'], function () {
+Route::group(['middleware' => 'auth'], function () {
 
     /* Dashboard sebagai halaman pertama setelah login */
-        Route::get('home', 'DashboardController@getIndex');
+    Route::get('home', 'DashboardController@getIndex');
 
     /* My Account (Update Profile & Password) */
-        Route::get('user/profile', 'AuthController@getMyAccount');
-        Route::post('user/update-profile', 'AuthController@postUpdateProfile');
-        Route::post('user/update-password', 'AuthController@postUpdatePassword');
+    Route::get('user/profile', 'AuthController@getMyAccount');
+    Route::post('user/update-profile', 'AuthController@postUpdateProfile');
+    Route::post('user/update-password', 'AuthController@postUpdatePassword');
 
     /* Provide controller methods with object instead of ID */
+    
+    /* Tujuan */
+    Route::get('/tujuan/list', 'TujuanController@datatables');
+    Route::resource('/tujuan', 'TujuanController');
+    
+    /* Angkutan */
+    Route::get('/angkutan/list', 'AngkutanController@datatables');
+    Route::resource('/angkutan', 'AngkutanController');
+    
+    /* Biaya Angkutan */
+    Route::get('/angkutan-tujuan/list', 'AngkutanTujuanController@datatables');
+    Route::resource('/angkutan-tujuan', 'AngkutanTujuanController');
+    
+    /* Barang */
+    Route::get('/barang/list', 'BarangController@datatables');
+    Route::resource('/barang', 'BarangController');
+    
+    /* Konsumen */
+    Route::get('/konsumen/list', 'KonsumenController@datatables');
+    Route::resource('/konsumen', 'KonsumenController');
+    
+    /* Harga Barang */
+    Route::get('/konsumen-barang/list', 'KonsumenBarangController@datatables');
+    Route::resource('/konsumen-barang', 'KonsumenBarangController');
 
     /* Datatable */
 
@@ -49,4 +73,4 @@ Route::get('/', function () {
     /* Report */
 
     /* System */
-    });
+});

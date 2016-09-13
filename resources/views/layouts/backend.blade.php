@@ -22,11 +22,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- Datepicker -->
   <link rel="stylesheet" href="{{ asset('bower_components/AdminLTE/plugins/datepicker/datepicker3.css') }}">
 
-
-    
   <!-- Select2 -->
   <link rel="stylesheet" href="{{ asset('bower_components/AdminLTE/plugins/select2/select2.min.css') }}">
 
+  @yield("other-css")
+  
   <!-- CSRF Token -->
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -201,5 +201,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <script>
     $('#flash-overlay-modal').modal();
   </script>
+    
+  @yield("other-js")
+  
 </body>
 </html>
