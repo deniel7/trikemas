@@ -42,6 +42,7 @@ Route::get('/', function () {
     /* Select2 */
 
     /* Master */
+        Route::resource('karyawan-tetap', 'KaryawanTetapController');
 
     /* Transaction */
 
