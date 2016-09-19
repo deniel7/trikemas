@@ -19,5 +19,6 @@ elixir(function(mix) {
     mix.scripts([
         'common.js',
         'karyawan.js'
+
     ]);
 });

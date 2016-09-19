@@ -36,37 +36,40 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('user/update-password', 'AuthController@postUpdatePassword');
 
     /* Provide controller methods with object instead of ID */
-    
+    Route::model('karyawan-tetap', 'App\Karyawan');
+
     /* Tujuan */
     Route::get('/tujuan/list', 'TujuanController@datatables');
     Route::resource('/tujuan', 'TujuanController');
-    
+
     /* Angkutan */
     Route::get('/angkutan/list', 'AngkutanController@datatables');
     Route::resource('/angkutan', 'AngkutanController');
-    
+
     /* Biaya Angkutan */
     Route::get('/angkutan-tujuan/list', 'AngkutanTujuanController@datatables');
     Route::resource('/angkutan-tujuan', 'AngkutanTujuanController');
-    
+
     /* Barang */
     Route::get('/barang/list', 'BarangController@datatables');
     Route::resource('/barang', 'BarangController');
-    
+
     /* Konsumen */
     Route::get('/konsumen/list', 'KonsumenController@datatables');
     Route::resource('/konsumen', 'KonsumenController');
-    
+
     /* Harga Barang */
     Route::get('/konsumen-barang/list', 'KonsumenBarangController@datatables');
     Route::resource('/konsumen-barang', 'KonsumenBarangController');
 
     /* Datatable */
+    Route::post('datatable/karyawans', 'KaryawanTetapController@datatable');
 
     /* Select2 */
 
     /* Master */
         Route::resource('karyawan-tetap', 'KaryawanTetapController');
+        Route::controller('karyawan-tetap', 'KaryawanTetapController');
 
     /* Transaction */
 

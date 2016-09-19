@@ -7,8 +7,8 @@
           <li class="treeview">
             <a href="#"><i class="fa fa-table"></i> <span>Master Data Karyawan</span> <i class="fa fa-angle-left pull-right"></i></a>
             <ul class="treeview-menu">
-              <li {{ \Request::segment(1) == 'example' ? 'class="active"' : '' }}><a href="{{ url('/karyawan_tetap') }}">Karyawan Tetap / Kontrak</a></li>
-              <li {{ \Request::segment(1) == 'example' ? 'class="active"' : '' }}><a href="{{ url('/karyawan_harian') }}">Karyawan Lepas / Harian</a></li>
+              <li {{ \Request::segment(1) == 'example' ? 'class="active"' : '' }}><a href="{{ url('/karyawan-tetap') }}">Karyawan Tetap / Kontrak</a></li>
+              <li {{ \Request::segment(1) == 'example' ? 'class="active"' : '' }}><a href="{{ url('/karyawan-harian') }}">Karyawan Lepas / Harian</a></li>
             </ul>
           </li>
 
