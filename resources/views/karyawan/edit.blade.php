@@ -11,14 +11,12 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Karyawan Tetap
+        Karyawan
         <small>Edit</small>
       </h1>
         
       <ol class="breadcrumb">
         <li><a href="{{ url('/') }}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="{{ url('/karyawan-tetap') }}"> Karyawan Tetap</a></li>
-        <li class="active">Edit</li>
       </ol>
     </section>
 

@@ -20,7 +20,8 @@ class KaryawanTetapController extends Controller
     {
         $karyawans = DB::table('karyawans')
         ->select(['karyawans.id', 'status_karyawans.keterangan', 'karyawans.nik', 'karyawans.nama', 'karyawans.alamat', 'karyawans.phone', 'karyawans.lulusan', 'karyawans.tgl_masuk', 'karyawans.nilai_upah', 'karyawans.uang_makan', 'karyawans.uang_lembur', 'karyawans.norek'])
-        ->join('status_karyawans', 'karyawans.status_karyawan_id', '=', 'status_karyawans.id');
+        ->join('status_karyawans', 'karyawans.status_karyawan_id', '=', 'status_karyawans.id')
+        ->where('karyawans.status_karyawan_id', '=', 1);
 
         return Datatables::of($karyawans)
 
@@ -79,7 +80,11 @@ class KaryawanTetapController extends Controller
         DB::commit();
         //Flash::success('Saved');
 
-        return redirect('karyawan-tetap');
+        if ($karyawan->status_karyawan_id == 1) {
+            return redirect('karyawan-tetap');
+        } else {
+            return redirect('karyawan-harian');
+        }
     }
 
     public function edit(Karyawan $karyawan)
@@ -112,6 +117,10 @@ class KaryawanTetapController extends Controller
         $karyawan->save();
         DB::commit();
 
-        return redirect('karyawan-tetap/');
+        if ($karyawan->status_karyawan_id == 1) {
+            return redirect('karyawan-tetap');
+        } else {
+            return redirect('karyawan-harian');
+        }
     }
 }

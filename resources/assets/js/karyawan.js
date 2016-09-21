@@ -1,16 +1,11 @@
 var karyawanModule = (function(commonModule) {
 
     var datatableBaseURL = commonModule.datatableBaseURL + 'karyawans';
-    var select2BaseURLBrand = commonModule.select2BaseURL + 'brands';
-    var select2BaseURLItem = commonModule.select2BaseURL + 'items';
-    var select2BaseURLColor = commonModule.select2BaseURL + 'colors';
-
+    
     var existing_model = null;
 
     var init = function() {
         _applyDatatable();
-        _applySelect2Brand();
-        _switchModel();
         _applyDatepicker();
         _applyThousandSeperator();
 
@@ -146,85 +141,7 @@ var karyawanModule = (function(commonModule) {
         });
     };
 
-    var _applySelect2Brand = function() {
-
-        $('select.brand_ajax').select2({
-            minimumInputLength: 2,
-            ajax: {
-                url: select2BaseURLBrand,
-                dataType: "json",
-                type: "POST",
-                data: function(params) {
-                    var queryParameters = {
-                        term: params.term
-                    };
-                    return queryParameters;
-                },
-                processResults: function(data) {
-                    return {
-                        results: $.map(data, function(item) {
-                            return {
-                                text: item.name + ' (' + item.code + ')',
-                                id: item.id
-                            };
-                        })
-                    };
-                }
-            }
-        });
-    };
-
-    var _applySelect2Model = function() {
-
-        $('select.item_ajax').select2({
-            minimumInputLength: 2,
-            placeholder: "Search existing item",
-            ajax: {
-                url: select2BaseURLItem,
-                dataType: "json",
-                type: "POST",
-                data: function(params) {
-                    var queryParameters = {
-                        term: params.term
-                    };
-                    return queryParameters;
-                },
-                processResults: function(data) {
-                    return {
-                        results: $.map(data, function(item) {
-                            return {
-                                text: item.model,
-                                id: item.model
-                            };
-                        })
-                    };
-                }
-            }
-        });
-    };
-
-    var _switchModel = function() {
-        $('#switch_model').on('click', function() {
-            var model_input = $('#model_input');
-            var switch_model_button = $(this);
-
-            if (existing_model == null) {
-                existing_model = $("input#model").val();
-            }
-
-            if (switch_model_button.html() == '<i class="fa fa-search fa-fw"></i> Search') {
-                model_input.html('<select name="model" class="item_ajax form-control"></select>');
-                _applySelect2Model();
-                switch_model_button.html('<i class="fa fa-keyboard-o fa-fw"></i> Type');
-            } else {
-                model_input.html('<input type="text" id="model" placeholder="Enter your new item" class="form-control" value="' + existing_model + '" name="model">');
-                switch_model_button.html('<i class="fa fa-search fa-fw"></i> Search');
-            }
-        });
-    }
-
     
-
     var _applyDatatable = function() {
         /* Tambah Input Field di TFOOT */
         $('#datatable tfoot th').each(function() {

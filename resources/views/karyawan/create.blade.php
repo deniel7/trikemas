@@ -17,8 +17,6 @@
         
       <ol class="breadcrumb">
         <li><a href="{{ url('/') }}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="{{ url('/karyawan-tetap') }}"> Karyawan</a></li>
-        <li class="active">Add</li>
       </ol>
     </section>
 
@@ -34,7 +32,7 @@
           <div class="box box-primary">
             
             <div class="box-header with-border">
-              <h3 class="box-title">Data Karyawan Tetap</h3>
+              <h3 class="box-title">Data Karyawan</h3>
             </div>
             <!-- /.box-header -->
             
@@ -153,11 +151,13 @@
     karyawanModule.init();
     });
     </script>
-@endsection
+
 
 @section('other-js')
     <script src="{{ asset('vendor/formvalidation/formValidation.min.js') }}"></script>
     <script src="{{ asset('vendor/formvalidation/framework/bootstrap.min.js') }}"></script>
     <script src="{{ asset('bower_components/autoNumeric/autoNumeric.js') }}"></script>
     <script src="{{ asset('bower_components/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
+    <script src="{{ asset('js/fv-karyawan.js') }}"></script>
+@endsection
 @endsection

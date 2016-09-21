@@ -37,6 +37,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     /* Provide controller methods with object instead of ID */
     Route::model('karyawan-tetap', 'App\Karyawan');
+    Route::model('karyawan-harian', 'App\KaryawanHarian');
 
     /* Tujuan */
     Route::get('/tujuan/list', 'TujuanController@datatables');
@@ -64,12 +65,15 @@ Route::group(['middleware' => 'auth'], function () {
 
     /* Datatable */
     Route::post('datatable/karyawans', 'KaryawanTetapController@datatable');
+    Route::post('datatable/karyawan-harians', 'KaryawanHarianController@datatable');
 
     /* Select2 */
 
     /* Master */
         Route::resource('karyawan-tetap', 'KaryawanTetapController');
         Route::controller('karyawan-tetap', 'KaryawanTetapController');
+        Route::resource('karyawan-harian', 'KaryawanHarianController');
+        Route::controller('karyawan-harian', 'KaryawanHarianController');
 
     /* Transaction */
 
