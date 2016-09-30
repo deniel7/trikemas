@@ -27,8 +27,8 @@
           <li class="treeview">
             <a href="#"><i class="fa fa-table"></i> <span>Absensi</span> <i class="fa fa-angle-left pull-right"></i></a>
             <ul class="treeview-menu">
-              <li {{ \Request::segment(1) == 'example' ? 'class="active"' : '' }}><a href="{{ url('/item') }}">Harian / Kontrak</a></li>
-              <li {{ \Request::segment(1) == 'example' ? 'class="active"' : '' }}><a href="{{ url('/item') }}">Packing</a></li>
+              <li {{ \Request::segment(1) == 'example' ? 'class="active"' : '' }}><a href="{{ url('/absensi-harian') }}">Harian / Kontrak</a></li>
+              <li {{ \Request::segment(1) == 'example' ? 'class="active"' : '' }}><a href="{{ url('/absensi-packing') }}">Packing</a></li>
             </ul>
           </li>
 

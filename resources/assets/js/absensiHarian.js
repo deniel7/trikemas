@@ -1,6 +1,6 @@
-var karyawanModule = (function(commonModule) {
+var absensiHarianModule = (function(commonModule) {
 
-    var datatableBaseURL = commonModule.datatableBaseURL + 'karyawans';
+    var datatableBaseURL = commonModule.datatableBaseURL + 'absensi-harians';
     
     var existing_model = null;
 
@@ -8,22 +8,21 @@ var karyawanModule = (function(commonModule) {
         _applyDatatable();
         _applyDatepicker();
         _applyThousandSeperator();
-        _applyAutoNumeric();
-        _applyValidation();
 
     };
 
     var _applyAutoNumeric = function() {
-        $("#uang_makan").autoNumeric("init", {
+        $("#harga").autoNumeric("init", {
             vMin: '0',
             vMax: '9999999999999.99'
         })
             .on("keyup", function() {
-                $("#frmData").formValidation("revalidateField", $("#uang_makan"));
+                $("#frmData").formValidation("revalidateField", $("#harga"));
             });
     };
 
     var _applyValidation = function() {
+        alert('hello');
         $('#frmData').formValidation({
             framework: "bootstrap",
             button: {

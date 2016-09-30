@@ -66,6 +66,7 @@ Route::group(['middleware' => 'auth'], function () {
     /* Datatable */
     Route::post('datatable/karyawans', 'KaryawanTetapController@datatable');
     Route::post('datatable/karyawan-harians', 'KaryawanHarianController@datatable');
+    //Route::post('datatable/absensi-harians', 'AbsensiHarianController@datatable');
 
     /* Select2 */
 
@@ -76,7 +77,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::controller('karyawan-harian', 'KaryawanHarianController');
 
     /* Transaction */
-
+    Route::resource('absensi-harian', 'AbsensiHarianController');
+    Route::controller('absensi-harian', 'AbsensiHarianController');
     /* Report */
 
     /* System */

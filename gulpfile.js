@@ -19,7 +19,8 @@ elixir(function(mix) {
     mix.scripts([
         'common.js',
         'karyawan.js',
-        'karyawanHarian.js'
+        'karyawanHarian.js',
+        'absensiHarian.js'
 
     ]);
 });

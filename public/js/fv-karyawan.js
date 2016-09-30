@@ -8,19 +8,13 @@ var validation = (function() {
     };
     
     var _applyAutoNumeric = function() {
-        $("#pcs").autoNumeric("init", {vMin: '0', vMax: '9999999999'})
+        $("#uang_makan").autoNumeric("init", {vMin: '0', vMax: '9999999999'})
         .on("keyup", function() {
-            $("#frmData").formValidation("revalidateField", $("#pcs"));
-        });
-        
-        $("#berat").autoNumeric("init", {vMin: '0', vMax: '9999.99'})
-        .on("keyup", function() {
-            $("#frmData").formValidation("revalidateField", $("#berat"));
+            $("#frmData").formValidation("revalidateField", $("#uang_makan"));
         });
     };
     
     var _applyValidation = function() {
-        
         $('#frmData').formValidation({
             framework: "bootstrap",
             button: {
@@ -32,7 +26,7 @@ var validation = (function() {
               nik: {
                 validators: {
                   notEmpty: {
-                    message: 'Nama harus diisi'
+                    message: 'NIK harus diisi'
                   },
                   stringLength: {
                     max: 100,
@@ -40,20 +34,62 @@ var validation = (function() {
                   }
                 }
               },
-              nama: {
+             nama: {
                 validators: {
                   notEmpty: {
-                    message: 'Pcs harus diisi'
+                    message: 'Nama harus diisi'
                   }
                 }
               },
               alamat: {
                 validators: {
                   notEmpty: {
-                    message: 'Berat harus diisi'
+                    message: 'Alamat harus diisi'
                   }
                 }
-              }
+              },
+              phone: {
+                validators: {
+                  notEmpty: {
+                    message: 'Phone harus diisi'
+                  }
+                }
+              },
+              lulusan: {
+                validators: {
+                  notEmpty: {
+                    message: 'Lulusan harus diisi'
+                  }
+                }
+              },
+              tgl_masuk: {
+                validators: {
+                  notEmpty: {
+                    message: 'Tanggal Masuk harus diisi'
+                  }
+                }
+              },
+              nilai_upah: {
+                validators: {
+                  notEmpty: {
+                    message: 'Nilai Upah harus diisi'
+                  }
+                }
+              },
+              uang_makan: {
+                validators: {
+                  notEmpty: {
+                    message: 'Uang Makan harus diisi'
+                  }
+                }
+              },
+              uang_lembur: {
+                validators: {
+                  notEmpty: {
+                    message: 'Uang Lembur harus diisi'
+                  }
+                }
+              },
             }
         });
     

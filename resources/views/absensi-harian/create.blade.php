@@ -94,7 +94,7 @@
                 <div class="form-group">
                   <label for="nilai_upah" class="col-sm-2 control-label">Nilai Upah *</label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control number" id="nilai_upah" placeholder="Nilai Upah" data-input="nilai_upah" value="{{ old('nilai_upah') }}">
+                    <input type="text" class="form-control number" placeholder="Nilai Upah" data-input="nilai_upah" value="{{ old('nilai_upah') }}">
                     <input type="hidden" name="nilai_upah">
                   </div>
                 </div>
@@ -102,8 +102,8 @@
                   <label for="uang_makan" class="col-sm-2 control-label">Uang Makan *</label>
                   <div class="col-sm-10">
                     
-                    <input type="text" id="uang_makan" class="form-control number" placeholder="Uang Makan" data-input="uang_makan" value="{{ old('uang_makan') }}">
-                    <!-- <input type="hidden" name="uang_makan"> -->
+                    <input type="text" class="form-control number" placeholder="Uang Makan" data-input="uang_makan" value="{{ old('uang_makan') }}">
+                    <input type="hidden" name="uang_makan">
                   </div>
                 </div>
 
@@ -151,13 +151,13 @@
     karyawanModule.init();
     });
     </script>
-@endsection
+
 
 @section('other-js')
     <script src="{{ asset('vendor/formvalidation/formValidation.min.js') }}"></script>
     <script src="{{ asset('vendor/formvalidation/framework/bootstrap.min.js') }}"></script>
-    
+    <script src="{{ asset('bower_components/autoNumeric/autoNumeric.js') }}"></script>
     <script src="{{ asset('bower_components/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
-
-
+    <script src="{{ asset('js/fv-karyawan.js') }}"></script>
+@endsection
 @endsection
