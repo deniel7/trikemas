@@ -30,20 +30,37 @@ var karyawanModule = (function(commonModule) {
     var init = function() {
         _applyDatatable();
         _applyDatepicker();
-        _applyThousandSeperator();
+        //_applyThousandSeperator();
         _applyAutoNumeric();
         _applyValidation();
 
     };
 
     var _applyAutoNumeric = function() {
+        $("#nilai_upah").autoNumeric("init", {
+            vMin: '0',
+            vMax: '9999999999999.99',
+            //aSign: 'Rp '
+        })
+        .on("keyup", function() {
+            $("#frmData").formValidation("revalidateField", $("#nilai_upah"));
+        });
         $("#uang_makan").autoNumeric("init", {
             vMin: '0',
-            vMax: '9999999999999.99'
+            vMax: '9999999999999.99',
+            //aSign: 'Rp '
         })
-            .on("keyup", function() {
-                $("#frmData").formValidation("revalidateField", $("#uang_makan"));
-            });
+        .on("keyup", function() {
+            $("#frmData").formValidation("revalidateField", $("#uang_makan"));
+        });
+        $("#uang_lembur").autoNumeric("init", {
+            vMin: '0',
+            vMax: '9999999999999.99',
+            //aSign: 'Rp '
+        })
+        .on("keyup", function() {
+            $("#frmData").formValidation("revalidateField", $("#uang_lembur"));
+        });
     };
 
     var _applyValidation = function() {
@@ -162,6 +179,10 @@ var karyawanModule = (function(commonModule) {
             clearBtn: true,
             format: 'yyyy-mm-dd',
             autoclose: true
+        })
+        // tambahin ini
+        .on("change", function() {
+                $("#frmData").formValidation("revalidateField", $("#tgl_masuk"));
         });
     };
 

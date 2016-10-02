@@ -55,12 +55,12 @@ class KaryawanTetapController extends Controller
     public function store(Request $request)
     {
         $nilai_upah = str_replace(',', '', $request->input('nilai_upah'));
-        $nilai_upah_ = str_replace('Rp', '', $nilai_upah);
+        //$nilai_upah_ = str_replace('Rp', '', $nilai_upah);
         $uang_makan = str_replace(',', '', $request->input('uang_makan'));
-        $uang_makan_ = str_replace('Rp', '', $uang_makan);
+        //$uang_makan_ = str_replace('Rp', '', $uang_makan);
         $uang_lembur = str_replace(',', '', $request->input('uang_lembur'));
-        $uang_lembur_ = str_replace('Rp', '', $uang_lembur);
-
+        //$uang_lembur_ = str_replace('Rp', '', $uang_lembur);
+        
         $karyawan = new Karyawan();
         $karyawan->status_karyawan_id = $request->input('status_karyawan_id');
         $karyawan->nama = $request->input('nama');

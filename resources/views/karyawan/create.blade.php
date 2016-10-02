@@ -87,31 +87,39 @@
                 <div class="form-group">
                   <label for="tgl_masuk" class="col-sm-2 control-label">Tanggal Masuk *</label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control pull-right datepicker" name="tgl_masuk" placeholder="Tanggal Masuk" value="{{ old('tgl_masuk') }}">
+                    <input type="text" class="form-control pull-right datepicker" name="tgl_masuk" id="tgl_masuk" placeholder="Tanggal Masuk" value="{{ old('tgl_masuk') }}">
                     
                   </div>
                 </div>
                 <div class="form-group">
                   <label for="nilai_upah" class="col-sm-2 control-label">Nilai Upah *</label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control number" id="nilai_upah" placeholder="Nilai Upah" data-input="nilai_upah" value="{{ old('nilai_upah') }}">
-                    <input type="hidden" name="nilai_upah">
+                    <div class="input-group">
+                      <span class="input-group-addon">Rp</span>
+                      <input type="text" class="form-control number" id="nilai_upah" name="nilai_upah" placeholder="Nilai Upah" data-input="nilai_upah" value="{{ str_replace(',', '', old('nilai_upah')) }}">
+                      <!--<input type="hidden" name="nilai_upah">-->
+                    </div>
                   </div>
                 </div>
                 <div class="form-group">
                   <label for="uang_makan" class="col-sm-2 control-label">Uang Makan *</label>
                   <div class="col-sm-10">
-                    
-                    <input type="text" id="uang_makan" class="form-control number" placeholder="Uang Makan" data-input="uang_makan" value="{{ old('uang_makan') }}">
-                    <!-- <input type="hidden" name="uang_makan"> -->
+                    <div class="input-group">
+                      <span class="input-group-addon">Rp</span>
+                      <input type="text" id="uang_makan" name="uang_makan" class="form-control number" placeholder="Uang Makan" data-input="uang_makan" value="{{ str_replace(',', '', old('uang_makan')) }}">
+                      <!--<input type="hidden" name="uang_makan">-->
+                    </div>
                   </div>
                 </div>
 
                 <div class="form-group">
                   <label for="uang_lembur" class="col-sm-2 control-label">Uang Lembur *</label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control number" placeholder="Uang Lembur" data-input="uang_lembur" value="{{ old('uang_lembur') }}">
-                    <input type="hidden" name="uang_lembur">
+                    <div class="input-group">
+                      <span class="input-group-addon">Rp</span>
+                      <input type="text" class="form-control number" name="uang_lembur"  id="uang_lembur" placeholder="Uang Lembur" data-input="uang_lembur" value="{{ str_replace(',', '', old('uang_lembur')) }}">
+                      <!--<input type="hidden" name="uang_lembur">-->
+                    </div>
                   </div>
                 </div>
                 <div class="form-group">
