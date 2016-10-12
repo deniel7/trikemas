@@ -53,6 +53,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     /* Barang */
     Route::get('/barang/list', 'BarangController@datatables');
+    Route::get('/barang/autocomplete', 'BarangController@autocomplete');
     Route::resource('/barang', 'BarangController');
 
     /* Konsumen */
@@ -61,7 +62,13 @@ Route::group(['middleware' => 'auth'], function () {
 
     /* Harga Barang */
     Route::get('/konsumen-barang/list', 'KonsumenBarangController@datatables');
+    Route::get('/konsumen-barang/get-price/{item_name}/{konsumen_id}', 'KonsumenBarangController@getPrice');
     Route::resource('/konsumen-barang', 'KonsumenBarangController');
+    
+    /* Invoice Penjualan */
+    Route::get('/invoice/list', 'InvoiceController@datatables');
+    Route::get('/invoice/print/{id}', 'InvoiceController@doPrint');
+    Route::resource('/invoice', 'InvoiceController');
 
     /* Datatable */
     Route::post('datatable/karyawans', 'KaryawanTetapController@datatable');

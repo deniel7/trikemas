@@ -3,6 +3,7 @@
 namespace Yajra\Datatables\Services;
 
 use Illuminate\Contracts\View\Factory;
+use Illuminate\Support\Facades\Config;
 use Maatwebsite\Excel\Classes\LaravelExcelWorksheet;
 use Maatwebsite\Excel\Writers\LaravelExcelWriter;
 use Yajra\Datatables\Contracts\DataTableButtonsContract;
@@ -303,11 +304,41 @@ abstract class DataTable implements DataTableContract, DataTableButtonsContract
     /**
      * Export results to PDF file.
      *
-     * @return void
+     * @return mixed
      */
     public function pdf()
     {
-        $this->buildExcelFile()->download('pdf');
+        if ('snappy' == Config::get('datatables.pdf_generator', 'excel')) {
+            return $this->snappyPdf();
+        } else {
+            $this->buildExcelFile()->download('pdf');
+        }
+    }
+
+    /**
+     * PDF version of the table using print preview blade template.
+     *
+     * @return mixed
+     */
+    public function snappyPdf()
+    {
+        /** @var \Barryvdh\Snappy\PdfWrapper $snappy */
+        $snappy = app('snappy.pdf.wrapper');
+
+        $options     = Config::get('datatables.snappy.options', [
+            'no-outline'    => true,
+            'margin-left'   => '0',
+            'margin-right'  => '0',
+            'margin-top'    => '10mm',
+            'margin-bottom' => '10mm',
+        ]);
+        $orientation = Config::get('datatables.snappy.orientation', 'landscape');
+
+        $snappy->setOptions($options)
+               ->setOrientation($orientation);
+
+        return $snappy->loadHTML($this->printPreview())
+                      ->download($this->getFilename() . ".pdf");
     }
 
     /**

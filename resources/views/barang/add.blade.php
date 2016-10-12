@@ -44,26 +44,26 @@
               <div class="box-body">
                 
                 <div class="form-group">
-                  <label for="nama" class="col-sm-2 control-label">Nama *</label>
-                  <div class="col-sm-10">
+                  <label for="nama" class="col-sm-3 control-label">Nama *</label>
+                  <div class="col-sm-9">
                     <input type="text" class="form-control" name="nama" id="nama" placeholder="Nama" value="{{ old('nama') }}">
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="jenis" class="col-sm-2 control-label">Jenis </label>
-                  <div class="col-sm-10">
+                  <label for="jenis" class="col-sm-3 control-label">Jenis </label>
+                  <div class="col-sm-9">
                     <input type="text" class="form-control" name="jenis" id="jenis" placeholder="Jenis" value="{{ old('jenis') }}">
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="pcs" class="col-sm-2 control-label">Pcs *</label>
-                  <div class="col-sm-10">
+                  <label for="pcs" class="col-sm-3 control-label">Jumlah Pcs dalam Ball *</label>
+                  <div class="col-sm-9">
                     <input type="text" class="form-control" name="pcs" id="pcs" placeholder="Pcs" value="{{ str_replace(',', '', old('pcs')) }}">
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="berat" class="col-sm-2 control-label">Berat (Kg) *</label>
-                  <div class="col-sm-10">
+                  <label for="berat" class="col-sm-3 control-label">Berat (Kg) *</label>
+                  <div class="col-sm-9">
                     <input type="text" class="form-control" name="berat" id="berat" placeholder="Berat" value="{{ str_replace(',', '', old('berat')) }}">
                   </div>
                 </div>

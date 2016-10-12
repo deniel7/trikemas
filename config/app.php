@@ -150,6 +150,7 @@ return [
          */
         Laracasts\Flash\FlashServiceProvider::class,
         Yajra\Datatables\DatatablesServiceProvider::class,
+        Elibyy\TCPDF\ServiceProvider::class,
 
     ],
 
@@ -205,6 +206,7 @@ return [
         'Flash' => Laracasts\Flash\Flash::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'Sentry' => Sentry\SentryLaravel\SentryFacade::class,
+        'PDF' => Elibyy\TCPDF\Facades\TCPDF::class
 
     ],
 

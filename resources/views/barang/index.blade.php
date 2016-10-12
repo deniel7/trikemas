@@ -44,7 +44,7 @@
                     <tr>
                       <th class="text-center">Nama</th>
                       <th class="text-center">Jenis</th>
-                      <th class="text-center">Pcs</th>
+                      <th class="text-center">Jumlah Pcs dalam Ball</th>
                       <th class="text-center">Berat</th>
                       <th class="text-center" width="10%">Action</th>
                     </tr>

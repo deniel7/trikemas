@@ -8,8 +8,8 @@ class ComposerStaticInit673dc2dbeee6f0c2856b868bb9add844
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
-        '1d1b89d124cc9cb8219922c9d5569199' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest.php',
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
+        '1d1b89d124cc9cb8219922c9d5569199' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest.php',
         '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
         'bd9634f2d41831496de0d3dfe4c94881' => __DIR__ . '/..' . '/symfony/polyfill-php56/bootstrap.php',
         '65fec9ebcfbb3cbb4fd0d519687aea01' => __DIR__ . '/..' . '/danielstjules/stringy/src/Create.php',
@@ -22,6 +22,10 @@ class ComposerStaticInit673dc2dbeee6f0c2856b868bb9add844
     );
 
     public static $prefixLengthsPsr4 = array (
+        'p' => 
+        array (
+            'phpDocumentor\\Reflection\\' => 25,
+        ),
         'Y' => 
         array (
             'Yajra\\Datatables\\' => 17,
@@ -29,6 +33,10 @@ class ComposerStaticInit673dc2dbeee6f0c2856b868bb9add844
         'X' => 
         array (
             'XdgBaseDir\\' => 11,
+        ),
+        'W' => 
+        array (
+            'Webmozart\\Assert\\' => 17,
         ),
         'T' => 
         array (
@@ -58,6 +66,7 @@ class ComposerStaticInit673dc2dbeee6f0c2856b868bb9add844
         'P' => 
         array (
             'Psy\\' => 4,
+            'Psr\\Log\\' => 8,
             'PhpParser\\' => 10,
         ),
         'M' => 
@@ -77,8 +86,13 @@ class ComposerStaticInit673dc2dbeee6f0c2856b868bb9add844
         array (
             'Faker\\' => 6,
         ),
+        'E' => 
+        array (
+            'Elibyy\\TCPDF\\' => 13,
+        ),
         'D' => 
         array (
+            'Dompdf\\' => 7,
             'Doctrine\\Instantiator\\' => 22,
             'Doctrine\\Common\\Cache\\' => 22,
             'Doctrine\\Common\\' => 16,
@@ -100,6 +114,12 @@ class ComposerStaticInit673dc2dbeee6f0c2856b868bb9add844
     );
 
     public static $prefixDirsPsr4 = array (
+        'phpDocumentor\\Reflection\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
+            1 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
+            2 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
+        ),
         'Yajra\\Datatables\\' => 
         array (
             0 => __DIR__ . '/..' . '/yajra/laravel-datatables-oracle/src',
@@ -107,6 +127,10 @@ class ComposerStaticInit673dc2dbeee6f0c2856b868bb9add844
         'XdgBaseDir\\' => 
         array (
             0 => __DIR__ . '/..' . '/dnoegel/php-xdg-base-dir/src',
+        ),
+        'Webmozart\\Assert\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/webmozart/assert/src',
         ),
         'TijsVerkoyen\\CssToInlineStyles\\' => 
         array (
@@ -188,6 +212,10 @@ class ComposerStaticInit673dc2dbeee6f0c2856b868bb9add844
         array (
             0 => __DIR__ . '/..' . '/psy/psysh/src/Psy',
         ),
+        'Psr\\Log\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+        ),
         'PhpParser\\' => 
         array (
             0 => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser',
@@ -211,6 +239,14 @@ class ComposerStaticInit673dc2dbeee6f0c2856b868bb9add844
         'Faker\\' => 
         array (
             0 => __DIR__ . '/..' . '/fzaninotto/faker/src/Faker',
+        ),
+        'Elibyy\\TCPDF\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/elibyy/tcpdf-laravel/src',
+        ),
+        'Dompdf\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/dompdf/dompdf/src',
         ),
         'Doctrine\\Instantiator\\' => 
         array (
@@ -247,19 +283,15 @@ class ComposerStaticInit673dc2dbeee6f0c2856b868bb9add844
     );
 
     public static $prefixesPsr0 = array (
-        'p' => 
+        'S' => 
         array (
-            'phpDocumentor' => 
+            'Svg\\' => 
             array (
-                0 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
+                0 => __DIR__ . '/..' . '/phenx/php-svg-lib/src',
             ),
         ),
         'P' => 
         array (
-            'Psr\\Log\\' => 
-            array (
-                0 => __DIR__ . '/..' . '/psr/log',
-            ),
             'Prophecy\\' => 
             array (
                 0 => __DIR__ . '/..' . '/phpspec/prophecy/src',
@@ -300,6 +332,13 @@ class ComposerStaticInit673dc2dbeee6f0c2856b868bb9add844
             'JakubOnderka\\PhpConsoleColor' => 
             array (
                 0 => __DIR__ . '/..' . '/jakub-onderka/php-console-color/src',
+            ),
+        ),
+        'F' => 
+        array (
+            'FontLib\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/phenx/php-font-lib/src',
             ),
         ),
         'D' => 
@@ -343,11 +382,12 @@ class ComposerStaticInit673dc2dbeee6f0c2856b868bb9add844
     );
 
     public static $classMap = array (
-        'Absolute_Positioner' => __DIR__ . '/..' . '/dompdf/dompdf/include/absolute_positioner.cls.php',
-        'Abstract_Renderer' => __DIR__ . '/..' . '/dompdf/dompdf/include/abstract_renderer.cls.php',
-        'Adobe_Font_Metrics' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Adobe_Font_Metrics.php',
         'AlterDetailPenjualanAddHarga' => __DIR__ . '/../..' . '/database/migrations/2016_09_11_114301_alter_detail_penjualan_add_harga.php',
+        'AlterDetailPenjualansAddJumlahBall' => __DIR__ . '/../..' . '/database/migrations/2016_10_10_222707_alter_detail_penjualans_add_jumlah_ball.php',
+        'AlterDetailPenjualansModifySubtotal' => __DIR__ . '/../..' . '/database/migrations/2016_10_09_230758_alter_detail_penjualans_modify_subtotal.php',
+        'AlterInvoicePenjualanAddIndex' => __DIR__ . '/../..' . '/database/migrations/2016_10_11_140419_alter_invoice_penjualan_add_index.php',
         'AlterInvoicePenjualanAddSuratJalan' => __DIR__ . '/../..' . '/database/migrations/2016_09_11_112230_alter_invoice_penjualan_add_surat_jalan.php',
+        'AlterInvoicePenjualanModifyPpnDiskon' => __DIR__ . '/../..' . '/database/migrations/2016_10_12_124309_alter_invoice_penjualan_modify_ppn_diskon.php',
         'AlterTableAngkutanTujuansAddAngkutanIdTujuanId' => __DIR__ . '/../..' . '/database/migrations/2016_09_10_213528_alter_table_angkutan_tujuans_add_angkutan_id_tujuan_id.php',
         'AlterTableAngkutans' => __DIR__ . '/../..' . '/database/migrations/2016_09_10_212339_alter_table_angkutans.php',
         'AlterTableBarangsModifyBerat' => __DIR__ . '/../..' . '/database/migrations/2016_09_10_211200_alter_table_barangs_modify_berat.php',
@@ -355,17 +395,7 @@ class ComposerStaticInit673dc2dbeee6f0c2856b868bb9add844
         'AlterTableKonsumenBarangsModifyHarga' => __DIR__ . '/../..' . '/database/migrations/2016_09_10_213343_alter_table_konsumen_barangs_modify_harga.php',
         'AlterTableKonsumensAddHp' => __DIR__ . '/../..' . '/database/migrations/2016_09_10_205755_alter_table_konsumens_add_hp.php',
         'AlterTujuan' => __DIR__ . '/../..' . '/database/migrations/2016_09_11_115304_alter_tujuan.php',
-        'Attribute_Translator' => __DIR__ . '/..' . '/dompdf/dompdf/include/attribute_translator.cls.php',
-        'Block_Frame_Decorator' => __DIR__ . '/..' . '/dompdf/dompdf/include/block_frame_decorator.cls.php',
-        'Block_Frame_Reflower' => __DIR__ . '/..' . '/dompdf/dompdf/include/block_frame_reflower.cls.php',
-        'Block_Positioner' => __DIR__ . '/..' . '/dompdf/dompdf/include/block_positioner.cls.php',
-        'Block_Renderer' => __DIR__ . '/..' . '/dompdf/dompdf/include/block_renderer.cls.php',
-        'CPDF_Adapter' => __DIR__ . '/..' . '/dompdf/dompdf/include/cpdf_adapter.cls.php',
-        'CSS_Color' => __DIR__ . '/..' . '/dompdf/dompdf/include/css_color.cls.php',
-        'Cached_PDF_Decorator' => __DIR__ . '/..' . '/dompdf/dompdf/include/cached_pdf_decorator.cls.php',
-        'Canvas' => __DIR__ . '/..' . '/dompdf/dompdf/include/canvas.cls.php',
-        'Canvas_Factory' => __DIR__ . '/..' . '/dompdf/dompdf/include/canvas_factory.cls.php',
-        'Cellmap' => __DIR__ . '/..' . '/dompdf/dompdf/include/cellmap.cls.php',
+        'Cpdf' => __DIR__ . '/..' . '/dompdf/dompdf/lib/Cpdf.php',
         'CreateAbsensiHariansTable' => __DIR__ . '/../..' . '/database/migrations/2016_09_07_150716_create_absensi_harians_table.php',
         'CreateAbsensiPackingsTable' => __DIR__ . '/../..' . '/database/migrations/2016_09_07_151108_create_absensi_packings_table.php',
         'CreateAngkutanTujuansTable' => __DIR__ . '/../..' . '/database/migrations/2016_09_08_095537_create_angkutan_tujuans_table.php',
@@ -385,59 +415,17 @@ class ComposerStaticInit673dc2dbeee6f0c2856b868bb9add844
         'CreateStatusKaryawansTable' => __DIR__ . '/../..' . '/database/migrations/2016_09_07_154552_create_status_karyawans_table.php',
         'CreateTujuansTable' => __DIR__ . '/../..' . '/database/migrations/2016_09_08_101313_create_tujuans_table.php',
         'CreateUsersTable' => __DIR__ . '/../..' . '/database/migrations/2016_03_16_150258_create_users_table.php',
-        'DOMPDF' => __DIR__ . '/..' . '/dompdf/dompdf/include/dompdf.cls.php',
-        'DOMPDF_Exception' => __DIR__ . '/..' . '/dompdf/dompdf/include/dompdf_exception.cls.php',
-        'DOMPDF_Image_Exception' => __DIR__ . '/..' . '/dompdf/dompdf/include/dompdf_image_exception.cls.php',
         'DatabaseSeeder' => __DIR__ . '/../..' . '/database/seeds/DatabaseSeeder.php',
-        'Encoding_Map' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Encoding_Map.php',
+        'Datamatrix' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/datamatrix.php',
         'ExampleTableSeeder' => __DIR__ . '/../..' . '/database/seeds/ExampleTableSeeder.php',
         'File_Iterator' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Iterator.php',
         'File_Iterator_Facade' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Facade.php',
         'File_Iterator_Factory' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Factory.php',
-        'Fixed_Positioner' => __DIR__ . '/..' . '/dompdf/dompdf/include/fixed_positioner.cls.php',
-        'Font' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Font.php',
-        'Font_Binary_Stream' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Font_Binary_Stream.php',
-        'Font_EOT' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Font_EOT.php',
-        'Font_EOT_Header' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Font_EOT_Header.php',
-        'Font_Glyph_Outline' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Font_Glyph_Outline.php',
-        'Font_Glyph_Outline_Component' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Font_Glyph_Outline_Component.php',
-        'Font_Glyph_Outline_Composite' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Font_Glyph_Outline_Composite.php',
-        'Font_Glyph_Outline_Simple' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Font_Glyph_Outline_Simple.php',
-        'Font_Header' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Font_Header.php',
-        'Font_Metrics' => __DIR__ . '/..' . '/dompdf/dompdf/include/font_metrics.cls.php',
-        'Font_OpenType' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Font_OpenType.php',
-        'Font_OpenType_Table_Directory_Entry' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Font_OpenType_Table_Directory_Entry.php',
-        'Font_Table' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Font_Table.php',
-        'Font_Table_Directory_Entry' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Font_Table_Directory_Entry.php',
-        'Font_Table_cmap' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Font_Table_cmap.php',
-        'Font_Table_glyf' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Font_Table_glyf.php',
-        'Font_Table_head' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Font_Table_head.php',
-        'Font_Table_hhea' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Font_Table_hhea.php',
-        'Font_Table_hmtx' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Font_Table_hmtx.php',
-        'Font_Table_kern' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Font_Table_kern.php',
-        'Font_Table_loca' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Font_Table_loca.php',
-        'Font_Table_maxp' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Font_Table_maxp.php',
-        'Font_Table_name' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Font_Table_name.php',
-        'Font_Table_name_Record' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Font_Table_name_Record.php',
-        'Font_Table_os2' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Font_Table_os2.php',
-        'Font_Table_post' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Font_Table_post.php',
-        'Font_TrueType' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Font_TrueType.php',
-        'Font_TrueType_Collection' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Font_TrueType_Collection.php',
-        'Font_TrueType_Header' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Font_TrueType_Header.php',
-        'Font_TrueType_Table_Directory_Entry' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Font_TrueType_Table_Directory_Entry.php',
-        'Font_WOFF' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Font_WOFF.php',
-        'Font_WOFF_Header' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Font_WOFF_Header.php',
-        'Font_WOFF_Table_Directory_Entry' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Font_WOFF_Table_Directory_Entry.php',
-        'Frame' => __DIR__ . '/..' . '/dompdf/dompdf/include/frame.cls.php',
-        'FrameList' => __DIR__ . '/..' . '/dompdf/dompdf/include/frame.cls.php',
-        'FrameListIterator' => __DIR__ . '/..' . '/dompdf/dompdf/include/frame.cls.php',
-        'FrameTreeIterator' => __DIR__ . '/..' . '/dompdf/dompdf/include/frame.cls.php',
-        'FrameTreeList' => __DIR__ . '/..' . '/dompdf/dompdf/include/frame.cls.php',
-        'Frame_Decorator' => __DIR__ . '/..' . '/dompdf/dompdf/include/frame_decorator.cls.php',
-        'Frame_Factory' => __DIR__ . '/..' . '/dompdf/dompdf/include/frame_factory.cls.php',
-        'Frame_Reflower' => __DIR__ . '/..' . '/dompdf/dompdf/include/frame_reflower.cls.php',
-        'Frame_Tree' => __DIR__ . '/..' . '/dompdf/dompdf/include/frame_tree.cls.php',
-        'GD_Adapter' => __DIR__ . '/..' . '/dompdf/dompdf/include/gd_adapter.cls.php',
+        'HTML5_Data' => __DIR__ . '/..' . '/dompdf/dompdf/lib/html5lib/Data.php',
+        'HTML5_InputStream' => __DIR__ . '/..' . '/dompdf/dompdf/lib/html5lib/InputStream.php',
+        'HTML5_Parser' => __DIR__ . '/..' . '/dompdf/dompdf/lib/html5lib/Parser.php',
+        'HTML5_Tokenizer' => __DIR__ . '/..' . '/dompdf/dompdf/lib/html5lib/Tokenizer.php',
+        'HTML5_TreeBuilder' => __DIR__ . '/..' . '/dompdf/dompdf/lib/html5lib/TreeBuilder.php',
         'Hamcrest\\Arrays\\IsArray' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Arrays/IsArray.php',
         'Hamcrest\\Arrays\\IsArrayContaining' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Arrays/IsArrayContaining.php',
         'Hamcrest\\Arrays\\IsArrayContainingInAnyOrder' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Arrays/IsArrayContainingInAnyOrder.php',
@@ -507,22 +495,7 @@ class ComposerStaticInit673dc2dbeee6f0c2856b868bb9add844
         'Hamcrest\\Util' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Util.php',
         'Hamcrest\\Xml\\HasXPath' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Xml/HasXPath.php',
         'IlluminateQueueClosure' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/IlluminateQueueClosure.php',
-        'Image_Cache' => __DIR__ . '/..' . '/dompdf/dompdf/include/image_cache.cls.php',
-        'Image_Frame_Decorator' => __DIR__ . '/..' . '/dompdf/dompdf/include/image_frame_decorator.cls.php',
-        'Image_Frame_Reflower' => __DIR__ . '/..' . '/dompdf/dompdf/include/image_frame_reflower.cls.php',
-        'Image_Renderer' => __DIR__ . '/..' . '/dompdf/dompdf/include/image_renderer.cls.php',
-        'Inline_Frame_Decorator' => __DIR__ . '/..' . '/dompdf/dompdf/include/inline_frame_decorator.cls.php',
-        'Inline_Frame_Reflower' => __DIR__ . '/..' . '/dompdf/dompdf/include/inline_frame_reflower.cls.php',
-        'Inline_Positioner' => __DIR__ . '/..' . '/dompdf/dompdf/include/inline_positioner.cls.php',
-        'Inline_Renderer' => __DIR__ . '/..' . '/dompdf/dompdf/include/inline_renderer.cls.php',
-        'Javascript_Embedder' => __DIR__ . '/..' . '/dompdf/dompdf/include/javascript_embedder.cls.php',
         'KaryawansSeeder' => __DIR__ . '/../..' . '/database/seeds/KaryawansSeeder.php',
-        'Line_Box' => __DIR__ . '/..' . '/dompdf/dompdf/include/line_box.cls.php',
-        'List_Bullet_Frame_Decorator' => __DIR__ . '/..' . '/dompdf/dompdf/include/list_bullet_frame_decorator.cls.php',
-        'List_Bullet_Frame_Reflower' => __DIR__ . '/..' . '/dompdf/dompdf/include/list_bullet_frame_reflower.cls.php',
-        'List_Bullet_Image_Frame_Decorator' => __DIR__ . '/..' . '/dompdf/dompdf/include/list_bullet_image_frame_decorator.cls.php',
-        'List_Bullet_Positioner' => __DIR__ . '/..' . '/dompdf/dompdf/include/list_bullet_positioner.cls.php',
-        'List_Bullet_Renderer' => __DIR__ . '/..' . '/dompdf/dompdf/include/list_bullet_renderer.cls.php',
         'Maatwebsite\\Excel\\Classes\\Cache' => __DIR__ . '/..' . '/maatwebsite/excel/src/Maatwebsite/Excel/Classes/Cache.php',
         'Maatwebsite\\Excel\\Classes\\FormatIdentifier' => __DIR__ . '/..' . '/maatwebsite/excel/src/Maatwebsite/Excel/Classes/FormatIdentifier.php',
         'Maatwebsite\\Excel\\Classes\\LaravelExcelWorksheet' => __DIR__ . '/..' . '/maatwebsite/excel/src/Maatwebsite/Excel/Classes/LaravelExcelWorksheet.php',
@@ -551,10 +524,7 @@ class ComposerStaticInit673dc2dbeee6f0c2856b868bb9add844
         'Maatwebsite\\Excel\\Readers\\LaravelExcelReader' => __DIR__ . '/..' . '/maatwebsite/excel/src/Maatwebsite/Excel/Readers/LaravelExcelReader.php',
         'Maatwebsite\\Excel\\Writers\\CellWriter' => __DIR__ . '/..' . '/maatwebsite/excel/src/Maatwebsite/Excel/Writers/CellWriter.php',
         'Maatwebsite\\Excel\\Writers\\LaravelExcelWriter' => __DIR__ . '/..' . '/maatwebsite/excel/src/Maatwebsite/Excel/Writers/LaravelExcelWriter.php',
-        'Null_Frame_Decorator' => __DIR__ . '/..' . '/dompdf/dompdf/include/null_frame_decorator.cls.php',
-        'Null_Frame_Reflower' => __DIR__ . '/..' . '/dompdf/dompdf/include/null_frame_reflower.cls.php',
-        'Null_Positioner' => __DIR__ . '/..' . '/dompdf/dompdf/include/null_positioner.cls.php',
-        'PDFLib_Adapter' => __DIR__ . '/..' . '/dompdf/dompdf/include/pdflib_adapter.cls.php',
+        'PDF417' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/pdf417.php',
         'PHPUnit_Exception' => __DIR__ . '/..' . '/phpunit/phpunit/src/Exception.php',
         'PHPUnit_Extensions_GroupTestSuite' => __DIR__ . '/..' . '/phpunit/phpunit/src/Extensions/GroupTestSuite.php',
         'PHPUnit_Extensions_PhptTestCase' => __DIR__ . '/..' . '/phpunit/phpunit/src/Extensions/PhptTestCase.php',
@@ -753,7 +723,6 @@ class ComposerStaticInit673dc2dbeee6f0c2856b868bb9add844
         'PHP_CodeCoverage_Report_XML_Totals' => __DIR__ . '/..' . '/phpunit/php-code-coverage/src/CodeCoverage/Report/XML/Totals.php',
         'PHP_CodeCoverage_Util' => __DIR__ . '/..' . '/phpunit/php-code-coverage/src/CodeCoverage/Util.php',
         'PHP_CodeCoverage_Util_InvalidArgumentHelper' => __DIR__ . '/..' . '/phpunit/php-code-coverage/src/CodeCoverage/Util/InvalidArgumentHelper.php',
-        'PHP_Evaluator' => __DIR__ . '/..' . '/dompdf/dompdf/include/php_evaluator.cls.php',
         'PHP_Timer' => __DIR__ . '/..' . '/phpunit/php-timer/src/Timer.php',
         'PHP_Token' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_TokenWithScope' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
@@ -951,12 +920,8 @@ class ComposerStaticInit673dc2dbeee6f0c2856b868bb9add844
         'PHP_Token_XOR_EQUAL' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_YIELD' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_YIELD_FROM' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
-        'Page_Cache' => __DIR__ . '/..' . '/dompdf/dompdf/include/page_cache.cls.php',
-        'Page_Frame_Decorator' => __DIR__ . '/..' . '/dompdf/dompdf/include/page_frame_decorator.cls.php',
-        'Page_Frame_Reflower' => __DIR__ . '/..' . '/dompdf/dompdf/include/page_frame_reflower.cls.php',
-        'Positioner' => __DIR__ . '/..' . '/dompdf/dompdf/include/positioner.cls.php',
+        'QRcode' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/qrcode.php',
         'RenameStatusKaryawanTable' => __DIR__ . '/../..' . '/database/migrations/2016_09_14_105559_rename_status_karyawan_table.php',
-        'Renderer' => __DIR__ . '/..' . '/dompdf/dompdf/include/renderer.cls.php',
         'RoleTableSeeder' => __DIR__ . '/../..' . '/database/seeds/RoleTableSeeder.php',
         'SebastianBergmann\\Comparator\\ArrayComparator' => __DIR__ . '/..' . '/sebastian/comparator/src/ArrayComparator.php',
         'SebastianBergmann\\Comparator\\Comparator' => __DIR__ . '/..' . '/sebastian/comparator/src/Comparator.php',
@@ -996,25 +961,18 @@ class ComposerStaticInit673dc2dbeee6f0c2856b868bb9add844
         'SebastianBergmann\\Version' => __DIR__ . '/..' . '/sebastian/version/src/Version.php',
         'SessionHandlerInterface' => __DIR__ . '/..' . '/symfony/http-foundation/Resources/stubs/SessionHandlerInterface.php',
         'StatusKaryawanSeeder' => __DIR__ . '/../..' . '/database/seeds/StatusKaryawanSeeder.php',
-        'Style' => __DIR__ . '/..' . '/dompdf/dompdf/include/style.cls.php',
-        'Stylesheet' => __DIR__ . '/..' . '/dompdf/dompdf/include/stylesheet.cls.php',
-        'TCPDF_Adapter' => __DIR__ . '/..' . '/dompdf/dompdf/include/tcpdf_adapter.cls.php',
-        'Table_Cell_Frame_Decorator' => __DIR__ . '/..' . '/dompdf/dompdf/include/table_cell_frame_decorator.cls.php',
-        'Table_Cell_Frame_Reflower' => __DIR__ . '/..' . '/dompdf/dompdf/include/table_cell_frame_reflower.cls.php',
-        'Table_Cell_Positioner' => __DIR__ . '/..' . '/dompdf/dompdf/include/table_cell_positioner.cls.php',
-        'Table_Cell_Renderer' => __DIR__ . '/..' . '/dompdf/dompdf/include/table_cell_renderer.cls.php',
-        'Table_Frame_Decorator' => __DIR__ . '/..' . '/dompdf/dompdf/include/table_frame_decorator.cls.php',
-        'Table_Frame_Reflower' => __DIR__ . '/..' . '/dompdf/dompdf/include/table_frame_reflower.cls.php',
-        'Table_Row_Frame_Decorator' => __DIR__ . '/..' . '/dompdf/dompdf/include/table_row_frame_decorator.cls.php',
-        'Table_Row_Frame_Reflower' => __DIR__ . '/..' . '/dompdf/dompdf/include/table_row_frame_reflower.cls.php',
-        'Table_Row_Group_Frame_Decorator' => __DIR__ . '/..' . '/dompdf/dompdf/include/table_row_group_frame_decorator.cls.php',
-        'Table_Row_Group_Frame_Reflower' => __DIR__ . '/..' . '/dompdf/dompdf/include/table_row_group_frame_reflower.cls.php',
-        'Table_Row_Group_Renderer' => __DIR__ . '/..' . '/dompdf/dompdf/include/table_row_group_renderer.cls.php',
-        'Table_Row_Positioner' => __DIR__ . '/..' . '/dompdf/dompdf/include/table_row_positioner.cls.php',
+        'TCPDF' => __DIR__ . '/..' . '/tecnickcom/tcpdf/tcpdf.php',
+        'TCPDF2DBarcode' => __DIR__ . '/..' . '/tecnickcom/tcpdf/tcpdf_barcodes_2d.php',
+        'TCPDFBarcode' => __DIR__ . '/..' . '/tecnickcom/tcpdf/tcpdf_barcodes_1d.php',
+        'TCPDF_COLORS' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/tcpdf_colors.php',
+        'TCPDF_FILTERS' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/tcpdf_filters.php',
+        'TCPDF_FONTS' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/tcpdf_fonts.php',
+        'TCPDF_FONT_DATA' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/tcpdf_font_data.php',
+        'TCPDF_IMAGES' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/tcpdf_images.php',
+        'TCPDF_IMPORT' => __DIR__ . '/..' . '/tecnickcom/tcpdf/tcpdf_import.php',
+        'TCPDF_PARSER' => __DIR__ . '/..' . '/tecnickcom/tcpdf/tcpdf_parser.php',
+        'TCPDF_STATIC' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/tcpdf_static.php',
         'TestCase' => __DIR__ . '/../..' . '/tests/TestCase.php',
-        'Text_Frame_Decorator' => __DIR__ . '/..' . '/dompdf/dompdf/include/text_frame_decorator.cls.php',
-        'Text_Frame_Reflower' => __DIR__ . '/..' . '/dompdf/dompdf/include/text_frame_reflower.cls.php',
-        'Text_Renderer' => __DIR__ . '/..' . '/dompdf/dompdf/include/text_renderer.cls.php',
         'Text_Template' => __DIR__ . '/..' . '/phpunit/php-text-template/src/Template.php',
         'UserTableSeeder' => __DIR__ . '/../..' . '/database/seeds/UserTableSeeder.php',
     );

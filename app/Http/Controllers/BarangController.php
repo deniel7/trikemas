@@ -31,6 +31,17 @@ class BarangController extends Controller
                 ->make(true);
     }
     
+    public function autocomplete() {
+        $list = Barang::select('nama')->where('nama', 'like', '%'. $_GET['q'] .'%')->orderBy('nama')->get();
+        
+        $rows = array();
+        foreach($list as $item) {
+            $rows[] = $item->nama;
+        }
+        
+        return response()->json($rows);
+    }
+    
     /**
      * Display a listing of the resource.
      *

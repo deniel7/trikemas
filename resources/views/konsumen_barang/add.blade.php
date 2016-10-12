@@ -46,7 +46,7 @@
               <div class="box-body">
                 
                 <div class="form-group">
-                  <label for="angkutan_id" class="col-sm-2 control-label">Konsumen *</label>
+                  <label for="konsumen_id" class="col-sm-2 control-label">Konsumen *</label>
                   <div class="col-sm-10">
                     <select name="konsumen_id" id="konsumen_id" class="form-control selectpicker" title="-- Pilih konsumen --">
                       @foreach($konsumen as $item)

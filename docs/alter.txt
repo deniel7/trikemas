@@ -1,0 +1,7 @@
+alter table detail_penjualans modify subtotal decimal(15,2);
+alter table detail_penjualans add column jumlah_ball integer;
+alter table invoice_penjualans modify diskon decimal(15,2);
+alter table invoice_penjualans modify ppn decimal(15,2);
+
+create unique index invoice_penjualans_no_invoice_unique on invoice_penjualans (no_invoice);
+create index invoice_penjualans_no_surat_jalan_index on invoice_penjualans (no_surat_jalan);

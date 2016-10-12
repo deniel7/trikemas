@@ -46,6 +46,31 @@ class KonsumenBarangController extends Controller
                 ->make(true);
     }
     
+    public function getPrice($item_name, $konsumen_id) {
+        $barang = Barang::where('nama', $item_name)->first();
+        $barang_id = -1;
+        $pcs_in_ball = 0;
+        if ($barang) {
+            $barang_id = $barang->id;
+            $pcs_in_ball = $barang->pcs;
+        }
+        
+        $harga = 0;
+        $konsumen_barang = KonsumenBarang::where('barang_id', $barang_id)->where('konsumen_id', $konsumen_id)->first();
+        if ($konsumen_barang) {
+            $harga = $konsumen_barang->harga;
+        }
+        else {
+            $harga = 0.00;
+        }
+        
+        $output['harga'] = $harga;
+        $output['pcs_in_ball'] = $pcs_in_ball;
+        
+        //return $harga;
+        return response()->json($output);
+    }
+    
     /**
      * Display a listing of the resource.
      *
