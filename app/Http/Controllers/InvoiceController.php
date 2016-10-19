@@ -37,11 +37,32 @@ class InvoiceController extends Controller
                     $html  = '<div class="text-center btn-group btn-group-justified">';
                     $html .= '<a href="/invoice/print/' . $list->id . '" title="Print" target="_blank"><button type="button" class="btn btn-sm"><i class="fa fa-print"></i></button></a> '; 
                     $html .= '<a href="/invoice/' . $list->id . '" title="Detail"><button type="button" class="btn btn-sm bg-purple"><i class="fa fa-search"></i></button></a> '; 
-                    $html .= '<a href="/invoice/' . $list->id . '/edit" title="Edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a> '; 
+                    if ($list->status_bayar == 0) {
+                        $html .= '<a href="/invoice/' . $list->id . '/edit" title="Edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a> ';     
+                    }
                     $html .= '<a href="/invoice/' . $list->id . '/destroy" title="Delete" onclick="confirmDelete(event, \'' . $list->id . '\', \'' . $list->no_invoice . '\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
                     $html .= '</div>';
                     
                     return $html;
+                })
+                ->addColumn('notifikasi', function($list) {
+                    $duedate = Carbon::createFromFormat('Y-m-d', $list->tgl_jatuh_tempo);
+                    $today = Carbon::today();
+                    $days_remaining = $today->diffInDays($duedate, false);
+                    if ($list->status_bayar) {
+                        return 'Complete';
+                    }
+                    else {
+                        if ($days_remaining < 0) {
+                            return 'Lewat jatuh tempo';
+                        }
+                        else if ($days_remaining == 0) {
+                            return 'Jatuh tempo';
+                        }
+                        else if ($days_remaining > 0) {
+                            return $days_remaining . ' hari lagi';
+                        }    
+                    }
                 })
                 ->editColumn('tanggal', function($list) {
                     return with(new Carbon($list->tanggal))->format('d-m-Y');
@@ -52,7 +73,7 @@ class InvoiceController extends Controller
                 ->editColumn('grand_total', '{{ number_format($grand_total, "2", ".", ",") }}')
                 ->editColumn('status_bayar', '{{ $status_bayar == 1 ? "Sudah Bayar" : "Belum Bayar" }}')
                 ->editColumn('tanggal_bayar', function($list) {
-                    if ($list->tanggal_bayar = '0000-00-00') {
+                    if ($list->tanggal_bayar == '0000-00-00') {
                         return '';   
                     }
                     else {
@@ -358,6 +379,22 @@ class InvoiceController extends Controller
         }
         catch(\Illuminate\Database\QueryException $e) {
             DB::rollback();
+            echo 'Error (' . $e->errorInfo[1] . '): ' . $e->errorInfo[2] . '.';
+        }
+    }
+    
+    public function complete(Request $request, $id) {
+        try {
+            $invoice = InvoicePenjualan::find($id);
+            $invoice->status_bayar = 1;
+            $invoice->tanggal_bayar = Carbon::createFromFormat('d/m/Y', $request->tgl_bayar)->format('Y-m-d');
+            $invoice->bank_tujuan_bayar = $request->bank_tujuan_bayar;
+            $invoice->keterangan = $request->keterangan;
+            $invoice->save();
+            
+            echo 'success';
+        }
+        catch(\Illuminate\Database\QueryException $e) {
             echo 'Error (' . $e->errorInfo[1] . '): ' . $e->errorInfo[2] . '.';
         }
     }

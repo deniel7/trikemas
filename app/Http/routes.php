@@ -68,6 +68,7 @@ Route::group(['middleware' => 'auth'], function () {
     /* Invoice Penjualan */
     Route::get('/invoice/list', 'InvoiceController@datatables');
     Route::get('/invoice/print/{id}', 'InvoiceController@doPrint');
+    Route::post('/invoice/complete/{id}', 'InvoiceController@complete');
     Route::resource('/invoice', 'InvoiceController');
 
     /* Datatable */

@@ -1,7 +1,10 @@
 @extends('layouts.backend')
 
 @section('other-css')
-    
+    <link rel="stylesheet" href="{{ asset('vendor/formvalidation/formValidation.css') }}">
+    <!-- bootstrap select -->
+    <link rel="stylesheet" href="{{ asset('bower_components/bootstrap-select/dist/css/bootstrap-select.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('bower_components/sweetalert/dist/sweetalert.css') }}">
 @endsection
 
 @section('content')
@@ -205,8 +208,11 @@
               <div class="box-footer">
                 <div class="pull-right">
                   <a href="{{ url('/invoice') }}" class="btn btn-warning"><i class="fa fa-chevron-left"></i> Back</a>
+                  @if ($invoice_penjualan->status_bayar == 0)
+                    <button type="button" class="btn btn-primary" id="btnConfirm" style="margin-left: 5px;" data-toggle="modal" data-target="#confirmModal"><i class="fa fa-check"></i> Konfirmasi Pembayaran</button>
+                  @endif
                 </div>
-                </div>
+              </div>
               <!-- /.box-footer -->
             
             </form>
@@ -223,10 +229,84 @@
     </section>
     <!-- /.content -->
     
+    
+      <div class="modal fade" id="confirmModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            
+            <form id="frmModal" method="post" class="form-horizontal" action="{{ url('/invoice') }}" autocomplete="off">
+            
+             {{ csrf_field() }}
+             
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h4 class="modal-title">Konfirmasi Pembayaran</h4>
+            </div>
+            <!-- /.modal-header -->
+            <div class="modal-body">
+              
+              <div class="form-group">
+                  <label class="col-xs-4 control-label">Tanggal Pembayaran *</label>
+                  <div class="col-xs-6">
+                      <input type="text" class="form-control" name="tanggal_bayar" id="tanggal_bayar" placeholder="Tanggal bayar" value="{{ $default_date }}" >
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="col-xs-4 control-label">Bank Tujuan *</label>
+                  <div class="col-xs-6">
+                      <select name="bank_tujuan_bayar" id="bank_tujuan_bayar" class="form-control selectpicker" title="-- Pilih bank --">
+                        <option value="BCA">BCA</option>
+                        <option value="Mandiri">Mandiri</option>
+                      </select>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="col-xs-4 control-label">Keterangan</label>
+                  <div class="col-xs-6">
+                      <textarea class="form-control" name="keterangan" id="keterangan" placeholder="Keterangan" maxlength="255"></textarea>
+                  </div>
+              </div>
+            
+            </div>
+            <!-- /.modal-body -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary" id="btnSubmit">Save</button>
+            </div>
+            <!-- /.modal-footer -->
+            
+            </form>
+              
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
+
+    <br>
+    
     <input type="hidden" id="last_index" value="{{ sizeof($detail_penjualan) }}">
+    <input type="hidden" id="default_date" value="{{ $default_date }}">
+    <input type="hidden" id="id" value="{{ $invoice_penjualan->id }}">
     
 @endsection
 
 @section('other-js')
-    
+    <script src="{{ asset('vendor/formvalidation/formValidation.min.js') }}"></script>
+    <script src="{{ asset('vendor/formvalidation/framework/bootstrap.min.js') }}"></script>
+    <!-- bootstrap select -->
+    <script src="{{ asset('bower_components/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
+    <script src="{{ asset('bower_components/sweetalert/dist/sweetalert.min.js') }}"></script>
+    <script src="{{ asset('js/invoice.js') }}"></script>
+      
+    <!-- page script -->
+    <script type="text/javascript">
+    $(document).ready(function() {
+       detail.init();
+       validationDetail.init();
+    });
+    </script>
 @endsection

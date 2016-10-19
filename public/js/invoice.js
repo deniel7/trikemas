@@ -1,6 +1,118 @@
 var ppn_pc = 0.1;
 var table;
 
+var detail = (function() {
+    
+    var init = function() {
+        _applyBootstrapSelect();
+        _applyDatePicker();
+    };
+    
+    var _applyDatePicker = function() {    
+        $("#tanggal_bayar").datepicker({
+            format: 'dd/mm/yyyy',
+            autoclose: true
+        })
+        .on("changeDate", function(e) {
+            // Revalidate the date field
+            $("#frmModal").formValidation("revalidateField", "tanggal_bayar");
+        });
+    };
+    
+    var _applyBootstrapSelect = function() {
+        $(".selectpicker").selectpicker({
+            //style: "bg-teal",
+            size: 10
+        });
+    };
+    
+    return {
+        init: init
+    };
+    
+})();
+
+var validationDetail = (function() {
+    
+    var init = function() {
+        _applyValidation();
+    };
+    
+    var _applyValidation = function() {
+        
+        $('#frmModal').formValidation({
+            framework: "bootstrap",
+            button: {
+              selector: '#btnSubmit',
+              disabled: 'disabled'
+            },
+            icon: null,
+            fields: {
+              tanggal_bayar: {
+                validators: {
+                  notEmpty: {
+                    message: 'Tanggal pembayaran harus diisi'
+                  }
+                }
+              },
+              bank_tujuan_bayar: {
+                validators: {
+                  notEmpty: {
+                    message: 'Bank tujuan harus diisi'
+                  }
+                }
+              },
+              keterangan: {
+                validators: {
+                  stringLength: {
+                    max: 255,
+                    message: 'Keterangan tidak boleh lebih dari 255 karakter'
+                  }
+                }
+              }
+            }
+        })
+        // Removed the previous success.form.fv handler
+        .off('success.form.fv')
+        .on('success.form.fv', function(e) {
+            // Prevent form submission
+            e.preventDefault();
+            
+            var id = $("#id").val();
+            var dataString = "tgl_bayar=" + $("#tanggal_bayar").val() + "&bank_tujuan_bayar=" + $("#bank_tujuan_bayar option:selected").val() + "&keterangan=" + $("#keterangan").val();
+            $.ajax({
+                beforeSend: function(xhr) { xhr.setRequestHeader("X-CSRF-Token", $("meta[name='csrf-token']").attr("content")); },
+                type: "POST",
+                data: dataString,
+                url: "/invoice/complete/" + id
+            })
+            .done(function(data) {
+                // hide the modal
+                $("#confirmModal").modal("hide");
+                if (data === "success") {
+                    swal({
+                        title: "",
+                        text: "Invoice telah dikonfirmasi Complete.",
+                        type: "success"
+                    },
+                    function () {
+                        location.href="/invoice";
+                    });
+                }
+                else {
+                    swal("", data, "error");
+                }
+            });
+            
+        });
+    };
+    
+    return {
+        init: init
+    };
+    
+})();
+    
 var validation = (function() {
     
     var init = function() {
@@ -189,6 +301,7 @@ var datatables = (function() {
                 {data: 'no_invoice', name: 'no_invoice'},
                 {data: 'grand_total', name: 'grand_total', className: "text-right"},
                 {data: 'tgl_jatuh_tempo', name: 'tgl_jatuh_tempo'},
+                {data: 'notifikasi', name: 'notifikasi', orderable: false, searchable: false},
                 {data: 'nama_konsumen', name: 'nama_konsumen'},
                 {data: 'nama_tujuan', name: 'nama_tujuan'},
                 {data: 'nama_angkutan', name: 'nama_angkutan'},
