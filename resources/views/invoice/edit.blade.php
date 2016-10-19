@@ -201,7 +201,7 @@
                 <div class="form-group">
                   <label for="discount" class="col-sm-9 control-label">Discount</label>
                   <div class="col-sm-3">
-                    <input type="text" class="form-control text-right" name="discount" id="discount" placeholder="Discount" value="{{ old('discount') !== null ? old('discount') : $invoice_penjualan->diskon }}">
+                    <input type="text" class="form-control text-right" name="discount" id="discount" placeholder="Discount" value="{{ old('discount') !== null ? str_replace(',', '', old('discount')) : $invoice_penjualan->diskon }}">
                   </div>
                 </div>
                 <div class="form-group">

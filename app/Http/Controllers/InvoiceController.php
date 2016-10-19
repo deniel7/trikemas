@@ -283,77 +283,83 @@ class InvoiceController extends Controller
         
         // check exist
         if ($count == 0 || ($count == 1 && $invoice->no_invoice == $request->no_invoice)) {
-        
-            DB::beginTransaction();
-            try {
-                // invoice header
-                $invoice->tanggal = Carbon::createFromFormat('d/m/Y', $request->tanggal)->format('Y-m-d');
-                $invoice->konsumen_id = $request->konsumen_id;
-                $invoice->no_invoice = $request->no_invoice;
-                $invoice->tgl_jatuh_tempo = Carbon::createFromFormat('d/m/Y', $request->tanggal_jatuh_tempo)->format('Y-m-d');
-                $invoice->no_po = $request->no_po;
-                $invoice->angkutan_id = $request->angkutan_id;
-                $invoice->tujuan_id = $request->tujuan_id;
-                
-                $angkutan_tujuan = AngkutanTujuan::where('angkutan_id', $request->angkutan_id)->where('tujuan_id', $request->tujuan_id)->first();
-                $invoice->harga_angkutan = $angkutan_tujuan ? $angkutan_tujuan->harga : 0;
-                
-                $invoice->no_surat_jalan = $request->no_surat_jalan;
-                $invoice->no_mobil = $request->no_mobil;
-                $invoice->sub_total = str_replace(',', '', $request->sub_total);
-                $invoice->diskon = str_replace(',', '', $request->discount);
-                $invoice->total = str_replace(',', '', $request->total);
-                $invoice->ppn = str_replace(',', '', $request->ppn);
-                $invoice->grand_total = str_replace(',', '', $request->grand_total);
-                $invoice->updated_by = Auth::check() ? Auth::user()->username : '';
-                $invoice->save();
-                
-                $a_item = $request->nama_barang;
-                $a_ball = $request->ball;
-                $a_quantity = $request->pcs;
-                $a_price = $request->harga;
-                $a_subtotal = $request->jumlah;
+            
+            if ($invoice->status_bayar == 0) {
+                DB::beginTransaction();
+                try {
+                    // invoice header
+                    $invoice->tanggal = Carbon::createFromFormat('d/m/Y', $request->tanggal)->format('Y-m-d');
+                    $invoice->konsumen_id = $request->konsumen_id;
+                    $invoice->no_invoice = $request->no_invoice;
+                    $invoice->tgl_jatuh_tempo = Carbon::createFromFormat('d/m/Y', $request->tanggal_jatuh_tempo)->format('Y-m-d');
+                    $invoice->no_po = $request->no_po;
+                    $invoice->angkutan_id = $request->angkutan_id;
+                    $invoice->tujuan_id = $request->tujuan_id;
                     
-                // invoice detail
-                // delete first
-                DetailPenjualan::where('invoice_penjualan_id', $id)->delete();
-                // then insert
-                for ($i = 0; $i < sizeof($a_item); $i++) {
-                    $item_name = $a_item[$i];
-                    $barang = Barang::where('nama', $item_name)->first();
+                    $angkutan_tujuan = AngkutanTujuan::where('angkutan_id', $request->angkutan_id)->where('tujuan_id', $request->tujuan_id)->first();
+                    $invoice->harga_angkutan = $angkutan_tujuan ? $angkutan_tujuan->harga : 0;
                     
-                    $item = $barang ? $barang->id : -1;
-                    $ball = isset($a_ball[$i]) ? str_replace(',', '', $a_ball[$i]) : 0;
-                    $quantity = isset($a_quantity[$i]) ? str_replace(',', '', $a_quantity[$i]) : 0;
-                    $price = isset($a_price[$i]) ? str_replace(',', '', $a_price[$i]) : 0;
-                    $subtotal = isset($a_subtotal[$i]) ? str_replace(',', '', $a_subtotal[$i]) : 0;
+                    $invoice->no_surat_jalan = $request->no_surat_jalan;
+                    $invoice->no_mobil = $request->no_mobil;
+                    $invoice->sub_total = str_replace(',', '', $request->sub_total);
+                    $invoice->diskon = str_replace(',', '', $request->discount);
+                    $invoice->total = str_replace(',', '', $request->total);
+                    $invoice->ppn = str_replace(',', '', $request->ppn);
+                    $invoice->grand_total = str_replace(',', '', $request->grand_total);
+                    $invoice->updated_by = Auth::check() ? Auth::user()->username : '';
+                    $invoice->save();
                     
-                    if ($item !== -1) {
-                        $detail_invoice = new DetailPenjualan;
-                       
-                        $detail_invoice->invoice_penjualan_id = $invoice->id;
-                        $detail_invoice->konsumen_id = $request->konsumen_id;
-                        $detail_invoice->barang_id = $item;
-                        $detail_invoice->jumlah_ball = $ball;
-                        $detail_invoice->jumlah = $quantity;
-                        $detail_invoice->harga_barang = $price;
-                        $detail_invoice->subtotal = $subtotal;
+                    $a_item = $request->nama_barang;
+                    $a_ball = $request->ball;
+                    $a_quantity = $request->pcs;
+                    $a_price = $request->harga;
+                    $a_subtotal = $request->jumlah;
                         
-                        $detail_invoice->updated_by = Auth::check() ? Auth::user()->username : '';
-                        $detail_invoice->save();    
+                    // invoice detail
+                    // delete first
+                    DetailPenjualan::where('invoice_penjualan_id', $id)->delete();
+                    // then insert
+                    for ($i = 0; $i < sizeof($a_item); $i++) {
+                        $item_name = $a_item[$i];
+                        $barang = Barang::where('nama', $item_name)->first();
+                        
+                        $item = $barang ? $barang->id : -1;
+                        $ball = isset($a_ball[$i]) ? str_replace(',', '', $a_ball[$i]) : 0;
+                        $quantity = isset($a_quantity[$i]) ? str_replace(',', '', $a_quantity[$i]) : 0;
+                        $price = isset($a_price[$i]) ? str_replace(',', '', $a_price[$i]) : 0;
+                        $subtotal = isset($a_subtotal[$i]) ? str_replace(',', '', $a_subtotal[$i]) : 0;
+                        
+                        if ($item !== -1) {
+                            $detail_invoice = new DetailPenjualan;
+                           
+                            $detail_invoice->invoice_penjualan_id = $invoice->id;
+                            $detail_invoice->konsumen_id = $request->konsumen_id;
+                            $detail_invoice->barang_id = $item;
+                            $detail_invoice->jumlah_ball = $ball;
+                            $detail_invoice->jumlah = $quantity;
+                            $detail_invoice->harga_barang = $price;
+                            $detail_invoice->subtotal = $subtotal;
+                            
+                            $detail_invoice->updated_by = Auth::check() ? Auth::user()->username : '';
+                            $detail_invoice->save();    
+                        }
                     }
+                    
+                    DB::commit();
+                    return redirect('/invoice');
                 }
-                
-                DB::commit();
-                return redirect('/invoice');
+                catch(\Illuminate\Database\QueryException $e) { 
+                    Flash::error('Error (' . $e->errorInfo[1] . '): ' . $e->errorInfo[2] . '.');
+                    
+                    DB::rollback();
+                    return redirect('/invoice/' . $id . '/edit')->withInput();
+                }
             }
-            catch(\Illuminate\Database\QueryException $e) { 
-                Flash::error('Error (' . $e->errorInfo[1] . '): ' . $e->errorInfo[2] . '.');
-                
-                DB::rollback();
+            else {
+                Flash::error('Error: Invoice dengan nomor ' . $request->no_invoice . ' sudah dikonfirmasi Complete.');
                 return redirect('/invoice/' . $id . '/edit')->withInput();
             }
-        
+            
         }
         else {
             Flash::error('Error: Invoice dengan nomor ' . $request->no_invoice . ' sudah ada.');
