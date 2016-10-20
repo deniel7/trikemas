@@ -71,6 +71,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/invoice/complete/{id}', 'InvoiceController@complete');
     Route::resource('/invoice', 'InvoiceController');
 
+    /* Pembayaran Angkutan */
+    Route::get('/pembayaran-angkutan/list', 'PembayaranAngkutanController@datatables');
+    Route::post('/pembayaran-angkutan/complete/{id}', 'PembayaranAngkutanController@complete');
+    Route::resource('/pembayaran-angkutan', 'PembayaranAngkutanController');
+
     /* Datatable */
     Route::post('datatable/karyawans', 'KaryawanTetapController@datatable');
     Route::post('datatable/karyawan-harians', 'KaryawanHarianController@datatable');

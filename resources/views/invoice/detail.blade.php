@@ -258,7 +258,7 @@
                   <div class="col-xs-6">
                       <select name="bank_tujuan_bayar" id="bank_tujuan_bayar" class="form-control selectpicker" title="-- Pilih bank --">
                         <option value="BCA">BCA</option>
-                        <option value="Mandiri">Mandiri</option>
+                        <option value="BRI">BRI</option>
                       </select>
                   </div>
               </div>

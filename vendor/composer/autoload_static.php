@@ -386,6 +386,7 @@ class ComposerStaticInit673dc2dbeee6f0c2856b868bb9add844
         'AlterDetailPenjualansAddJumlahBall' => __DIR__ . '/../..' . '/database/migrations/2016_10_10_222707_alter_detail_penjualans_add_jumlah_ball.php',
         'AlterDetailPenjualansModifySubtotal' => __DIR__ . '/../..' . '/database/migrations/2016_10_09_230758_alter_detail_penjualans_modify_subtotal.php',
         'AlterInvoicePenjualanAddIndex' => __DIR__ . '/../..' . '/database/migrations/2016_10_11_140419_alter_invoice_penjualan_add_index.php',
+        'AlterInvoicePenjualanAddPembayaranAngkutan' => __DIR__ . '/../..' . '/database/migrations/2016_10_19_162902_alter_invoice_penjualan_add_pembayaran_angkutan.php',
         'AlterInvoicePenjualanAddSuratJalan' => __DIR__ . '/../..' . '/database/migrations/2016_09_11_112230_alter_invoice_penjualan_add_surat_jalan.php',
         'AlterInvoicePenjualanModifyPpnDiskon' => __DIR__ . '/../..' . '/database/migrations/2016_10_12_124309_alter_invoice_penjualan_modify_ppn_diskon.php',
         'AlterTableAngkutanTujuansAddAngkutanIdTujuanId' => __DIR__ . '/../..' . '/database/migrations/2016_09_10_213528_alter_table_angkutan_tujuans_add_angkutan_id_tujuan_id.php',

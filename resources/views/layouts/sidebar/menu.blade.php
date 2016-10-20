@@ -42,7 +42,7 @@
           <li class="treeview {{ in_array(\Request::segment(1), ['pembayaran-angkutan']) ? 'active' : '' }}">
             <a href="#"><i class="fa fa-table"></i> <span>Pembayaran Angkutan</span> <i class="fa fa-angle-left pull-right"></i></a>
             <ul class="treeview-menu">
-              <li {{ \Request::segment(1) == 'pembayaran-angkutan' ? 'class=active' : '' }}><a href="{{ url('/pembayaran-angkutan') }}">Input Pembayaran</a></li>
+              <li {{ \Request::segment(1) == 'pembayaran-angkutan' ? 'class=active' : '' }}><a href="{{ url('/pembayaran-angkutan') }}">Konfirmasi Pembayaran</a></li>
             </ul>
           </li>
 
