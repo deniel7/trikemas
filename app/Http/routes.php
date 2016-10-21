@@ -26,7 +26,12 @@ Route::get('logout', 'Auth\AuthController@getLogout');
 // Route::post('register', 'Auth\AuthController@postRegister');
 
 Route::group(['middleware' => 'auth'], function () {
-
+    
+     // laporan
+    Route::get('/report', 'ReportController@index');
+    Route::get('/report/penjualan', 'ReportController@penjualan');
+    Route::get('/report/penjualan/preview/{dari}/{hingga?}', 'ReportController@previewPenjualan');
+    
     /* Dashboard sebagai halaman pertama setelah login */
     Route::get('home', 'DashboardController@getIndex');
 

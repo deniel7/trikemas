@@ -46,13 +46,13 @@
             </ul>
           </li>
 
-          <li class="treeview">
+          <li class="treeview {{ in_array(\Request::segment(1), ['report']) ? 'active' : '' }}">
             <a href="#"><i class="fa fa-area-chart"></i> <span>Laporan</span> <i class="fa fa-angle-left pull-right"></i></a>
             <ul class="treeview-menu">
-              <li {{ \Request::segment(1) == 'report' ? 'class="active"' : '' }}><a href="{{ url('/report') }}">Penjualan</a></li>
-              <li {{ \Request::segment(1) == 'report' ? 'class="active"' : '' }}><a href="{{ url('/report') }}">Absensi Karyawan Tetap</a></li>
-              <li {{ \Request::segment(1) == 'report' ? 'class="active"' : '' }}><a href="{{ url('/report') }}">Absensi Karyawan Harian</a></li>
-              <li {{ \Request::segment(1) == 'report' ? 'class="active"' : '' }}><a href="{{ url('/report') }}">Absensi Karyawan Packing</a></li>
+              <li {{ \Request::segment(2) == 'penjualan' ? 'class=active' : '' }}><a href="{{ url('/report/penjualan') }}">Penjualan</a></li>
+              <li {{ \Request::segment(2) == 'absensi-karyawan-tetap' ? 'class=active' : '' }}><a href="{{ url('/report/absensi-karyawan-tetap') }}">Absensi Karyawan Tetap</a></li>
+              <li {{ \Request::segment(2) == 'absensi-karyawan-harian' ? 'class=active' : '' }}><a href="{{ url('/report/absensi-karyawan-harian') }}">Absensi Karyawan Harian</a></li>
+              <li {{ \Request::segment(2) == 'absensi-karyawan-packing' ? 'class=active' : '' }}><a href="{{ url('/report/absensi-karyawan-packing') }}">Absensi Karyawan Packing</a></li>
 
             </ul>
           </li>
