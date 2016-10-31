@@ -45,6 +45,12 @@
               <div class="box-body">
                 
                 <div class="form-group">
+                  <label for="id" class="col-sm-3 control-label">ID Barang *</label>
+                  <div class="col-sm-9">
+                    <input type="text" style="background: #EDF7FA;" class="form-control" name="id" id="id" value="{{ $barang->id }}" placeholder="ID Barang" readonly>
+                  </div>
+                </div>
+                <div class="form-group">
                   <label for="nama" class="col-sm-3 control-label">Nama *</label>
                   <div class="col-sm-9">
                     <input type="text" class="form-control" name="nama" id="nama" value="{{ old('nama') !== null ? old('nama') : $barang->nama }}" placeholder="Nama">

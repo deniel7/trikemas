@@ -17,7 +17,7 @@ class KonsumenBarangController extends Controller
 {
     
     public function datatables() {
-        $list = KonsumenBarang::select('id', 'konsumen_id', 'barang_id', 'harga');
+        $list = KonsumenBarang::select('id', 'konsumen_id', 'barang_id', 'harga', 'barang_id as barang_name');
         
         return Datatables::of($list)
                 ->addColumn('action', function ($list) {
@@ -38,7 +38,7 @@ class KonsumenBarangController extends Controller
                     $konsumen = Konsumen::find($list->konsumen_id);
                     return $konsumen ? $konsumen->nama : '';
                 })
-                ->editColumn('barang_id', function($list) {
+                ->editColumn('barang_name', function($list) {
                     $barang = Barang::find($list->barang_id);
                     return $barang ? $barang->nama : '';
                 })
@@ -48,6 +48,31 @@ class KonsumenBarangController extends Controller
     
     public function getPrice($item_name, $konsumen_id) {
         $barang = Barang::where('nama', $item_name)->first();
+        $barang_id = -1;
+        $pcs_in_ball = 0;
+        if ($barang) {
+            $barang_id = $barang->id;
+            $pcs_in_ball = $barang->pcs;
+        }
+        
+        $harga = 0;
+        $konsumen_barang = KonsumenBarang::where('barang_id', $barang_id)->where('konsumen_id', $konsumen_id)->first();
+        if ($konsumen_barang) {
+            $harga = $konsumen_barang->harga;
+        }
+        else {
+            $harga = 0.00;
+        }
+        
+        $output['harga'] = $harga;
+        $output['pcs_in_ball'] = $pcs_in_ball;
+        
+        //return $harga;
+        return response()->json($output);
+    }
+    
+    public function getPriceById($item_id, $konsumen_id) {
+        $barang = Barang::find($item_id);
         $barang_id = -1;
         $pcs_in_ball = 0;
         if ($barang) {
@@ -110,7 +135,7 @@ class KonsumenBarangController extends Controller
             $barang = Barang::find($request->barang_id);
             $nama_konsumen = $konsumen ? $konsumen->nama : '';
             $nama_barang = $barang ? $barang->nama : '';
-            Flash::error('Error: Data harga dengan konsumen ' . $nama_konsumen . ' dan barang ' . $nama_barang . ' sudah ada.');
+            Flash::error('Error: Data harga dengan konsumen ' . $nama_konsumen . ' dan barang ' . $request->barang_id . ' | ' . $nama_barang . ' sudah ada.');
             return redirect('/konsumen-barang/create')->withInput();
         }
         else {
@@ -190,7 +215,7 @@ class KonsumenBarangController extends Controller
             $barang = Barang::find($request->barang_id);
             $nama_konsumen = $konsumen ? $konsumen->nama : '';
             $nama_barang = $barang ? $barang->nama : '';
-            Flash::error('Error: Data harga dengan konsumen ' . $nama_konsumen . ' dan barang ' . $nama_barang . ' sudah ada.');
+            Flash::error('Error: Data harga dengan konsumen ' . $nama_konsumen . ' dan barang ' . $request->barang_id . ' | ' . $nama_barang . ' sudah ada.');
             return redirect('/konsumen-barang/' . $id . '/edit')->withInput();
         }
     }

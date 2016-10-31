@@ -32,11 +32,15 @@ class BarangController extends Controller
     }
     
     public function autocomplete() {
-        $list = Barang::select('nama')->where('nama', 'like', '%'. $_GET['q'] .'%')->orderBy('nama')->get();
+        //$list = Barang::select('id', 'nama')->where('nama', 'like', '%'. $_GET['q'] .'%')->orderBy('nama')->get();
+        $a_like = explode(' | ', $_GET['q']);
+        $like_barang = isset($a_like[1]) ? $a_like[1] : (isset($a_like[0]) ? $a_like[0] : 'unknown');
+        $list = Barang::select('id', 'nama')->where('nama', 'like', '%'. $like_barang .'%')->orderBy('nama')->get();
         
         $rows = array();
         foreach($list as $item) {
-            $rows[] = $item->nama;
+            //$rows[] = $item->nama;
+            $rows[] = $item->id . ' | ' . $item->nama;
         }
         
         return response()->json($rows);
@@ -70,14 +74,14 @@ class BarangController extends Controller
      */
     public function store(Request $request)
     {
-        $count = Barang::where('nama', $request->nama)->count();
+        //$count = Barang::where('nama', $request->nama)->count();
         
         // check exist
-        if ($count > 0) {
-            Flash::error('Error: Barang dengan nama ' . $request->nama . ' sudah ada.');
-            return redirect('/barang/create')->withInput();
-        }
-        else {
+        //if ($count > 0) {
+        //    Flash::error('Error: Barang dengan nama ' . $request->nama . ' sudah ada.');
+        //    return redirect('/barang/create')->withInput();
+        //}
+        //else {
             try {
                 $barang = new Barang;
                 $barang->nama = $request->nama;
@@ -93,7 +97,7 @@ class BarangController extends Controller
                 Flash::error('Error (' . $e->errorInfo[1] . '): ' . $e->errorInfo[2] . '.');
                 return redirect('/barang/create')->withInput();
             }
-        }
+        //}
     }
 
     /**
@@ -129,11 +133,11 @@ class BarangController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $count = Barang::where('nama', $request->nama)->count();
+        //$count = Barang::where('nama', $request->nama)->count();
         $barang = Barang::find($id);
         
         // check exist
-        if ($count == 0 || ($count == 1 && $barang->nama == $request->nama)) {
+        //if ($count == 0 || ($count == 1 && $barang->nama == $request->nama)) {
             try {
                 $barang->nama = $request->nama;
                 $barang->jenis = $request->jenis;
@@ -148,11 +152,11 @@ class BarangController extends Controller
                 Flash::error('Error (' . $e->errorInfo[1] . '): ' . $e->errorInfo[2] . '.');
                 return redirect('/barang/' . $id . '/edit')->withInput();
             }
-        }
-        else {
-            Flash::error('Error: Barang dengan nama ' . $request->nama . ' sudah ada.');
-            return redirect('/barang/' . $id . '/edit')->withInput();
-        }
+        //}
+        //else {
+        //    Flash::error('Error: Barang dengan nama ' . $request->nama . ' sudah ada.');
+        //    return redirect('/barang/' . $id . '/edit')->withInput();
+        //}
     }
 
     /**

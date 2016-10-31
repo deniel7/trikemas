@@ -124,6 +124,7 @@ var datatables = (function() {
                 //"type": "POST"
             },
             'columns': [
+                {data: 'id', name: 'id', className: "text-right"},
                 {data: 'nama', name: 'nama'},
                 {data: 'jenis', name: 'jenis'},
                 {data: 'pcs', name: 'pcs', className: "text-right"},

@@ -191,8 +191,13 @@ class InvoiceController extends Controller
                     
                 // invoice detail
                 for ($i = 0; $i < sizeof($a_item); $i++) {
-                    $item_name = $a_item[$i];
-                    $barang = Barang::where('nama', $item_name)->first();
+                    $tmp_item = explode(' | ', $a_item[$i]);
+                    $item_id = isset($tmp_item[0]) ? $tmp_item[0] : -1;
+                    $item_name = isset($tmp_item[1]) ? $tmp_item[1] : '';
+                    
+                    //$item_name = $a_item[$i];
+                    //$barang = Barang::where('nama', $item_name)->first();
+                    $barang = Barang::find($item_id);
                     
                     $item = $barang ? $barang->id : -1;
                     $ball = isset($a_ball[$i]) ? str_replace(',', '', $a_ball[$i]) : 0;
@@ -320,8 +325,13 @@ class InvoiceController extends Controller
                     DetailPenjualan::where('invoice_penjualan_id', $id)->delete();
                     // then insert
                     for ($i = 0; $i < sizeof($a_item); $i++) {
-                        $item_name = $a_item[$i];
-                        $barang = Barang::where('nama', $item_name)->first();
+                        $tmp_item = explode(' | ', $a_item[$i]);
+                        $item_id = isset($tmp_item[0]) ? $tmp_item[0] : -1;
+                        $item_name = isset($tmp_item[1]) ? $tmp_item[1] : '';
+                        
+                        //$item_name = $a_item[$i];
+                        //$barang = Barang::where('nama', $item_name)->first();
+                        $barang = Barang::find($item_id);
                         
                         $item = $barang ? $barang->id : -1;
                         $ball = isset($a_ball[$i]) ? str_replace(',', '', $a_ball[$i]) : 0;

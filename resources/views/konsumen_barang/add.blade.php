@@ -60,7 +60,7 @@
                   <div class="col-sm-10">
                     <select name="barang_id" id="barang_id" class="form-control selectpicker" title="-- Pilih barang --">
                       @foreach($barang as $item)
-                        <option value="{{ $item->id }}" {{ $item->id == old('barang_id') ? 'selected' : '' }} >{{ $item->nama }}</option>
+                        <option value="{{ $item->id }}" {{ $item->id == old('barang_id') ? 'selected' : '' }} >{{ $item->id . ' | ' . $item->nama }}</option>
                       @endforeach
                     </select>
                   </div>

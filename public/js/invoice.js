@@ -461,14 +461,24 @@ var advanceElements = (function() {
             },
             minChars: 2,
             onSelect: function(e, term, item) {
-                var item_name = encodeURIComponent(term);
+                //var item_name = encodeURIComponent(term);
+                var item_id = -1;
+                var item_name = "unknown";
+                var a_item = term.split(" | ");
+                if (a_item[0] !== null) {
+                    item_id = a_item[0];    
+                }
+                if (a_item[1] !== null) {
+                    item_name = encodeURIComponent(a_item[1]);    
+                }
                 var konsumen_id = $("#konsumen_id option:selected").val();
                 if (konsumen_id === "") {
                     konsumen_id = -1;
                 }
                 $.ajax({
                     type: "GET",
-                    url: "/konsumen-barang/get-price/" + item_name + "/" + konsumen_id
+                    //url: "/konsumen-barang/get-price/" + item_name + "/" + konsumen_id
+                    url: "/konsumen-barang/get-price-by-id/" + item_id + "/" + konsumen_id
                 })
                 .done(function(data) {
                     $("#pcs_in_ball_" + idx).val(data.pcs_in_ball);
@@ -482,7 +492,11 @@ var advanceElements = (function() {
                     calcInvoice();
                 });
             }
-        });  
+        });
+        
+        //$("#nama_barang_"+idx).on('click', function() {
+        //    $(this).select();
+        //});
     };
     
     
