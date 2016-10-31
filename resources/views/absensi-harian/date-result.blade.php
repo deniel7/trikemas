@@ -4,13 +4,13 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
   <h1>
-  Karyawan Harian
+  Absensi Harian
   <small>List</small>
   </h1>
   <ol class="breadcrumb">
     <li><a href="{{ url('/') }}"><i class="fa fa-tachometer"></i> Dashboard</a></li>
     <li><a href="#">Master</a></li>
-    <li><a href="{{ url('/karyawan-tetap') }}">Karyawan Harian</a></li>
+    <li><a href="{{ url('/karyawan-tetap') }}">Absensi Harian</a></li>
     <li class="active">List</li>
   </ol>
 </section>
@@ -29,21 +29,15 @@
           <!-- 
             Tambahkan style : table-layout fixed untuk bisa atur width column
              -->
-            <table id="datatable" style="table-layout: fixed;" width="150%" class="table table-bordered table-striped table-condensed">
+            <table id="datatable" style="table-layout: fixed;" width="100%" class="table table-bordered table-striped table-condensed">
               <thead>
                 <tr>
-                  <th>Status</th>
-                  <th>NIK</th>
+                  <th>Tanggal</th>
                   <th>Nama</th>
-                  <th>Alamat</th>
-                  <th>Phone</th>
-                  <th>Lulusan</th>
-                  <th>Tgl Masuk</th>
-                  <th>Nilai Upah</th>
-                  <th>Uang Makan</th>
-                  <th>Uang Lembur</th>
-                  <th width="10%">Norek</th>
-            
+                  <th>Jam Masuk</th>
+                  <th>Jam Keluar</th>
+                  <th>Jam Lembur</th>
+                  <th>Status</th>
                   <th width="10%">Actions</th>
                 </tr>
               </thead>
@@ -51,17 +45,12 @@
               </tbody>
               <tfoot>
               <tr>
-                <th>Status</th>
-                <th>NIK</th>
-                <th>Nama</th>
-                <th>Alamat</th>
-                <th>Phone</th>
-                <th>Lulusan</th>
-                <th>Tgl Masuk</th>
-                <th>Nilai Upah</th>
-                <th>Uang Makan</th>
-                <th>Uang Lembur</th>
-                <th>Norek</th>
+                  <th>Tanggal</th>
+                  <th>Nama</th>
+                  <th>Jam Masuk</th>
+                  <th>Jam Keluar</th>
+                  <th>Jam Lembur</th>
+                  <th>Status</th>
                 <th></th>
               </tr>
               </tfoot>

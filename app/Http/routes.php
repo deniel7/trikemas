@@ -26,12 +26,12 @@ Route::get('logout', 'Auth\AuthController@getLogout');
 // Route::post('register', 'Auth\AuthController@postRegister');
 
 Route::group(['middleware' => 'auth'], function () {
-    
+
      // laporan
     Route::get('/report', 'ReportController@index');
     Route::get('/report/penjualan', 'ReportController@penjualan');
     Route::get('/report/penjualan/preview/{dari}/{hingga?}', 'ReportController@previewPenjualan');
-    
+
     /* Dashboard sebagai halaman pertama setelah login */
     Route::get('home', 'DashboardController@getIndex');
 
@@ -69,7 +69,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/konsumen-barang/list', 'KonsumenBarangController@datatables');
     Route::get('/konsumen-barang/get-price/{item_name}/{konsumen_id}', 'KonsumenBarangController@getPrice');
     Route::resource('/konsumen-barang', 'KonsumenBarangController');
-    
+
     /* Invoice Penjualan */
     Route::get('/invoice/list', 'InvoiceController@datatables');
     Route::get('/invoice/print/{id}', 'InvoiceController@doPrint');
@@ -84,20 +84,19 @@ Route::group(['middleware' => 'auth'], function () {
     /* Datatable */
     Route::post('datatable/karyawans', 'KaryawanTetapController@datatable');
     Route::post('datatable/karyawan-harians', 'KaryawanHarianController@datatable');
-    //Route::post('datatable/absensi-harians', 'AbsensiHarianController@datatable');
-
-    /* Select2 */
+    Route::post('datatable/absensi-harians', 'AbsensiHarianController@datatable');
 
     /* Master */
-        Route::resource('karyawan-tetap', 'KaryawanTetapController');
-        Route::controller('karyawan-tetap', 'KaryawanTetapController');
-        Route::resource('karyawan-harian', 'KaryawanHarianController');
-        Route::controller('karyawan-harian', 'KaryawanHarianController');
+    Route::resource('karyawan-tetap', 'KaryawanTetapController');
+    Route::controller('karyawan-tetap', 'KaryawanTetapController');
+    Route::resource('karyawan-harian', 'KaryawanHarianController');
+    Route::controller('karyawan-harian', 'KaryawanHarianController');
 
-    /* Transaction */
+    /* Absensi */
     Route::resource('absensi-harian', 'AbsensiHarianController');
     Route::controller('absensi-harian', 'AbsensiHarianController');
-    /* Report */
 
+    /* upload absen */
+    Route::get('upload-absen/{id}', 'UploadAbsenController@show');
     /* System */
 });

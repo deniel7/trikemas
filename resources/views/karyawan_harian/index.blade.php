@@ -10,7 +10,7 @@
   <ol class="breadcrumb">
     <li><a href="{{ url('/') }}"><i class="fa fa-tachometer"></i> Dashboard</a></li>
     <li><a href="#">Master</a></li>
-    <li><a href="{{ url('/karyawan-tetap') }}">Karyawan Harian</a></li>
+    <li><a href="{{ url('/karyawan-tetap') }}">Karyawan Harians</a></li>
     <li class="active">List</li>
   </ol>
 </section>
