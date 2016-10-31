@@ -137,7 +137,7 @@
                             
                             <tr>
                               <td>
-                                <input type="text" value="{{ $barang_helper->find($detail_penjualan[$i]->barang_id)->nama }}" style="width: 310px; background: #EDF7FA;" class="form-control nama_barang" name="nama_barang[]" id="nama_barang_{{ $i+1 }}" placeholder="Nama barang" readonly>
+                                <input type="text" value="{{ $detail_penjualan[$i]->barang_id . ' | ' . $barang_helper->find($detail_penjualan[$i]->barang_id)->nama }}" style="width: 310px; background: #EDF7FA;" class="form-control nama_barang" name="nama_barang[]" id="nama_barang_{{ $i+1 }}" placeholder="Nama barang" readonly>
                               </td>
                               <td class="text-right">
                                 <input type="text" value="{{ number_format($detail_penjualan[$i]->jumlah_ball, 0, '.', ',') }}" style="width: 80px; background: #EDF7FA;" class="form-control text-right ball" name="ball[]" id="ball_{{ $i+1 }}" placeholder="Ball" readonly>

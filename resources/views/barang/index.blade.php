@@ -42,6 +42,7 @@
                 <table id="list" class="table table-bordered table-striped table-condensed">
                   <thead>
                     <tr>
+                      <th class="text-center" width="12%">ID Barang</th>
                       <th class="text-center">Nama</th>
                       <th class="text-center">Jenis</th>
                       <th class="text-center">Jumlah Pcs dalam Ball</th>

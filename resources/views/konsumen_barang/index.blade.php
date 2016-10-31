@@ -43,7 +43,8 @@
                   <thead>
                     <tr>
                       <th class="text-center">Konsumen</th>
-                      <th class="text-center">Barang</th>
+                      <th class="text-center" width="12%">ID Barang</th>
+                      <th class="text-center">Nama Barang</th>
                       <th class="text-center">Harga</th>
                       <th class="text-center" width="10%">Action</th>
                     </tr>
