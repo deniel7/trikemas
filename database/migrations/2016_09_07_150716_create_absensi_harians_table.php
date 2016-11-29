@@ -16,7 +16,7 @@ class CreateAbsensiHariansTable extends Migration
             $table->integer('karyawan_id');
             $table->time('jam_masuk');
             $table->time('jam_keluar');
-            $table->integer('jam_lembur');
+            $table->time('jam_lembur');
             $table->integer('status');
             $table->timestamps();
         });

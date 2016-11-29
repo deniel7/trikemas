@@ -10,4 +10,9 @@ class Karyawan extends Model
     {
         return $this->belongsTo('App\StatusKaryawan');
     }
+
+    public function absensiHarians()
+    {
+        return $this->hasMany('App\AbsensiHarian');
+    }
 }

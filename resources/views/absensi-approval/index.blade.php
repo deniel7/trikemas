@@ -1,16 +1,16 @@
 @extends('layouts.backend')
-@section('title', 'Master Karyawan Harian')
+@section('title', 'Absensi Approval')
 @section('content')
 <!-- Content Header (Page header) -->
 <section class="content-header">
   <h1>
-  Absensi Harian
+  Absensi
   <small>List</small>
   </h1>
   <ol class="breadcrumb">
     <li><a href="{{ url('/') }}"><i class="fa fa-tachometer"></i> Dashboard</a></li>
     <li><a href="#">Master</a></li>
-    <li><a href="{{ url('/karyawan-tetap') }}">Absensi Harian</a></li>
+    <li><a href="{{ url('/karyawan-tetap') }}">Absensi</a></li>
     <li class="active">List</li>
   </ol>
 </section>
@@ -21,13 +21,10 @@
       <div class="box">
         <!-- /.box-header -->
         <div class="box-body">
-          <div class="btn-group">
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#absensi_modal">
-                <i class="fa fa-upload fa-fw"></i> Upload Excel
-                </button>
-          </div>
-          <br><br>
-          
+          <button type="button" id="confirmLembur" class="btn btn-warning" name="confirm" value="Confirm"><i class="fa fa-check fa-fw"></i> Confirm</button>
+
+          <button type="button" id="printTransaction" class="btn btn-warning" name="print" value="Print"><i class="fa fa-check fa-fw"></i> Print</button>
+
           <div class="table-responsive">
           <!-- 
             Tambahkan style : table-layout fixed untuk bisa atur width column
@@ -35,6 +32,7 @@
             <table id="datatable" style="" width="100%" class="table table-bordered table-striped table-condensed">
               <thead>
                 <tr>
+                  <th></th>
                   <th>Tanggal</th>
                   <th>Nama</th>
                   <th>Shift</th>
@@ -84,15 +82,14 @@
   
 </section>
 <!-- /.content -->
-@include('absensi-harian.partials.add_modal')
-@include('absensi-harian.partials.show_detail_modal')
+@include('absensi-approval.partials.show_detail_modal')
 <!-- page script -->
 <style>
 .datepicker{z-index:1151 !important;}
 </style>
 <script type="text/javascript">
 $(document).ready(function(){
-absensiHarianModule.init();
+absensiApprovalModule.init();
 });
 </script>
 @endsection

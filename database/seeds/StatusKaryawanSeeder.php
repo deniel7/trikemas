@@ -24,12 +24,6 @@ class StatusKaryawanSeeder extends Seeder
             'updated_at' => Date('Y-m-d H:i:s'),
         ],
 
-        [
-            'keterangan' => 'Karyawan Kontrak',
-            'created_at' => Date('Y-m-d H:i:s'),
-            'updated_at' => Date('Y-m-d H:i:s'),
-        ],
-
         ];
 
         foreach ($records as $record) {

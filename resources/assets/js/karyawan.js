@@ -1,7 +1,7 @@
 var karyawanModule = (function(commonModule) {
 
     var datatableBaseURL = commonModule.datatableBaseURL + 'karyawans';
-    
+
     var existing_model = null;
 
     var init = function() {
@@ -9,15 +9,15 @@ var karyawanModule = (function(commonModule) {
         _applyDatepicker();
         _applyThousandSeperator();
         _applyAutoNumeric();
-        _applyValidation();
+
 
     };
 
     var _applyAutoNumeric = function() {
         $("#uang_makan").autoNumeric("init", {
-            vMin: '0',
-            vMax: '9999999999999.99'
-        })
+                vMin: '0',
+                vMax: '9999999999999.99'
+            })
             .on("keyup", function() {
                 $("#frmData").formValidation("revalidateField", $("#uang_makan"));
             });
@@ -142,7 +142,7 @@ var karyawanModule = (function(commonModule) {
         });
     };
 
-    
+
     var _applyDatatable = function() {
         /* Tambah Input Field di TFOOT */
         $('#datatable tfoot th').each(function() {

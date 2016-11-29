@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'AlterAbsensiHarians' => $baseDir . '/database/migrations/2016_11_11_103830_alter_absensi_harians.php',
     'AlterDetailPenjualanAddHarga' => $baseDir . '/database/migrations/2016_09_11_114301_alter_detail_penjualan_add_harga.php',
     'AlterDetailPenjualansAddJumlahBall' => $baseDir . '/database/migrations/2016_10_10_222707_alter_detail_penjualans_add_jumlah_ball.php',
     'AlterDetailPenjualansModifySubtotal' => $baseDir . '/database/migrations/2016_10_09_230758_alter_detail_penjualans_modify_subtotal.php',

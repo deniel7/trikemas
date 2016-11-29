@@ -2,13 +2,13 @@
         <ul class="sidebar-menu">
           <li class="header">Main Navigation</li>
           <!-- Optionally, you can add icons to the links -->
-          <li {{ \Request::segment(1) == 'home' ? 'class="active"' : '' }}><a href="{{ url('/home') }}"><i class="fa fa-tachometer"></i> <span>Dashboard</span></a></li>
+          <li {{ \Request::segment(1) == 'home' ? 'class=active' : '' }}><a href="{{ url('/home') }}"><i class="fa fa-tachometer"></i> <span>Dashboard</span></a></li>
 
-          <li class="treeview">
+          <li class="treeview {{ in_array(\Request::segment(1), ['karyawan-tetap', 'karyawan-harian']) ? 'active' : '' }}">
             <a href="#"><i class="fa fa-table"></i> <span>Master Data Karyawan</span> <i class="fa fa-angle-left pull-right"></i></a>
             <ul class="treeview-menu">
-              <li {{ \Request::segment(1) == 'example' ? 'class="active"' : '' }}><a href="{{ url('/karyawan-tetap') }}">Karyawan Tetap / Kontrak</a></li>
-              <li {{ \Request::segment(1) == 'example' ? 'class="active"' : '' }}><a href="{{ url('/karyawan-harian') }}">Karyawan Lepas / Harian</a></li>
+              <li {{ \Request::segment(1) == 'karyawan-tetap' ? 'class=active' : '' }}><a href="{{ url('/karyawan-tetap') }}">Karyawan Tetap / Kontrak</a></li>
+              <li {{ \Request::segment(1) == 'karyawan-harian' ? 'class=active' : '' }}><a href="{{ url('/karyawan-harian') }}">Karyawan Lepas / Harian</a></li>
             </ul>
           </li>
 
@@ -24,11 +24,11 @@
             </ul>
           </li>
 
-          <li class="treeview">
+          <li class="treeview {{ in_array(\Request::segment(1), ['absensi-harian', 'absensi-packing']) ? 'active' : '' }}">
             <a href="#"><i class="fa fa-table"></i> <span>Absensi</span> <i class="fa fa-angle-left pull-right"></i></a>
             <ul class="treeview-menu">
-              <li {{ \Request::segment(1) == 'example' ? 'class="active"' : '' }}><a href="{{ url('/absensi-harian') }}">Harian / Kontrak</a></li>
-              <li {{ \Request::segment(1) == 'example' ? 'class="active"' : '' }}><a href="{{ url('/absensi-packing') }}">Packing</a></li>
+              <li {{ \Request::segment(1) == 'absensi-harian' ? 'class=active' : '' }}><a href="{{ url('/absensi-harian') }}">Harian / Kontrak</a></li>
+              <li {{ \Request::segment(1) == 'absensi-packing' ? 'class=active' : '' }}><a href="{{ url('/absensi-packing') }}">Packing</a></li>
             </ul>
           </li>
 
@@ -50,13 +50,14 @@
             <a href="#"><i class="fa fa-area-chart"></i> <span>Laporan</span> <i class="fa fa-angle-left pull-right"></i></a>
             <ul class="treeview-menu">
               <li {{ \Request::segment(2) == 'penjualan' ? 'class=active' : '' }}><a href="{{ url('/report/penjualan') }}">Penjualan</a></li>
-              <li {{ \Request::segment(2) == 'absensi-karyawan-tetap' ? 'class=active' : '' }}><a href="{{ url('/report/absensi-karyawan-tetap') }}">Absensi Karyawan Tetap</a></li>
+              <li {{ \Request::segment(2) == 'absensi-karyawan-tetap' ? 'class=active' : '' }}><a href="{{ url('/report/absensi-karyawan-tetap') }}">Absensi Karyawan Tetap (Kontrak / Staff)</a></li>
               <li {{ \Request::segment(2) == 'absensi-karyawan-harian' ? 'class=active' : '' }}><a href="{{ url('/report/absensi-karyawan-harian') }}">Absensi Karyawan Harian</a></li>
               <li {{ \Request::segment(2) == 'absensi-karyawan-packing' ? 'class=active' : '' }}><a href="{{ url('/report/absensi-karyawan-packing') }}">Absensi Karyawan Packing</a></li>
 
             </ul>
           </li>
 
+          <li {{ \Request::segment(1) == 'home' ? 'class=active' : '' }}><a href="{{ url('/absensi-approval') }}"><i class="fa fa-tachometer"></i> <span>Absensi Approval</span></a></li>
           
 
         </ul>

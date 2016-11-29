@@ -20,7 +20,7 @@ elixir(function(mix) {
         'common.js',
         'karyawan.js',
         'karyawanHarian.js',
-        'absensiHarian.js'
-
+        'absensiHarian.js',
+        'absensiApproval.js'
     ]);
 });

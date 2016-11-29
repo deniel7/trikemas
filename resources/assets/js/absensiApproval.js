@@ -1,6 +1,6 @@
-var absensiHarianModule = (function(commonModule) {
+var absensiApprovalModule = (function(commonModule) {
 
-    var datatableBaseURL = commonModule.datatableBaseURL + 'absensi-harians';
+    var datatableBaseURL = commonModule.datatableBaseURL + 'absensi-approvals';
 
     var existing_model = null;
 
@@ -166,6 +166,11 @@ var absensiHarianModule = (function(commonModule) {
                 "thousands": "."
             },
             columns: [{
+                data: 'check',
+                name: 'check',
+                orderable: false,
+                searchable: false
+            }, {
                 data: 'tanggal',
                 name: 'absensi_harians.tanggal'
             }, {
@@ -249,10 +254,10 @@ var absensiHarianModule = (function(commonModule) {
 
 
 
-                $('#detail_modal').find(".modal-body").append('<table class="table table-bordered table-striped"><thead><tr><th>NIK</th><th>Nama</th><th>Departemen</th><th>Scan Masuk</th><th>Scan Keluar</th><th>Lembur</th></tr></thead><tbody>');
+                $('#detail_modal').find(".modal-body").append('<table class="table table-bordered table-striped"><thead><tr><th>NIK</th><th>Nama</th><th>Departemen</th><th>Scan Masuk</th><th>Scans Keluar</th><th>Jam Lembur</th></tr></thead><tbody>');
 
                 $.each(response.records, function(i, record) {
-                    $('#detail_modal').find("tbody").append("<tr><td><input name ='id' type='hidden' value='" + record.id + "' /><input name ='tanggal' type='hidden' value='" + record.tanggal + "' />" + record.id + "</td><td>" + record.nama + "</td><td>" + record.departemen + "</td><td>" + record.scan_masuk + "</td><td>" + record.scan_pulang + "</td><td>" + record.jam_lembur + "</td></tr><tr><td colspan='5' align='right'>Koreksi Lembur</td><td><input name ='lembur' type='text' value='" + record.jam_lembur + "' /></td></tr>");
+                    $('#detail_modal').find("tbody").append("<tr><td><input name ='id' type='hidden' value='" + record.id + "' /><input name ='tanggal' type='hidden' value='" + record.tanggal + "' />" + record.nik + "</td><td>" + record.nama + "</td><td>" + record.departemen + "</td><td>" + record.scan_masuk + "</td><td>" + record.scan_pulang + "</td><td>" + record.jam_lembur + "</td></tr>");
 
                 });
 
@@ -270,9 +275,44 @@ var absensiHarianModule = (function(commonModule) {
         });
     };
 
+    var confirmLembur = function() {
+        $("button#confirmLembur").on('click', function() {
+
+            // var query = $('form#print input[name="selected_transactions[]"]').serialize();
+            // window.location = '/transaction/print?' + query;
+            // $.ajax({
+            //     method: "POST",
+            //     url: "/transaction/print",
+            //     data: $('form#print').serialize(),
+            //     dataType: 'json'
+            // }).done(function(response) {
+            //     if (response.status == 1) {
+            //         swal({
+            //             title: "Good!",
+            //             text: response.message,
+            //             type: "success",
+            //             timer: 3000
+            //         }, function() {
+            //             window.location = "/transaction";
+            //         });
+            //     } else {
+            //         swal({
+            //             title: "Oops!",
+            //             text: response.message,
+            //             type: "error",
+            //             timer: 3000
+            //         });
+            //     }
+            // });
+
+        });
+
+    };
+
     return {
         init: init,
-        showDetail: showDetail
+        showDetail: showDetail,
+        confirmLembur: confirmLembur,
     };
 
 })(commonModule);

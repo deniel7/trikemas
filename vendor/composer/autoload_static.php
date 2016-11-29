@@ -382,6 +382,7 @@ class ComposerStaticInit673dc2dbeee6f0c2856b868bb9add844
     );
 
     public static $classMap = array (
+        'AlterAbsensiHarians' => __DIR__ . '/../..' . '/database/migrations/2016_11_11_103830_alter_absensi_harians.php',
         'AlterDetailPenjualanAddHarga' => __DIR__ . '/../..' . '/database/migrations/2016_09_11_114301_alter_detail_penjualan_add_harga.php',
         'AlterDetailPenjualansAddJumlahBall' => __DIR__ . '/../..' . '/database/migrations/2016_10_10_222707_alter_detail_penjualans_add_jumlah_ball.php',
         'AlterDetailPenjualansModifySubtotal' => __DIR__ . '/../..' . '/database/migrations/2016_10_09_230758_alter_detail_penjualans_modify_subtotal.php',

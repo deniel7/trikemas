@@ -10,16 +10,11 @@ use Excel;
 use Illuminate\Http\Request;
 use Flash;
 
-class AbsensiHarianController extends Controller
+class AbsensiApprovalController extends Controller
 {
     public function index()
     {
-        return view('absensi-harian.index');
-    }
-
-    public function postSetDate()
-    {
-        return view('absensi-harian.date-result');
+        return view('absensi-approval.index');
     }
 
     public function datatable()
@@ -28,6 +23,8 @@ class AbsensiHarianController extends Controller
         ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id');
 
         return Datatables::of($absensi_harians)
+        ->addColumn('check', '<input type="checkbox" name="selected_karyawans[]" value="{{ $id }}">')
+
         ->editColumn('status', function ($absensi_harian) {
 
             if ($absensi_harian->status == 1) {
@@ -43,7 +40,7 @@ class AbsensiHarianController extends Controller
             return $absensi_harian->created_at ? with(new Carbon($absensi_harian->created_at))->format('d-m-Y') : '';
         })
 
-        ->editColumn('action', '<div class="text-center btn-group btn-group-justified"><a href="javascript:;" onClick="absensiHarianModule.showDetail({{ $id_absen }});"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a></div>')
+        ->editColumn('action', '<div class="text-center btn-group btn-group-justified"><a href="javascript:;" onClick="absensiApprovalModule.showDetail({{ $id_absen }});"><button type="button" class="btn btn-sm btn-default"><i class="fa fa-pencil"></i></button></a></div>')
 
         ->make(true);
     }
@@ -73,7 +70,6 @@ class AbsensiHarianController extends Controller
                     $scan_pulang = strval($row[11]);
                     $terlambat = strval($row[12]);
                     $plg_cepat = strval($row[13]);
-                    $lembur = strval($row[14]);
                     $jml_jam_kerja = strval($row[15]);
                     $departemen = strval($row[17]);
                     $jml_kehadiran = strval($row[19]);
@@ -97,7 +93,6 @@ class AbsensiHarianController extends Controller
                         $record->scan_masuk = $scan_masuk;
                         $record->scan_pulang = $scan_pulang;
                         $record->terlambat = $terlambat;
-                        $record->jam_lembur = $lembur;
                         $record->plg_cepat = $plg_cepat;
                         $record->jml_jam_kerja = $jml_jam_kerja;
                         $record->departemen = $departemen;
@@ -132,7 +127,6 @@ class AbsensiHarianController extends Controller
                     $scan_pulang = strval($row[11]);
                     $terlambat = strval($row[12]);
                     $plg_cepat = strval($row[13]);
-                    $lembur = strval($row[14]);
                     $jml_jam_kerja = strval($row[15]);
                     $departemen = strval($row[17]);
                     $jml_kehadiran = strval($row[19]);
@@ -157,7 +151,6 @@ class AbsensiHarianController extends Controller
                         $record->scan_pulang = $scan_pulang;
                         $record->terlambat = $terlambat;
                         $record->plg_cepat = $plg_cepat;
-                        $record->jam_lembur = $lembur;
                         $record->jml_jam_kerja = $jml_jam_kerja;
                         $record->departemen = $departemen;
                         $record->jml_kehadiran = $jml_kehadiran;
@@ -191,7 +184,6 @@ class AbsensiHarianController extends Controller
                     $scan_pulang = strval($row[11]);
                     $terlambat = strval($row[12]);
                     $plg_cepat = strval($row[13]);
-                    $lembur = strval($row[14]);
                     $jml_jam_kerja = strval($row[15]);
                     $departemen = strval($row[17]);
                     $jml_kehadiran = strval($row[19]);
@@ -216,7 +208,6 @@ class AbsensiHarianController extends Controller
                         $record->scan_pulang = $scan_pulang;
                         $record->terlambat = $terlambat;
                         $record->plg_cepat = $plg_cepat;
-                        $record->jam_lembur = $lembur;
                         $record->jml_jam_kerja = $jml_jam_kerja;
                         $record->departemen = $departemen;
                         $record->jml_kehadiran = $jml_kehadiran;

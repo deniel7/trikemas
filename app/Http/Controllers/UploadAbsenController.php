@@ -2,9 +2,11 @@
 
 namespace app\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\AbsensiHarian;
 use DB;
-use App\Karyawan;
+use Flash;
 
 class UploadAbsenController extends Controller
 {
@@ -15,9 +17,9 @@ class UploadAbsenController extends Controller
         // ->where('karyawans.id', '=', $id)
         // ->get();
 
-        $details = Karyawan::select(['karyawans.id', 'karyawans.nik', 'karyawans.nama', 'status_karyawans.keterangan'])
-        ->join('status_karyawans', 'karyawans.status_karyawan_id', '=', 'status_karyawans.id')
-        ->where('karyawans.id', '=', $id)
+        $details = AbsensiHarian::select(['absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.id', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'karyawans.nik', 'karyawans.nama', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.status'])
+        ->join('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+        ->where('absensi_harians.id', '=', $id)
         ->get();
 
         if (count($details) > 0) {
@@ -31,5 +33,27 @@ class UploadAbsenController extends Controller
                 'message' => 'Failed',
                 ]);
         }
+    }
+
+    public function update(Request $request)
+    {
+        $id = $request->input('id');
+        $tanggal = $request->input('tanggal');
+
+        $absensies = AbsensiHarian::where('karyawan_id', '=', $id)->where('tanggal', '=', $tanggal)->get();
+
+        if ($absensies->count() == 1) {
+            $absensies = $absensies->first();
+
+            $absensies->jam_lembur = $request->input('lembur');
+            $absensies->status = 1;
+
+            $absensies->save();
+        }
+
+        Flash::success('Berhasil input Jam Lembur');
+        DB::commit();
+
+        return redirect('absensi-harian');
     }
 }
