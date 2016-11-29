@@ -387,6 +387,7 @@ var advanceElements = (function() {
         }
         
         _applyDiscountOnKeyUp();
+        _applyPpnOnChange();
     };
     
     var _applyKonsumenOnChange = function() {
@@ -423,7 +424,10 @@ var advanceElements = (function() {
             }
             
             var total = sub_total - discount;
-            var ppn = ppn_pc * total;
+            var ppn = 0;
+            if ($("#chk_ppn").prop("checked")) {
+                ppn = ppn_pc * total;    
+            }
             var grand_total = total + ppn;
             
             $("#total").val(addCommas(total.toFixed(2)));
@@ -621,9 +625,32 @@ var advanceElements = (function() {
         });  
     };
     
+    var _applyPpnOnChange = function() {
+        $("#chk_ppn").on("change", function() {
+            var total = $("#total").val();
+            if (total !== "") {
+                total = parseFloat(total.replace(/,/g, ""));
+            }
+            else {
+                total = 0;
+            }
+            
+            var ppn = 0;
+            if ($("#chk_ppn").prop("checked")) {
+                ppn = ppn_pc * total;    
+            }
+            var grand_total = total + ppn;
+            
+            $("#ppn").val(addCommas(ppn.toFixed(2)));
+            $("#grand_total").val(addCommas(grand_total.toFixed(2)));
+        });
+    };
+    
     return {
         init: init
     };
+    
+    
 
 })();
 
@@ -647,7 +674,10 @@ function calcInvoice() {
     }
     
     var total = sub_total - discount;
-    var ppn = ppn_pc * total;
+    var ppn = 0;
+    if ($("#chk_ppn").prop("checked")) {
+        ppn = ppn_pc * total;    
+    }
     var grand_total = total + ppn;
     
     $("#sub_total").val(addCommas(sub_total.toFixed(2)));

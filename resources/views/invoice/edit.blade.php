@@ -222,7 +222,10 @@
                 </div>
                 <div class="form-group">
                   <label for="ppn" class="col-sm-9 control-label">PPN</label>
-                  <div class="col-sm-3">
+                  <div class="col-sm-1 text-right">
+                    <input type="checkbox" {{ (old('ppn') !== null ? old('ppn') : $invoice_penjualan->ppn) > 0 ? "checked" : "" }}  name="chk_ppn" id="chk_ppn">
+                  </div>
+                  <div class="col-sm-2">
                     <input type="text" style="background: #EDF7FA;" class="form-control text-right" name="ppn" id="ppn" placeholder="PPN" value="{{ old('ppn') !== null ? old('ppn') : number_format($invoice_penjualan->ppn, 2, '.', ',') }}" readonly>
                   </div>
                 </div>

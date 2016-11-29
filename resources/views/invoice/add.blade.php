@@ -213,7 +213,10 @@
                 </div>
                 <div class="form-group">
                   <label for="ppn" class="col-sm-9 control-label">PPN</label>
-                  <div class="col-sm-3">
+                  <div class="col-sm-1 text-right">
+                    <input type="checkbox" checked name="chk_ppn" id="chk_ppn">
+                  </div>
+                  <div class="col-sm-2">
                     <input type="text" style="background: #EDF7FA;" class="form-control text-right" name="ppn" id="ppn" placeholder="PPN" value="{{ old('ppn') }}" readonly>
                   </div>
                 </div>
