@@ -63,7 +63,12 @@ Route::group(['middleware' => 'auth'], function () {
 
     /* Konsumen */
     Route::get('/konsumen/list', 'KonsumenController@datatables');
+    Route::get('/konsumen/branch/{id}', 'KonsumenController@branch');
     Route::resource('/konsumen', 'KonsumenController');
+    
+    /* Konsumen Branch */
+    Route::get('/konsumen-branch/list', 'KonsumenBranchController@datatables');
+    Route::resource('/konsumen-branch', 'KonsumenBranchController');
 
     /* Harga Barang */
     Route::get('/konsumen-barang/list', 'KonsumenBarangController@datatables');

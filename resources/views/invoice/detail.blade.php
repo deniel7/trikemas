@@ -71,6 +71,12 @@
                   </div>
                 </div>
                 <div class="form-group">
+                  <label for="konsumen_id" class="col-sm-2 control-label">Konsumen Branch </label>
+                  <div class="col-sm-10">
+                    <input type="text" style="background: #EDF7FA;" class="form-control" name="konsumen_branch_id" id="konsumen_branch_id" placeholder="Konsumen Branch" value="{{ $konsumen_branch_nama }}" readonly>
+                  </div>
+                </div>
+                <div class="form-group">
                   <label for="tanggal_jatuh_tempo" class="col-sm-2 control-label">Tgl. Jatuh Tempo </label>
                   <div class="col-sm-10">
                     <div class="input-group date">

@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use App\InvoicePenjualan;
 use App\DetailPenjualan;
 use App\Konsumen;
+use App\KonsumenBranch;
 use App\Barang;
 use App\Angkutan;
 use App\Tujuan;
@@ -27,10 +28,11 @@ class InvoiceController extends Controller
                 ->join('konsumens', 'konsumens.id', '=', 'invoice_penjualans.konsumen_id')
                 ->join('angkutans', 'angkutans.id', '=', 'invoice_penjualans.angkutan_id')
                 ->join('tujuans', 'tujuans.id', '=', 'invoice_penjualans.tujuan_id')
+                ->leftJoin('konsumen_branches', 'konsumen_branches.id', '=', 'invoice_penjualans.konsumen_branch_id')
                 ->select('invoice_penjualans.id', 'invoice_penjualans.tanggal', 'invoice_penjualans.no_invoice', 'invoice_penjualans.no_po', 'invoice_penjualans.no_surat_jalan',
                          'invoice_penjualans.no_mobil', 'invoice_penjualans.tgl_jatuh_tempo', 'invoice_penjualans.grand_total', 'konsumens.nama as nama_konsumen',
                          'angkutans.nama as nama_angkutan', 'tujuans.kota as nama_tujuan', 'invoice_penjualans.bank_tujuan_bayar',
-                         'invoice_penjualans.tanggal_bayar', 'invoice_penjualans.status_bayar', 'invoice_penjualans.keterangan');
+                         'invoice_penjualans.tanggal_bayar', 'invoice_penjualans.status_bayar', 'invoice_penjualans.keterangan', 'konsumen_branches.nama as nama_konsumen_branch');
         
         return Datatables::of($list)
                 ->addColumn('action', function ($list) {
@@ -164,6 +166,7 @@ class InvoiceController extends Controller
                 
                 $invoice->tanggal = Carbon::createFromFormat('d/m/Y', $request->tanggal)->format('Y-m-d');
                 $invoice->konsumen_id = $request->konsumen_id;
+                $invoice->konsumen_branch_id = $request->konsumen_branch_id;
                 $invoice->no_invoice = $request->no_invoice;
                 $invoice->tgl_jatuh_tempo = Carbon::createFromFormat('d/m/Y', $request->tanggal_jatuh_tempo)->format('Y-m-d');
                 $invoice->no_po = $request->no_po;
@@ -250,6 +253,8 @@ class InvoiceController extends Controller
         $data['invoice_penjualan'] = $invoice_penjualan;
         $data['detail_penjualan'] = $invoice_penjualan->detail;
         $data['barang_helper'] = new Barang;
+        $konsumen_branch = KonsumenBranch::find($invoice_penjualan->konsumen_branch_id);
+        $data["konsumen_branch_nama"] = $konsumen_branch ? $konsumen_branch->nama : "";
             
         return view('invoice.detail', $data);
     }
@@ -270,6 +275,7 @@ class InvoiceController extends Controller
         $data['invoice_penjualan'] = $invoice_penjualan;
         $data['detail_penjualan'] = $invoice_penjualan->detail;
         $data['barang_helper'] = new Barang;
+        $data['konsumen_branch'] = Konsumen::find($invoice_penjualan->konsumen_id)->branch;
             
         return view('invoice.edit', $data);
     }
@@ -295,6 +301,7 @@ class InvoiceController extends Controller
                     // invoice header
                     $invoice->tanggal = Carbon::createFromFormat('d/m/Y', $request->tanggal)->format('Y-m-d');
                     $invoice->konsumen_id = $request->konsumen_id;
+                    $invoice->konsumen_branch_id = $request->konsumen_branch_id;
                     $invoice->no_invoice = $request->no_invoice;
                     $invoice->tgl_jatuh_tempo = Carbon::createFromFormat('d/m/Y', $request->tanggal_jatuh_tempo)->format('Y-m-d');
                     $invoice->no_po = $request->no_po;
@@ -469,7 +476,9 @@ class InvoiceController extends Controller
         PDF::Ln();
         PDF::setX(130);
         PDF::Cell(30, 0, 'Konsumen :', 0, 0, 'R', 0, '', 0);
-        PDF::Cell(0, 0, ' ' . Konsumen::find($invoice->konsumen_id)->nama, 0, 0, 'L', 0, '', 0);
+        $konsumen_branch = KonsumenBranch::find($invoice->konsumen_branch_id);
+        $konsumen_nama = $konsumen_branch ? $konsumen_branch->nama : Konsumen::find($invoice->konsumen_id)->nama;
+        PDF::Cell(0, 0, ' ' . $konsumen_nama, 0, 0, 'L', 0, '', 0);
         PDF::Ln();
         PDF::setX(130);
         PDF::Cell(30, 0, 'No. PO :', 0, 0, 'R', 0, '', 0);

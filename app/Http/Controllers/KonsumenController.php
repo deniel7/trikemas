@@ -29,6 +29,18 @@ class KonsumenController extends Controller
                 ->make(true);
     }
     
+    public function branch($id) {
+        $konsumen_branch = Konsumen::find($id)->branch;
+        
+        //$opt = '<option value="">-- Pilih konsumen branch --</option>';
+        $opt = '';
+        foreach($konsumen_branch as $branch) {
+            $opt .= '<option value="' . $branch->id . '">' . $branch->nama . '</option>';
+        }
+        
+        echo $opt;
+    }
+    
     /**
      * Display a listing of the resource.
      *

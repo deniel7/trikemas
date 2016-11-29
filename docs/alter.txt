@@ -1,3 +1,21 @@
+CREATE TABLE `konsumen_branches` (
+  `id` int(10) unsigned NOT NULL,
+  `nama` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `konsumen_id` int(11) NOT NULL,
+  `alamat` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `hp` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
+  `created_by` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `updated_by` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+);
+
+alter table invoice_penjualans add column konsumen_branch_id integer;
+
+
+-- DONE
+
 alter table invoice_penjualans add column tanggal_bayar_angkutan date;
 alter table invoice_penjualans add column diskon_bayar_angkutan decimal(15,2);
 alter table invoice_penjualans add column jumlah_bayar_angkutan decimal(15,2);

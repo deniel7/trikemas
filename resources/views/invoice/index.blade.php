@@ -134,7 +134,7 @@
               
               <div class="table-responsive">
                     
-                <table id="list" class="table table-bordered table-striped table-condensed"  style="table-layout: fixed; width:200%">
+                <table id="list" class="table table-bordered table-striped table-condensed"  style="table-layout: fixed; width:250%">
                   <thead>
                     <tr>
                       <th class="text-center">Tanggal</th>
@@ -143,6 +143,7 @@
                       <th class="text-center">Jth. Tempo</th>
                       <th class="text-center">Notifikasi</th>
                       <th class="text-center">Konsumen</th>
+                      <th class="text-center">Konsumen Branch</th>
                       <th class="text-center">Tujuan</th>
                       <th class="text-center">Angkutan</th>
                       <th class="text-center">No. PO</th>
@@ -152,7 +153,7 @@
                       <th class="text-center">Tgl. Bayar</th>
                       <th class="text-center">Bank Tujuan</th>
                       <th class="text-center">Keterangan</th>
-                      <th class="text-center" width="7%">Action</th>
+                      <th class="text-center" width="5%">Action</th>
                     </tr>
                   </thead>
                   <tbody>

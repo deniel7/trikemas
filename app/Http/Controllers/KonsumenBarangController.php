@@ -12,35 +12,25 @@ use Auth;
 use App\Konsumen;
 use App\Barang;
 use App\KonsumenBarang;
+use DB;
 
 class KonsumenBarangController extends Controller
 {
     
     public function datatables() {
-        $list = KonsumenBarang::select('id', 'konsumen_id', 'barang_id', 'harga', 'barang_id as barang_name');
+        $list = DB::table('konsumen_barangs')
+                ->join('konsumens', 'konsumen_barangs.konsumen_id', '=', 'konsumens.id')
+                ->join('barangs', 'konsumen_barangs.barang_id', '=', 'barangs.id')
+                ->select('konsumen_barangs.id', 'konsumen_barangs.konsumen_id', 'konsumen_barangs.barang_id', 'konsumen_barangs.harga', 'barangs.nama as nama_barang', 'konsumens.nama as nama_konsumen');
         
         return Datatables::of($list)
                 ->addColumn('action', function ($list) {
-                    $konsumen = Konsumen::find($list->konsumen_id);
-                    $barang = Barang::find($list->barang_id);
-                    
-                    $nama_konsumen = $konsumen ? $konsumen->nama : '';
-                    $nama_barang = $barang ? $barang->nama : '';
-                    
                     $html  = '<div class="text-center btn-group btn-group-justified">';
                     $html .= '<a href="/konsumen-barang/' . $list->id . '/edit" title="Edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a> '; 
-                    $html .= '<a href="/konsumen-barang/' . $list->id . '/destroy" title="Delete" onclick="confirmDelete(event, \'' . $list->id . '\', \'' . $nama_konsumen . '\', \'' . $nama_barang . '\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
+                    $html .= '<a href="/konsumen-barang/' . $list->id . '/destroy" title="Delete" onclick="confirmDelete(event, \'' . $list->id . '\', \'' . $list->nama_konsumen . '\', \'' . $list->nama_barang . '\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
                     $html .= '</div>';
                     
                     return $html;
-                })
-                ->editColumn('konsumen_id', function($list) {
-                    $konsumen = Konsumen::find($list->konsumen_id);
-                    return $konsumen ? $konsumen->nama : '';
-                })
-                ->editColumn('barang_name', function($list) {
-                    $barang = Barang::find($list->barang_id);
-                    return $barang ? $barang->nama : '';
                 })
                 ->editColumn('harga', '{{ number_format($harga, "2", ".", ",") }}')
                 ->make(true);
