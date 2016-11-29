@@ -303,6 +303,7 @@ var datatables = (function() {
                 {data: 'tgl_jatuh_tempo', name: 'tgl_jatuh_tempo'},
                 {data: 'notifikasi', name: 'notifikasi', orderable: false, searchable: false},
                 {data: 'nama_konsumen', name: 'nama_konsumen'},
+                {data: 'nama_konsumen_branch', name: 'nama_konsumen_branch'},
                 {data: 'nama_tujuan', name: 'nama_tujuan'},
                 {data: 'nama_angkutan', name: 'nama_angkutan'},
                 {data: 'no_po', name: 'no_po'},
@@ -373,6 +374,7 @@ var advanceElements = (function() {
         _applyDatePicker();
         _applyAddTableRow();
         _applyRemoveTableRow();
+        _applyKonsumenOnChange();
         
         //_applyAutocompleteBarang("1");
         //_applyAutoNumeric("1");
@@ -385,6 +387,21 @@ var advanceElements = (function() {
         }
         
         _applyDiscountOnKeyUp();
+    };
+    
+    var _applyKonsumenOnChange = function() {
+        $("#konsumen_id").on("change", function() {
+            var id = $("option:selected", this).val();
+            if (id !== "") {
+                $.ajax({
+                    type: "GET",
+                    url: "/konsumen/branch/" + id 
+                })
+                .done(function(data) {
+                    $("#konsumen_branch_id").html(data).selectpicker('refresh');
+                });
+            }
+        });
     };
     
     var _applyDiscountOnKeyUp = function() {

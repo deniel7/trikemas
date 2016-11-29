@@ -12,7 +12,7 @@
             </ul>
           </li>
 
-          <li class="treeview {{ in_array(\Request::segment(1), ['tujuan', 'barang', 'angkutan', 'konsumen', 'angkutan-tujuan', 'konsumen-barang']) ? 'active' : '' }}">
+          <li class="treeview {{ in_array(\Request::segment(1), ['tujuan', 'barang', 'angkutan', 'konsumen', 'angkutan-tujuan', 'konsumen-barang', 'konsumen-branch']) ? 'active' : '' }}">
             <a href="#"><i class="fa fa-table"></i> <span>Master Data</span> <i class="fa fa-angle-left pull-right"></i></a>
             <ul class="treeview-menu">
               <li {{ \Request::segment(1) == 'tujuan' ? 'class=active' : '' }}><a href="{{ url('/tujuan') }}">Tujuan Pengiriman</a></li>
@@ -20,6 +20,7 @@
               <li {{ \Request::segment(1) == 'angkutan-tujuan' ? 'class=active' : '' }}><a href="{{ url('/angkutan-tujuan') }}">Biaya Angkutan</a></li>
               <li {{ \Request::segment(1) == 'barang' ? 'class=active' : '' }}><a href="{{ url('/barang') }}">Barang</a></li>
               <li {{ \Request::segment(1) == 'konsumen' ? 'class=active' : '' }}><a href="{{ url('/konsumen') }}">Konsumen</a></li>
+              <li {{ \Request::segment(1) == 'konsumen-branch' ? 'class=active' : '' }}><a href="{{ url('/konsumen-branch') }}">Konsumen Branch</a></li>
               <li {{ \Request::segment(1) == 'konsumen-barang' ? 'class=active' : '' }}><a href="{{ url('/konsumen-barang') }}">Harga Barang</a></li>
             </ul>
           </li>

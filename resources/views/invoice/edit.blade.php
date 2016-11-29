@@ -78,6 +78,16 @@
                   </div>
                 </div>
                 <div class="form-group">
+                  <label for="konsumen_branch_id" class="col-sm-2 control-label">Konsumen Branch </label>
+                  <div class="col-sm-10">
+                    <select name="konsumen_branch_id" id="konsumen_branch_id" class="form-control selectpicker" title="-- Pilih konsumen branch --">
+                      @foreach($konsumen_branch as $branch)
+                        <option value="{{ $branch->id }}" {{ $branch->id == (old('konsumen_branch_id') !== null ? old('konsumen_branch_id') : $invoice_penjualan->konsumen_branch_id) ? 'selected' : '' }} >{{ $branch->nama }}</option>
+                      @endforeach
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
                   <label for="tanggal_jatuh_tempo" class="col-sm-2 control-label">Tgl. Jatuh Tempo *</label>
                   <div class="col-sm-10">
                     <div class="input-group date">

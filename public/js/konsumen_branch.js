@@ -4,14 +4,6 @@ var validation = (function() {
     
     var init = function() {
         _applyValidation();
-        _applyAutoNumeric();
-    };
-    
-    var _applyAutoNumeric = function() {
-        $("#harga").autoNumeric("init", {vMin: '0', vMax: '9999999999999.99'})
-        .on("keyup", function() {
-            $("#frmData").formValidation("revalidateField", $("#harga"));
-        });
     };
     
     var _applyValidation = function() {
@@ -24,24 +16,21 @@ var validation = (function() {
             },
             icon: null,
             fields: {
-              angkutan_id: {
+              nama: {
                 validators: {
                   notEmpty: {
-                    message: 'Angkutan harus diisi'
+                    message: 'Nama harus diisi'
+                  },
+                  stringLength: {
+                    max: 100,
+                    message: 'Nama tidak boleh lebih dari 100 karakter'
                   }
                 }
               },
-              tujuan_id: {
+              hp: {
                 validators: {
                   notEmpty: {
-                    message: 'Tujuan harus diisi'
-                  }
-                }
-              },
-              harga: {
-                validators: {
-                  notEmpty: {
-                    message: 'Biaya harus diisi'
+                    message: 'No. HP harus diisi'
                   }
                 }
               }
@@ -56,12 +45,12 @@ var validation = (function() {
     
 })();
 
-var confirmDelete = function(event, id, angkutan, tujuan) {
+var confirmDelete = function(event, id, nama, nama_grup) {
     event.preventDefault();
     
     swal({
         title: "Apakah anda yakin?",
-        text: "Data angkutan dengan nama " + angkutan + " dan tujuan " + tujuan + " akan dihapus!",
+        text: "Data konsumen branch dengan nama " + nama + " pada konsumen " + nama_grup + " akan dihapus!",
         type: "warning",
         showCancelButton: true,
         confirmButtonColor: "#DD6B55",
@@ -75,7 +64,7 @@ var confirmDelete = function(event, id, angkutan, tujuan) {
             beforeSend: function(xhr) { xhr.setRequestHeader("X-CSRF-Token", $("meta[name='csrf-token']").attr("content")); },
             type: "POST",
             data: {_method: 'DELETE'},
-            url: "/angkutan-tujuan/" + id
+            url: "/konsumen-branch/" + id
         })
         .done(function(data) {
             if (data === "success") {
@@ -93,7 +82,7 @@ var confirmDelete = function(event, id, angkutan, tujuan) {
 
 var datatables = (function() {
 
-    var datatablesURL = '/angkutan-tujuan/list';
+    var datatablesURL = '/konsumen-branch/list';
 
     var init = function() {
         _applyDatatable();
@@ -115,9 +104,10 @@ var datatables = (function() {
                 //"type": "POST"
             },
             'columns': [
-                {data: 'nama_angkutan', name: 'angkutans.nama'},
-                {data: 'nama_tujuan', name: 'tujuans.kota'},
-                {data: 'harga', name: 'angkutan_tujuans.harga', className: "text-right"},
+                {data: 'nama', name: 'konsumen_branches.nama'},
+                {data: 'alamat', name: 'konsumen_branches.alamat'},
+                {data: 'hp', name: 'konsumen_branches.hp'},
+                {data: 'nama_konsumen', name: 'konsumens.nama'},
                 {data: 'action', name: 'action', orderable: false, searchable: false}
             ]
         });

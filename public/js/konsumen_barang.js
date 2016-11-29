@@ -115,10 +115,10 @@ var datatables = (function() {
                 //"type": "POST"
             },
             'columns': [
-                {data: 'konsumen_id', name: 'konsumen_id'},
-                {data: 'barang_id', name: 'barang_id', className: "text-right"},
-                {data: 'barang_name', name: 'barang_name'},
-                {data: 'harga', name: 'harga', className: "text-right"},
+                {data: 'nama_konsumen', name: 'konsumens.nama'},
+                {data: 'barang_id', name: 'konsumen_barangs.barang_id', className: "text-right"},
+                {data: 'nama_barang', name: 'barangs.nama'},
+                {data: 'harga', name: 'konsumen_barangs.harga', className: "text-right"},
                 {data: 'action', name: 'action', orderable: false, searchable: false}
             ]
         });

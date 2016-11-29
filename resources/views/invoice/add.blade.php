@@ -77,6 +77,14 @@
                   </div>
                 </div>
                 <div class="form-group">
+                  <label for="konsumen_branch_id" class="col-sm-2 control-label">Konsumen Branch </label>
+                  <div class="col-sm-10">
+                    <select name="konsumen_branch_id" id="konsumen_branch_id" class="form-control selectpicker" title="-- Pilih konsumen branch --">
+                      
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
                   <label for="tanggal_jatuh_tempo" class="col-sm-2 control-label">Tgl. Jatuh Tempo *</label>
                   <div class="col-sm-10">
                     <div class="input-group date">
