@@ -43,7 +43,12 @@ class AbsensiHarianController extends Controller
             return $absensi_harian->created_at ? with(new Carbon($absensi_harian->created_at))->format('d-m-Y') : '';
         })
 
-        ->editColumn('action', '<div class="text-center btn-group btn-group-justified"><a href="javascript:;" onClick="absensiHarianModule.showDetail({{ $id_absen }});"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a></div>')
+        ->editColumn('action', '
+            <div class="text-center btn-group btn-group-justified"><a href="javascript:;" onClick="absensiHarianModule.showDetail({{ $id_absen }});"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a></div>
+
+            <div class="text-center btn-group btn-group-justified"><a href="javascript:;" onClick="absensiHarianModule.showPrint({{ $id_absen }});"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-print"></i></button></a></div>
+
+            ')
 
         ->make(true);
     }

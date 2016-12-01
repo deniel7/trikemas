@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use DB;
 use App\Karyawan;
 use App\StatusKaryawan;
+use App\AbsensiHarian;
 use Datatables;
 
 class KaryawanTetapController extends Controller
@@ -38,6 +39,7 @@ class KaryawanTetapController extends Controller
         ->addColumn('action', function ($karyawan) {
             $html = '<div style="width: 70px; margin: 0px auto;" class="text-center btn-group btn-group-justified" role="group">';
             $html .= '<a role="button" class="btn btn-warning" href="karyawan-tetap/'.$karyawan->id.'/edit"><i class="fa fa-fw fa-pencil"></i> EDIT</a>';
+            $html .= '<a href="javascript:;" onClick="karyawanModule.showPrint('.$karyawan->id.');"><button type="button" class="btn btn-sm btn-default"><i class="fa fa-print"></i></button></a>';
             $html .= '</div>';
 
             return $html;
@@ -60,7 +62,7 @@ class KaryawanTetapController extends Controller
         //$uang_makan_ = str_replace('Rp', '', $uang_makan);
         $uang_lembur = str_replace(',', '', $request->input('uang_lembur'));
         //$uang_lembur_ = str_replace('Rp', '', $uang_lembur);
-        
+
         $karyawan = new Karyawan();
         $karyawan->status_karyawan_id = $request->input('status_karyawan_id');
         $karyawan->nama = $request->input('nama');
@@ -121,6 +123,30 @@ class KaryawanTetapController extends Controller
             return redirect('karyawan-tetap');
         } else {
             return redirect('karyawan-harian');
+        }
+    }
+
+    public function show($id)
+    {
+        // $details = AbsensiHarian::select(['absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.id', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'karyawans.nik', 'karyawans.nama', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.status'])
+        // ->join('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+        // ->where('absensi_harians.karyawan_id', '=', $id)
+        // ->get();
+
+        $details = Karyawan::select(['id'])
+        ->where('karyawans.id', '=', $id)
+        ->get();
+
+        if (count($details) > 0) {
+            return response()->json([
+                'status' => 1,
+                'records' => $details,
+                ]);
+        } else {
+            return response()->json([
+                'status' => 0,
+                'message' => 'Failed',
+                ]);
         }
     }
 }

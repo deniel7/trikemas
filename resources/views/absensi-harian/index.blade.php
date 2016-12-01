@@ -45,10 +45,10 @@
                   <th>Terlambat</th>
                   <th>Pulang Cepat</th>
                   <th>Lembur</th>
-                  
                   <th>Jumlah Kehadiran</th>
                   <th>Status</th>
                   <th width="10%">Actions</th>
+                  
                 </tr>
               </thead>
               <tbody>
@@ -69,6 +69,7 @@
                   <th>Jumlah Kehadiran</th>
                   <th>Status</th>
                 <th></th>
+                
               </tr>
               </tfoot>
             </table>
@@ -86,6 +87,7 @@
 <!-- /.content -->
 @include('absensi-harian.partials.add_modal')
 @include('absensi-harian.partials.show_detail_modal')
+@include('absensi-harian.partials.print_modal')
 <!-- page script -->
 <style>
 .datepicker{z-index:1151 !important;}

@@ -65,7 +65,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/konsumen/list', 'KonsumenController@datatables');
     Route::get('/konsumen/branch/{id}', 'KonsumenController@branch');
     Route::resource('/konsumen', 'KonsumenController');
-    
+
     /* Konsumen Branch */
     Route::get('/konsumen-branch/list', 'KonsumenBranchController@datatables');
     Route::resource('/konsumen-branch', 'KonsumenBranchController');
@@ -96,6 +96,8 @@ Route::group(['middleware' => 'auth'], function () {
     /* Master */
     Route::resource('karyawan-tetap', 'KaryawanTetapController');
     Route::controller('karyawan-tetap', 'KaryawanTetapController');
+    Route::get('karyawan-tetap/{id}', 'KaryawanTetapController@show');
+
     Route::resource('karyawan-harian', 'KaryawanHarianController');
     Route::controller('karyawan-harian', 'KaryawanHarianController');
 
@@ -104,6 +106,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::controller('absensi-harian', 'AbsensiHarianController');
 
     Route::resource('absensi-approval', 'AbsensiApprovalController');
+    Route::get('absensi-harian/{id}', 'AbsensiHarianController@show');
 
     /* upload jam lembur */
     Route::post('upload-absen/lembur/{id}', 'UploadAbsenController@postUpdate');

@@ -276,36 +276,10 @@ var absensiApprovalModule = (function(commonModule) {
     };
 
     var confirmLembur = function() {
-        $("button#confirmLembur").on('click', function() {
+        var query = $('form#approve input[name="selected_karyawans[]"]').serialize();
+        window.location = '/absensi-approval/confirmAbsen?' + query;
 
-            // var query = $('form#print input[name="selected_transactions[]"]').serialize();
-            // window.location = '/transaction/print?' + query;
-            // $.ajax({
-            //     method: "POST",
-            //     url: "/transaction/print",
-            //     data: $('form#print').serialize(),
-            //     dataType: 'json'
-            // }).done(function(response) {
-            //     if (response.status == 1) {
-            //         swal({
-            //             title: "Good!",
-            //             text: response.message,
-            //             type: "success",
-            //             timer: 3000
-            //         }, function() {
-            //             window.location = "/transaction";
-            //         });
-            //     } else {
-            //         swal({
-            //             title: "Oops!",
-            //             text: response.message,
-            //             type: "error",
-            //             timer: 3000
-            //         });
-            //     }
-            // });
 
-        });
 
     };
 

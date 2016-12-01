@@ -79,6 +79,7 @@
 </section>
 <!-- /.content -->
 @include('karyawan.partials.add_modal')
+@include('karyawan.partials.print_modal')
 <!-- page script -->
 <script type="text/javascript">
 $(document).ready(function(){

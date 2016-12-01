@@ -14,6 +14,9 @@
     <li class="active">List</li>
   </ol>
 </section>
+
+<form action="{{ url('absensi-approval') }}" method="post" id="approve">
+<input type="hidden" name="_token" value="{{ csrf_token() }}">
 <!-- Main content -->
 <section class="content">
   <div class="row">
@@ -21,9 +24,8 @@
       <div class="box">
         <!-- /.box-header -->
         <div class="box-body">
-          <button type="button" id="confirmLembur" class="btn btn-warning" name="confirm" value="Confirm"><i class="fa fa-check fa-fw"></i> Confirm</button>
+          <button type="button" onclick="absensiApprovalModule.confirmLembur();" class="btn btn-warning" name="confirm" value="Confirm"><i class="fa fa-check fa-fw"></i> Confirm</button>
 
-          <button type="button" id="printTransaction" class="btn btn-warning" name="print" value="Print"><i class="fa fa-check fa-fw"></i> Print</button>
 
           <div class="table-responsive">
           <!-- 
@@ -81,6 +83,7 @@
   <!-- /.row -->
   
 </section>
+</form>
 <!-- /.content -->
 @include('absensi-approval.partials.show_detail_modal')
 <!-- page script -->

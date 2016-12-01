@@ -228,8 +228,45 @@ var karyawanModule = (function(commonModule) {
 
     };
 
+    var showPrint = function(id) {
+
+        $.ajax({
+            method: "GET",
+            url: "/karyawan-tetap/" + id,
+            dataType: "json",
+        }).done(function(response) {
+            console.log(response);
+            if (response.status == 1) {
+
+                /* Clear Modal Body */
+                $('#print_modal').find(".modal-title").html("");
+                $('#print_modal').find(".modal-body").html("");
+
+                /* Insert Data to Modal Body */
+                $('#print_modal').find(".modal-body").append('<table class="table table-bordered table-striped"><thead><tr><th>NIK</th><th>Nama</th><th>Departemen</th></thead><tbody>');
+
+                $.each(response.records, function(i, record) {
+                    $('#print_modal').find("tbody").append("<tr><td><input name ='id' type='hidden' value='" + record.id + "' /><input name ='tanggal' type='hidden' value='" + record.tanggal + "' />" + record.id + "</td><td>" + record.nama + "</td><td>" + record.departemen + "</td></tr>");
+
+                });
+
+                $('#print_modal').find(".modal-body").append("</table>");
+
+
+                /* Finally show */
+                $('#print_modal').modal();
+            } else {
+                alert('Data Pegawai salah');
+            }
+
+        }).fail(function(response) {
+
+        });
+    };
+
     return {
-        init: init
+        init: init,
+        showPrint: showPrint
     };
 
 })(commonModule);

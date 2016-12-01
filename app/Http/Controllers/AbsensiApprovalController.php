@@ -23,7 +23,7 @@ class AbsensiApprovalController extends Controller
         ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id');
 
         return Datatables::of($absensi_harians)
-        ->addColumn('check', '<input type="checkbox" name="selected_karyawans[]" value="{{ $id }}">')
+        ->addColumn('check', '<input type="checkbox" name="selected_karyawans[]" value="{{ $id_absen }}">')
 
         ->editColumn('status', function ($absensi_harian) {
 
@@ -40,7 +40,7 @@ class AbsensiApprovalController extends Controller
             return $absensi_harian->created_at ? with(new Carbon($absensi_harian->created_at))->format('d-m-Y') : '';
         })
 
-        ->editColumn('action', '<div class="text-center btn-group btn-group-justified"><a href="javascript:;" onClick="absensiApprovalModule.showDetail({{ $id_absen }});"><button type="button" class="btn btn-sm btn-default"><i class="fa fa-pencil"></i></button></a></div>')
+        ->editColumn('action', '<div class="text-center btn-group btn-group-justified"><a href="javascript:;" onClick="absensiApprovalModule.showDetail({{ $id_absen }});"><button type="button" class="btn btn-sm btn-default"><i class="fa fa-eye"></i></button></a></div>')
 
         ->make(true);
     }
@@ -223,5 +223,28 @@ class AbsensiApprovalController extends Controller
         }
 
         return redirect('absensi-harian');
+    }
+
+    public function show(Request $request)
+    {
+        $absensi_ids = $request->input('selected_karyawans');
+
+        //$absensi_karyawans = AbsensiHarian::where('id', '=', $absensi_ids)->get();
+
+        $absensi_karyawans = AbsensiHarian::whereIn('id', $absensi_ids)->get();
+
+        //dd($data);
+
+        if ($absensi_karyawans->count() > 0) {
+            foreach ($absensi_karyawans as $absensi_karyawan) {
+                $absensi_karyawan->status = 2;
+                $absensi_karyawan->save();
+                Flash::success('Absensi Karyawan Confirmed');
+            }
+        }
+
+        // $data['transactions'] = Transaction::whereIn('id', $transaction_ids)->get();
+
+        return view('absensi-approval.index');
     }
 }
