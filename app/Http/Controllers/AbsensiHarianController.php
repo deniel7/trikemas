@@ -46,8 +46,6 @@ class AbsensiHarianController extends Controller
         ->editColumn('action', '
             <div class="text-center btn-group btn-group-justified"><a href="javascript:;" onClick="absensiHarianModule.showDetail({{ $id_absen }});"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a></div>
 
-            <div class="text-center btn-group btn-group-justified"><a href="javascript:;" onClick="absensiHarianModule.showPrint({{ $id_absen }});"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-print"></i></button></a></div>
-
             ')
 
         ->make(true);
@@ -83,6 +81,25 @@ class AbsensiHarianController extends Controller
                     $departemen = strval($row[17]);
                     $jml_kehadiran = strval($row[19]);
 
+                    $ambil_jam_kerja = substr($jml_jam_kerja, -8);
+
+                    $jam_exp = explode(':', $ambil_jam_kerja);
+
+                    $jam = isset($jam_exp[0]) ? $jam_exp[0] : '';
+
+                    $menit = isset($jam_exp[1]) ? $jam_exp[1] : '';
+
+                    //pembulatan jam dan menit jika terlambat
+
+                    // dd($jam);
+
+                    if ($jam == 7) {
+                        if ($menit > 44) {
+                            $jam = 8;
+                            $menit = 00;
+                        }
+                    }
+
                     if (empty($karyawan_id)) {
                         return;
                     }
@@ -107,6 +124,8 @@ class AbsensiHarianController extends Controller
                         $record->jml_jam_kerja = $jml_jam_kerja;
                         $record->departemen = $departemen;
                         $record->jml_kehadiran = $jml_kehadiran;
+                        $record->jam = $jam;
+                        $record->menit = $menit;
                         $record->save();
                         Flash::success('success');
                     } else {
@@ -119,7 +138,7 @@ class AbsensiHarianController extends Controller
         }
 
         if (!empty($file2)) {
-            Excel::selectSheetsByIndex(0)->load($file2, function ($reader) {
+            Excel::selectSheetsByIndex(0)->load($file, function ($reader) {
 
                 $reader->skip(2);
                 $reader->noHeading();
@@ -142,6 +161,14 @@ class AbsensiHarianController extends Controller
                     $departemen = strval($row[17]);
                     $jml_kehadiran = strval($row[19]);
 
+                    $ambil_jam_kerja = substr($jml_jam_kerja, -8);
+
+                    $jam_exp = explode(':', $ambil_jam_kerja);
+
+                    $jam = isset($jam_exp[0]) ? $jam_exp[0] : '';
+
+                    $menit = isset($jam_exp[1]) ? $jam_exp[1] : '';
+
                     if (empty($karyawan_id)) {
                         return;
                     }
@@ -161,15 +188,17 @@ class AbsensiHarianController extends Controller
                         $record->scan_masuk = $scan_masuk;
                         $record->scan_pulang = $scan_pulang;
                         $record->terlambat = $terlambat;
-                        $record->plg_cepat = $plg_cepat;
                         $record->jam_lembur = $lembur;
+                        $record->plg_cepat = $plg_cepat;
                         $record->jml_jam_kerja = $jml_jam_kerja;
                         $record->departemen = $departemen;
                         $record->jml_kehadiran = $jml_kehadiran;
+                        $record->jam = $jam;
+                        $record->menit = $menit;
                         $record->save();
                         Flash::success('success');
                     } else {
-                        Flash::error('Proses import karyawan KONTRAK ada kesalahan');
+                        Flash::error('Proses import  karyawan STAFF ada kesalahan');
                     }
                 }
             })->toObject();
@@ -178,7 +207,7 @@ class AbsensiHarianController extends Controller
         }
 
         if (!empty($file3)) {
-            Excel::selectSheetsByIndex(0)->load($file3, function ($reader) {
+            Excel::selectSheetsByIndex(0)->load($file, function ($reader) {
 
                 $reader->skip(2);
                 $reader->noHeading();
@@ -201,6 +230,14 @@ class AbsensiHarianController extends Controller
                     $departemen = strval($row[17]);
                     $jml_kehadiran = strval($row[19]);
 
+                    $ambil_jam_kerja = substr($jml_jam_kerja, -8);
+
+                    $jam_exp = explode(':', $ambil_jam_kerja);
+
+                    $jam = isset($jam_exp[0]) ? $jam_exp[0] : '';
+
+                    $menit = isset($jam_exp[1]) ? $jam_exp[1] : '';
+
                     if (empty($karyawan_id)) {
                         return;
                     }
@@ -220,15 +257,17 @@ class AbsensiHarianController extends Controller
                         $record->scan_masuk = $scan_masuk;
                         $record->scan_pulang = $scan_pulang;
                         $record->terlambat = $terlambat;
-                        $record->plg_cepat = $plg_cepat;
                         $record->jam_lembur = $lembur;
+                        $record->plg_cepat = $plg_cepat;
                         $record->jml_jam_kerja = $jml_jam_kerja;
                         $record->departemen = $departemen;
                         $record->jml_kehadiran = $jml_kehadiran;
+                        $record->jam = $jam;
+                        $record->menit = $menit;
                         $record->save();
                         Flash::success('success');
                     } else {
-                        Flash::error('Proses import karyawan HARIAN ada kesalahan');
+                        Flash::error('Proses import  karyawan STAFF ada kesalahan');
                     }
                 }
             })->toObject();

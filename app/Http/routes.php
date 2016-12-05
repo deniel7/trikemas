@@ -94,9 +94,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('datatable/absensi-approvals', 'AbsensiApprovalController@datatable');
 
     /* Master */
-    Route::resource('karyawan-tetap', 'KaryawanTetapController');
-    Route::controller('karyawan-tetap', 'KaryawanTetapController');
+    Route::post('karyawan-tetap/print/', 'KaryawanTetapController@doPrint');
     Route::get('karyawan-tetap/{id}', 'KaryawanTetapController@show');
+
+    Route::resource('karyawan-tetap', 'KaryawanTetapController');
+
+    Route::controller('karyawan-tetap', 'KaryawanTetapController');
 
     Route::resource('karyawan-harian', 'KaryawanHarianController');
     Route::controller('karyawan-harian', 'KaryawanHarianController');

@@ -1,7 +1,7 @@
 <div class="modal fade" id="print_modal" tabindex="-1" role="dialog">
   
-<form class="form-horizontal" id="frmData" method="post" action="{{ url('upload-absen/lembur') }}" autocomplete="off">
-    <input name="_method" type="hidden" value="put">
+  <form action="karyawan-tetap/print" method="post">
+    
     <input type="hidden" name="_token" value="{{ csrf_token() }}">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -18,9 +18,15 @@
           <div class="modal-body2">
           </div>
 
-          <div>
-            <p>Periode</p>
-          </div>
+          <div class="row">
+        <div class="col-lg-12">
+
+        <div class="col-lg-6">Dari : <input type="text" name="dari" class="datepicker form-control" value="{{ date('Y-m-d') }}"  }}"></div>
+
+        <div class="col-lg-6">Ke : <input type="text" name="ke" class="datepicker form-control" value="{{ date('Y-m-d') }}"  }}"></div>
+
+        </div>
+        </div>
         </div>
 
 

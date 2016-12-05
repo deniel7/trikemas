@@ -7,8 +7,9 @@ use App\Http\Controllers\Controller;
 use DB;
 use App\Karyawan;
 use App\StatusKaryawan;
-use App\AbsensiHarian;
 use Datatables;
+use Carbon\Carbon;
+use PDF;
 
 class KaryawanTetapController extends Controller
 {
@@ -37,9 +38,11 @@ class KaryawanTetapController extends Controller
         ->editColumn('uang_lembur', '<span class="pull-right">{{ $uang_lembur }}</span>')
         ->editColumn('norek', '<span class="pull-right">{{ $norek }}</span>')
         ->addColumn('action', function ($karyawan) {
-            $html = '<div style="width: 70px; margin: 0px auto;" class="text-center btn-group btn-group-justified" role="group">';
-            $html .= '<a role="button" class="btn btn-warning" href="karyawan-tetap/'.$karyawan->id.'/edit"><i class="fa fa-fw fa-pencil"></i> EDIT</a>';
-            $html .= '<a href="javascript:;" onClick="karyawanModule.showPrint('.$karyawan->id.');"><button type="button" class="btn btn-sm btn-default"><i class="fa fa-print"></i></button></a>';
+
+            $html = '<div class="text-center btn-group btn-group-justified">';
+
+            $html .= '<a href="karyawan-tetap/'.$karyawan->id.'/edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a>';
+            $html .= '<a href="javascript:;" onClick="karyawanModule.showPrint('.$karyawan->id.');"><button type="button" class="btn btn-sm"><i class="fa fa-print"></i></button></a>';
             $html .= '</div>';
 
             return $html;
@@ -128,16 +131,22 @@ class KaryawanTetapController extends Controller
 
     public function show($id)
     {
-        // $details = AbsensiHarian::select(['absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.id', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'karyawans.nik', 'karyawans.nama', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.status'])
-        // ->join('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
-        // ->where('absensi_harians.karyawan_id', '=', $id)
-        // ->get();
 
-        $details = Karyawan::select(['id'])
+        //DB::enableQueryLog();
+
+        $details = DB::table('karyawans')
+        ->select('karyawans.id', 'nik', 'nama', 'norek', 'status_karyawans.keterangan')
+        ->join('status_karyawans', 'status_karyawans.id', '=', 'karyawans.status_karyawan_id')
         ->where('karyawans.id', '=', $id)
         ->get();
 
-        if (count($details) > 0) {
+        //$query = DB::getQueryLog();
+       // $lastquery = end($query);
+        //$details[] = 1;
+        //dd($id);
+
+        $test = Karyawan::find($id);
+        if ($test) {
             return response()->json([
                 'status' => 1,
                 'records' => $details,
@@ -148,5 +157,139 @@ class KaryawanTetapController extends Controller
                 'message' => 'Failed',
                 ]);
         }
+    }
+
+    public function doPrint(Request $request)
+    {
+        $id = $request->input('id');
+        $start_date = $request->input('dari');
+        $end_date = $request->input('ke');
+
+        $karyawan = Karyawan::find($id);
+
+        $total_jam = DB::table('absensi_harians')
+        ->select(DB::raw('SUM(jam) as count'))
+        // ->join('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+        ->where('absensi_harians.karyawan_id', '=', $id)
+        ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
+        ->get();
+
+        foreach ($total_jam as $total) {
+            $jam = strval($total->count);
+        }
+
+        $gaji = $karyawan->nilai_upah;
+
+        $nilai_upah = $jam * $gaji;
+
+        // set document information
+        PDF::SetAuthor('PT. TRIMITRA KEMASINDO');
+        PDF::SetTitle('Print Slip Gaji - Trimitra Kemasindo');
+        PDF::SetSubject('Slip Gaji Karyawan');
+        PDF::SetKeywords('Slip Gaji Karyawan Trimitra Kemasindo');
+
+        // AddPage ($orientation='', $format='', $keepmargins=false, $tocpage=false)
+        PDF::AddPage('P', 'A4');
+
+        // SetMargins ($left, $top, $right=-1, $keepmargins=false)
+        PDF::SetMargins(15, 10);
+
+        // Image ($file, $x='', $y='', $w=0, $h=0, $type='', $link='', $align='', $resize=false, $dpi=300, $palign='', $ismask=false, $imgmask=false, $border=0, $fitbox=false, $hidden=false, $fitonpage=false, $alt=false, $altimgs=array())
+        //PDF::Image(asset('/image/logo-ponpes-darussalam.png'), 15, 5, 15, 15, '', '', 'T', true);
+        //PDF::Image(asset('/image/bmt.png'), 15, 5, 35, 15, '', '', 'T', true);
+
+        PDF::setX(15);
+
+        // SetFont ($family, $style='', $size=null, $fontfile='', $subset='default', $out=true)
+        PDF::SetFont('times', 'B', 11);
+        // Cell ($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='', $stretch=0, $ignore_min_height=false, $calign='T', $valign='M')
+        PDF::Cell(0, 0, 'PT. Trimitra Kemasindo', 0, 0, 'L', 0, '', 0);
+        PDF::Ln();
+        PDF::SetFont('', '', 9);
+        PDF::Cell(0, 0, 'Jalan Raya Sapan KM 1 No. 15', 0, 0, 'L', 0, '', 0);
+        PDF::Ln();
+        PDF::Cell(0, 0, 'Tlp. (022) 87304121', 0, 0, 'L', 0, '', 0);
+        PDF::Ln();
+        PDF::Cell(0, 0, 'Fax. (022) 87304123', 0, 0, 'L', 0, '', 0);
+        PDF::Ln();
+        PDF::Cell(0, 0, 'Bandung', 0, 0, 'L', 0, '', 0);
+        PDF::Ln();
+
+        PDF::SetFont('times', 'B', 16);
+        PDF::setXY(151, 10);
+        PDF::Cell(0, 0, 'S L I P G A J I', 0, 0, 'L', 0, '', 0);
+        PDF::Ln();
+
+        PDF::setX(130);
+        PDF::SetFont('', '', 10);
+        PDF::Cell(30, 0, 'Periode :', 0, 0, 'R', 0, '', 0);
+        PDF::Cell(0, 0, ' '.$start_date.' s/d '.$end_date, 0, 0, 'L', 0, '', 0);
+        PDF::Ln();
+        PDF::setX(130);
+        PDF::Cell(30, 0, 'Tanggal Cetak :', 0, 0, 'R', 0, '', 0);
+        PDF::Cell(0, 0, ' '.date('d-m-Y h:m'), 0, 0, 'L', 0, '', 0);
+        PDF::Ln();
+        PDF::setX(130);
+        PDF::Cell(30, 0, 'Nama :', 0, 0, 'R', 0, '', 0);
+        PDF::Cell(0, 0, ' '.$karyawan->nama, 0, 0, 'L', 0, '', 0);
+        PDF::Ln();
+        PDF::setX(130);
+        PDF::Cell(30, 0, 'NIK :', 0, 0, 'R', 0, '', 0);
+        PDF::Cell(0, 0, ' '.$karyawan->nik, 0, 0, 'L', 0, '', 0);
+        PDF::Ln();
+
+        PDF::Ln(10);
+
+        $curY = PDF::getY();
+        // PDF::setXY(108, $curY - 5);
+        // PDF::Cell(15, 5, 'Ball', 1, 0, 'C', 0, '', 0);
+        // PDF::Cell(15, 5, 'Pcs', 1, 0, 'C', 0, '', 0);
+        PDF::Ln();
+
+        $no = 1;
+        // foreach ($invoice_detail as $item) {
+        //     $barang = Barang::find($item->barang_id);
+
+        //     PDF::Cell(8, 6, $no, 1, 0, 'R', 0, '', 1);
+        //     PDF::Cell(25, 6, $barang->jenis, 1, 0, 'L', 0, '', 1);
+        //     PDF::Cell(60, 6, $barang->nama, 1, 0, 'L', 0, '', 1);
+        //     PDF::Cell(15, 6, number_format($item->jumlah_ball, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+        //     PDF::Cell(15, 6, number_format($item->jumlah, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+        //     PDF::Cell(25, 6, number_format($item->harga_barang, 2, '.', ','), 1, 0, 'R', 0, '', 1);
+        //     PDF::Cell(30, 6, number_format($item->subtotal, 2, '.', ','), 1, 0, 'R', 0, '', 1);
+        //     PDF::Ln();
+
+        //     ++$no;
+        // }
+
+        PDF::Ln();
+
+        //MultiCell ($w, $h, $txt, $border=0, $align=‘J’, $fill=false, $ln=1, $x=“, $y=”, $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0, $valign=’T’, $fitcell=false)
+
+        PDF::setY($curY);
+        PDF::Cell(90, 0, 'Tanggal masuk', 0, 'L', false, 0);
+        PDF::Cell(0, 0, ' '.$karyawan->tgl_masuk, 0, 0, 'L', 0, '', 0);
+        PDF::Ln(7);
+        PDF::Cell(90, 0, 'Nilai Upah', 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' '.$karyawan->nilai_upah, 0, 0, 'L', 0, '', 0);
+        PDF::Ln();
+        PDF::Cell(90, 0, 'Uang Lembur', 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' '.$karyawan->uang_lembur, 0, 0, 'L', 0, '', 0);
+        PDF::Ln();
+        PDF::Cell(90, 0, 'Uang Makan', 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' '.$karyawan->uang_makan, 0, 0, 'L', 0, '', 0);
+        PDF::Ln(7);
+        PDF::Cell(90, 0, 'Tunjangan', 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' '.$karyawan->tunjangan, 0, 0, 'L', 0, '', 0);
+        PDF::Ln();
+        PDF::Cell(90, 0, 'Total Pendapatan', 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' '.$nilai_upah, 0, 0, 'L', 0, '', 0);
+        PDF::Ln();
+
+        // Output ($name='doc.pdf', $dest='I'), I=inline, D=Download
+        PDF::Output('slip_gaji.pdf');
+
+        // need to call exit, i don't know why
+        exit;
     }
 }

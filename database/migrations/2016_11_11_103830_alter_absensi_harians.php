@@ -21,6 +21,8 @@ class AlterAbsensiHarians extends Migration
             $table->time('jml_jam_kerja');
             $table->string('departemen');
             $table->time('jml_kehadiran');
+            $table->integer('jam')->nullable();
+            $table->integer('menit')->nullable();
 
         });
     }
@@ -40,6 +42,8 @@ class AlterAbsensiHarians extends Migration
             $table->dropColumn('jml_jam_kerja');
             $table->dropColumn('departemen');
             $table->dropColumn('jml_kehadiran');
+            $table->dropColumn('jam');
+            $table->dropColumn('menit');
         });
     }
 }

@@ -235,7 +235,7 @@ var karyawanModule = (function(commonModule) {
             url: "/karyawan-tetap/" + id,
             dataType: "json",
         }).done(function(response) {
-            console.log(response);
+            // console.log("id: " + id);
             if (response.status == 1) {
 
                 /* Clear Modal Body */
@@ -243,10 +243,10 @@ var karyawanModule = (function(commonModule) {
                 $('#print_modal').find(".modal-body").html("");
 
                 /* Insert Data to Modal Body */
-                $('#print_modal').find(".modal-body").append('<table class="table table-bordered table-striped"><thead><tr><th>NIK</th><th>Nama</th><th>Departemen</th></thead><tbody>');
+                $('#print_modal').find(".modal-body").append('<table class="table table-bordered table-striped"><thead><tr><th>NIK</th><th>Nama</th><th>Status</th><th>Norek</th></thead><tbody>');
 
                 $.each(response.records, function(i, record) {
-                    $('#print_modal').find("tbody").append("<tr><td><input name ='id' type='hidden' value='" + record.id + "' /><input name ='tanggal' type='hidden' value='" + record.tanggal + "' />" + record.id + "</td><td>" + record.nama + "</td><td>" + record.departemen + "</td></tr>");
+                    $('#print_modal').find("tbody").append("<tr><td><input name ='id' type='hidden' value='" + record.id + "' />" + record.nik + "</td><td>" + record.nama + "</td><td>" + record.keterangan + "</td><td>" + record.norek + "</td></tr>");
 
                 });
 

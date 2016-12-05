@@ -87,7 +87,7 @@
 <!-- /.content -->
 @include('absensi-harian.partials.add_modal')
 @include('absensi-harian.partials.show_detail_modal')
-@include('absensi-harian.partials.print_modal')
+
 <!-- page script -->
 <style>
 .datepicker{z-index:1151 !important;}
