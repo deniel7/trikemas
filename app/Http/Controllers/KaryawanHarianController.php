@@ -34,13 +34,41 @@ class KaryawanHarianController extends Controller
         ->editColumn('uang_makan', '<span class="pull-right">{{ $uang_makan }}</span>')
         ->editColumn('uang_lembur', '<span class="pull-right">{{ $uang_lembur }}</span>')
         ->editColumn('norek', '<span class="pull-right">{{ $norek }}</span>')
-        ->addColumn('action', function ($karyawan) {
-            $html = '<div style="width: 70px; margin: 0px auto;" class="text-center btn-group btn-group-justified" role="group">';
-            $html .= '<a role="button" class="btn btn-warning" href="karyawan-tetap/'.$karyawan->id.'/edit"><i class="fa fa-fw fa-pencil"></i> EDIT</a>';
+        ->addColumn('action', function ($karyawan_harian) {
+
+            $html = '<div class="text-center btn-group btn-group-justified">';
+
+            $html .= '<a href="karyawan-tetap/'.$karyawan_harian->id.'/edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a>';
+            $html .= '<a href="javascript:;" onClick="karyawanHarianModule.showPrint('.$karyawan_harian->id.');"><button type="button" class="btn btn-sm"><i class="fa fa-print"></i></button></a>';
             $html .= '</div>';
 
             return $html;
         })
+
         ->make(true);
+    }
+
+    public function show($karyawan_harian)
+    {
+        $id = $karyawan_harian->id;
+
+        $details = DB::table('karyawans')
+        ->select('karyawans.id', 'nik', 'nama', 'norek', 'status_karyawans.keterangan')
+        ->join('status_karyawans', 'status_karyawans.id', '=', 'karyawans.status_karyawan_id')
+        ->where('karyawans.id', '=', $id)
+        ->get();
+
+        // $test = Karyawan::find($id);
+        if (count($details) == 1) {
+            return response()->json([
+                'status' => 1,
+                'records' => $details,
+                ]);
+        } else {
+            return response()->json([
+                'status' => 0,
+                'message' => 'Failed',
+                ]);
+        }
     }
 }

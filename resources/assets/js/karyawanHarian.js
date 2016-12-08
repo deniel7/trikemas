@@ -1,14 +1,14 @@
 var karyawanHarianModule = (function(commonModule) {
 
     var datatableBaseURL = commonModule.datatableBaseURL + 'karyawan-harians';
-    
+
     var existing_model = null;
 
     var init = function() {
         _applyDatatable();
     };
-    
-    
+
+
     var _applyDatatable = function() {
         /* Tambah Input Field di TFOOT */
         $('#datatable tfoot th').each(function() {
@@ -93,9 +93,45 @@ var karyawanHarianModule = (function(commonModule) {
         });
 
     };
+    var showPrint = function(id) {
+
+        $.ajax({
+            method: "GET",
+            url: "/karyawan-harian/" + id,
+            dataType: "json",
+        }).done(function(response) {
+
+            if (response.status == 1) {
+
+                /* Clear Modal Body */
+                $('#print_modal').find(".modal-title").html("");
+                $('#print_modal').find(".modal-body").html("");
+
+                /* Insert Data to Modal Body */
+                $('#print_modal').find(".modal-body").append('<table class="table table-bordered table-striped"><thead><tr><th>NIK</th><th>Nama</th><th>Status</th><th>Norek</th></thead><tbody>');
+
+                $.each(response.records, function(i, record) {
+                    $('#print_modal').find("tbody").append("<tr><td><input name ='id' type='hidden' value='" + record.id + "' />" + record.nik + "</td><td>" + record.nama + "</td><td>" + record.keterangan + "</td><td>" + record.norek + "</td></tr>");
+
+                });
+
+                $('#print_modal').find(".modal-body").append("</table>");
+
+
+                /* Finally show */
+                $('#print_modal').modal();
+            } else {
+                alert('Data Pegawai salah');
+            }
+
+        }).fail(function(response) {
+
+        });
+    };
 
     return {
-        init: init
+        init: init,
+        showPrint: showPrint
     };
 
 })(commonModule);

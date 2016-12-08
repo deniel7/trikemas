@@ -42,7 +42,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     /* Provide controller methods with object instead of ID */
     Route::model('karyawan-tetap', 'App\Karyawan');
-    Route::model('karyawan-harian', 'App\KaryawanHarian');
+    Route::model('karyawan-harian', 'App\Karyawan');
 
     /* Tujuan */
     Route::get('/tujuan/list', 'TujuanController@datatables');
@@ -93,12 +93,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('datatable/absensi-harians', 'AbsensiHarianController@datatable');
     Route::post('datatable/absensi-approvals', 'AbsensiApprovalController@datatable');
 
-    /* Master */
+    /* karyawan */
     Route::post('karyawan-tetap/print/', 'KaryawanTetapController@doPrint');
-    Route::get('karyawan-tetap/{id}', 'KaryawanTetapController@show');
-
     Route::resource('karyawan-tetap', 'KaryawanTetapController');
-
     Route::controller('karyawan-tetap', 'KaryawanTetapController');
 
     Route::resource('karyawan-harian', 'KaryawanHarianController');
@@ -109,12 +106,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::controller('absensi-harian', 'AbsensiHarianController');
 
     Route::resource('absensi-approval', 'AbsensiApprovalController');
-    Route::get('absensi-harian/{id}', 'AbsensiHarianController@show');
 
     /* upload jam lembur */
     Route::post('upload-absen/lembur/{id}', 'UploadAbsenController@postUpdate');
     Route::resource('upload-absen', 'UploadAbsenController');
     Route::controller('upload-absen', 'UploadAbsenController');
-    Route::get('upload-absen/{id}', 'UploadAbsenController@show');
+
     /* System */
 });

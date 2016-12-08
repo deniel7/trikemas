@@ -91,8 +91,6 @@ class AbsensiHarianController extends Controller
 
                     //pembulatan jam dan menit jika terlambat
 
-                    // dd($jam);
-
                     if ($jam == 7) {
                         if ($menit > 44) {
                             $jam = 8;

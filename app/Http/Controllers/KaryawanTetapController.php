@@ -79,7 +79,7 @@ class KaryawanTetapController extends Controller
         $karyawan->nilai_upah = $nilai_upah_;
         $karyawan->uang_makan = $uang_makan_;
         $karyawan->uang_lembur = $uang_lembur_;
-        //dd($request);
+
         $karyawan->save();
 
         DB::commit();
@@ -129,10 +129,9 @@ class KaryawanTetapController extends Controller
         }
     }
 
-    public function show($id)
+    public function show($karyawan_tetap)
     {
-
-        //DB::enableQueryLog();
+        $id = $karyawan_tetap->id;
 
         $details = DB::table('karyawans')
         ->select('karyawans.id', 'nik', 'nama', 'norek', 'status_karyawans.keterangan')
@@ -140,13 +139,8 @@ class KaryawanTetapController extends Controller
         ->where('karyawans.id', '=', $id)
         ->get();
 
-        //$query = DB::getQueryLog();
-       // $lastquery = end($query);
-        //$details[] = 1;
-        //dd($id);
-
-        $test = Karyawan::find($id);
-        if ($test) {
+        // $test = Karyawan::find($id);
+        if (count($details) == 1) {
             return response()->json([
                 'status' => 1,
                 'records' => $details,

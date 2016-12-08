@@ -7,9 +7,7 @@ var karyawanModule = (function(commonModule) {
     var init = function() {
         _applyDatatable();
         _applyDatepicker();
-        _applyThousandSeperator();
         _applyAutoNumeric();
-
 
     };
 
@@ -235,7 +233,7 @@ var karyawanModule = (function(commonModule) {
             url: "/karyawan-tetap/" + id,
             dataType: "json",
         }).done(function(response) {
-            // console.log("id: " + id);
+
             if (response.status == 1) {
 
                 /* Clear Modal Body */
