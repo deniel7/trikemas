@@ -21,6 +21,8 @@ elixir(function(mix) {
         'karyawan.js',
         'karyawanHarian.js',
         'absensiHarian.js',
-        'absensiApproval.js'
+        'absensiApproval.js',
+        'absensiPacking.js',
+        'karyawanValidation.js'
     ]);
 });

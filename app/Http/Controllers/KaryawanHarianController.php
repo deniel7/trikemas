@@ -18,7 +18,7 @@ class KaryawanHarianController extends Controller
     public function datatable()
     {
         $karyawan_harians = DB::table('karyawans')
-        ->select(['karyawans.id', 'karyawans.status_karyawan_id', 'status_karyawans.keterangan', 'karyawans.nik', 'karyawans.nama', 'karyawans.alamat', 'karyawans.phone', 'karyawans.lulusan', 'karyawans.tgl_masuk', 'karyawans.nilai_upah', 'karyawans.uang_makan', 'karyawans.uang_lembur', 'karyawans.norek'])
+        ->select(['karyawans.id', 'karyawans.status_karyawan_id', 'status_karyawans.keterangan', 'karyawans.nik', 'karyawans.nama', 'karyawans.alamat', 'karyawans.phone', 'karyawans.lulusan', 'karyawans.tgl_masuk', 'karyawans.nilai_upah', 'karyawans.uang_makan', 'karyawans.uang_lembur', 'karyawans.tunjangan', 'karyawans.norek'])
         ->join('status_karyawans', 'karyawans.status_karyawan_id', '=', 'status_karyawans.id')
         ->where('karyawans.status_karyawan_id', '=', 2);
 
@@ -30,9 +30,13 @@ class KaryawanHarianController extends Controller
         ->editColumn('phone', '<span class="pull-right">{{ $phone }}</span>')
         ->editColumn('lulusan', '<span class="pull-right">{{ $lulusan }}</span>')
         ->editColumn('tgl_masuk', '<span class="pull-right">{{ $tgl_masuk }}</span>')
-        ->editColumn('nilai_upah', '<span class="pull-right">{{ $nilai_upah }}</span>')
-        ->editColumn('uang_makan', '<span class="pull-right">{{ $uang_makan }}</span>')
-        ->editColumn('uang_lembur', '<span class="pull-right">{{ $uang_lembur }}</span>')
+        ->editColumn('nilai_upah', '<span class="pull-right">{{ number_format($nilai_upah,0,".",",") }}</span>')
+
+        ->editColumn('uang_makan', '<span class="pull-right">{{ number_format($uang_makan,0,".",",") }}</span>')
+
+        ->editColumn('uang_lembur', '<span class="pull-right">{{ number_format($uang_lembur,0,".",",") }}</span>')
+
+        ->editColumn('tunjangan', '<span class="pull-right">{{ number_format($tunjangan,0,".",",") }}</span>')
         ->editColumn('norek', '<span class="pull-right">{{ $norek }}</span>')
         ->addColumn('action', function ($karyawan_harian) {
 

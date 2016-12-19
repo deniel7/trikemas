@@ -42,6 +42,7 @@
                   <th>Nilai Upah</th>
                   <th>Uang Makan</th>
                   <th>Uang Lembur</th>
+                  <th>Tunjangan</th>
                   <th width="10%">Norek</th>
             
                   <th width="10%">Actions</th>
@@ -61,6 +62,7 @@
                 <th>Nilai Upah</th>
                 <th>Uang Makan</th>
                 <th>Uang Lembur</th>
+                <th>Tunjangan</th>
                 <th>Norek</th>
                 <th></th>
               </tr>

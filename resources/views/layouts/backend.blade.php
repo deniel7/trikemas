@@ -22,6 +22,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- Datepicker -->
   <link rel="stylesheet" href="{{ asset('bower_components/AdminLTE/plugins/datepicker/datepicker3.css') }}">
 
+  <!-- Sweet Alert -->
+    <script src="{{ asset('bower_components/sweetalert/dist/sweetalert.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('bower_components/sweetalert/dist/sweetalert.css') }}">
+  
   <!-- Select2 -->
   <link rel="stylesheet" href="{{ asset('bower_components/AdminLTE/plugins/select2/select2.min.css') }}">
 
@@ -192,6 +196,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <script src="{{ asset('bower_components/AdminLTE/plugins/select2/select2.min.js') }}"></script>
   <!-- Datepicker -->
   <script src="{{ asset('bower_components/AdminLTE/plugins/datepicker/bootstrap-datepicker.js') }}"></script>
+  <!-- Axios -->
+    <script src="{{ asset('bower_components/axios/dist/axios.min.js') }}"></script>
   <!-- JS ALL -->
   <script type="text/javascript" src="{{ asset('js/all.js') }}"></script>
   <!-- autoNumeric -->

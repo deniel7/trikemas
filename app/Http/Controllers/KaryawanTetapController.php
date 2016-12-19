@@ -21,7 +21,7 @@ class KaryawanTetapController extends Controller
     public function datatable()
     {
         $karyawans = DB::table('karyawans')
-        ->select(['karyawans.id', 'status_karyawans.keterangan', 'karyawans.nik', 'karyawans.nama', 'karyawans.alamat', 'karyawans.phone', 'karyawans.lulusan', 'karyawans.tgl_masuk', 'karyawans.nilai_upah', 'karyawans.uang_makan', 'karyawans.uang_lembur', 'karyawans.norek'])
+        ->select(['karyawans.id', 'status_karyawans.keterangan', 'karyawans.nik', 'karyawans.nama', 'karyawans.alamat', 'karyawans.phone', 'karyawans.lulusan', 'karyawans.tgl_masuk', 'karyawans.nilai_upah', 'karyawans.uang_makan', 'karyawans.uang_lembur', 'karyawans.tunjangan', 'karyawans.norek'])
         ->join('status_karyawans', 'karyawans.status_karyawan_id', '=', 'status_karyawans.id')
         ->where('karyawans.status_karyawan_id', '=', 1);
 
@@ -33,9 +33,15 @@ class KaryawanTetapController extends Controller
         ->editColumn('phone', '<span class="pull-right">{{ $phone }}</span>')
         ->editColumn('lulusan', '<span class="pull-right">{{ $lulusan }}</span>')
         ->editColumn('tgl_masuk', '<span class="pull-right">{{ $tgl_masuk }}</span>')
-        ->editColumn('nilai_upah', '<span class="pull-right">{{ $nilai_upah }}</span>')
-        ->editColumn('uang_makan', '<span class="pull-right">{{ $uang_makan }}</span>')
-        ->editColumn('uang_lembur', '<span class="pull-right">{{ $uang_lembur }}</span>')
+
+        ->editColumn('nilai_upah', '<span class="pull-right">{{ number_format($nilai_upah,0,".",",") }}</span>')
+
+        ->editColumn('uang_makan', '<span class="pull-right">{{ number_format($uang_makan,0,".",",") }}</span>')
+
+        ->editColumn('uang_lembur', '<span class="pull-right">{{ number_format($uang_lembur,0,".",",") }}</span>')
+
+        ->editColumn('tunjangan', '<span class="pull-right">{{ number_format($tunjangan,0,".",",") }}</span>')
+
         ->editColumn('norek', '<span class="pull-right">{{ $norek }}</span>')
         ->addColumn('action', function ($karyawan) {
 
@@ -76,9 +82,9 @@ class KaryawanTetapController extends Controller
         $karyawan->nik = $request->input('nik');
         $karyawan->norek = $request->input('norek');
 
-        $karyawan->nilai_upah = $nilai_upah_;
-        $karyawan->uang_makan = $uang_makan_;
-        $karyawan->uang_lembur = $uang_lembur_;
+        // $karyawan->nilai_upah = $nilai_upah_;
+        // $karyawan->uang_makan = $uang_makan_;
+        // $karyawan->uang_lembur = $uang_lembur_;
 
         $karyawan->save();
 
@@ -209,30 +215,9 @@ class KaryawanTetapController extends Controller
         PDF::Cell(0, 0, 'Bandung', 0, 0, 'L', 0, '', 0);
         PDF::Ln();
 
-        PDF::SetFont('times', 'B', 16);
-        PDF::setXY(151, 10);
-        PDF::Cell(0, 0, 'S L I P G A J I', 0, 0, 'L', 0, '', 0);
-        PDF::Ln();
+        PDF::setXY(80, 14);
 
-        PDF::setX(130);
-        PDF::SetFont('', '', 10);
-        PDF::Cell(30, 0, 'Periode :', 0, 0, 'R', 0, '', 0);
-        PDF::Cell(0, 0, ' '.$start_date.' s/d '.$end_date, 0, 0, 'L', 0, '', 0);
-        PDF::Ln();
-        PDF::setX(130);
-        PDF::Cell(30, 0, 'Tanggal Cetak :', 0, 0, 'R', 0, '', 0);
-        PDF::Cell(0, 0, ' '.date('d-m-Y h:m'), 0, 0, 'L', 0, '', 0);
-        PDF::Ln();
-        PDF::setX(130);
-        PDF::Cell(30, 0, 'Nama :', 0, 0, 'R', 0, '', 0);
-        PDF::Cell(0, 0, ' '.$karyawan->nama, 0, 0, 'L', 0, '', 0);
-        PDF::Ln();
-        PDF::setX(130);
-        PDF::Cell(30, 0, 'NIK :', 0, 0, 'R', 0, '', 0);
-        PDF::Cell(0, 0, ' '.$karyawan->nik, 0, 0, 'L', 0, '', 0);
-        PDF::Ln();
-
-        PDF::Ln(10);
+        PDF::Ln(20);
 
         $curY = PDF::getY();
         // PDF::setXY(108, $curY - 5);
@@ -261,23 +246,63 @@ class KaryawanTetapController extends Controller
         //MultiCell ($w, $h, $txt, $border=0, $align=‘J’, $fill=false, $ln=1, $x=“, $y=”, $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0, $valign=’T’, $fitcell=false)
 
         PDF::setY($curY);
-        PDF::Cell(90, 0, 'Tanggal masuk', 0, 'L', false, 0);
-        PDF::Cell(0, 0, ' '.$karyawan->tgl_masuk, 0, 0, 'L', 0, '', 0);
+
+        PDF::SetFont('', '', 9);
+        PDF::Cell(90, 0, 'Periode :', 0, 'L', false, 0);
+        PDF::Cell(0, 0, ' '.$start_date.' s/d '.$end_date, 0, 0, 'L', 0, '', 0);
+        PDF::Ln();
+
+        PDF::SetFont('', '', 9);
+        PDF::Cell(90, 0, 'Tanggal Cetak :', 0, 'L', false, 0);
+        PDF::Cell(0, 0, ' '.date('d-m-Y h:m'), 0, 0, 'L', 0, '', 0);
         PDF::Ln(7);
-        PDF::Cell(90, 0, 'Nilai Upah', 0, 0, 'L', 0, '', 0);
+
+        PDF::Cell(90, 0, 'Nama', 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' '.$karyawan->nama, 0, 0, 'L', 0, '', 0);
+        PDF::Ln();
+
+        PDF::Cell(90, 0, 'Bagian', 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' '.$karyawan->nama, 0, 0, 'L', 0, '', 0);
+        PDF::Ln();
+
+        PDF::Cell(90, 0, 'Upah', 0, 0, 'L', 0, '', 0);
         PDF::Cell(0, 0, ' '.$karyawan->nilai_upah, 0, 0, 'L', 0, '', 0);
         PDF::Ln();
-        PDF::Cell(90, 0, 'Uang Lembur', 0, 0, 'L', 0, '', 0);
-        PDF::Cell(0, 0, ' '.$karyawan->uang_lembur, 0, 0, 'L', 0, '', 0);
+
+        PDF::Cell(90, 0, 'Tunj.Jab', 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' '.$karyawan->tunjangan, 0, 0, 'L', 0, '', 0);
         PDF::Ln();
+
         PDF::Cell(90, 0, 'Uang Makan', 0, 0, 'L', 0, '', 0);
         PDF::Cell(0, 0, ' '.$karyawan->uang_makan, 0, 0, 'L', 0, '', 0);
         PDF::Ln(7);
-        PDF::Cell(90, 0, 'Tunjangan', 0, 0, 'L', 0, '', 0);
-        PDF::Cell(0, 0, ' '.$karyawan->tunjangan, 0, 0, 'L', 0, '', 0);
+
+        PDF::Cell(90, 0, 'Lbr. Rutin', 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' '.$karyawan->uang_lembur, 0, 0, 'L', 0, '', 0);
         PDF::Ln();
-        PDF::Cell(90, 0, 'Total Pendapatan', 0, 0, 'L', 0, '', 0);
-        PDF::Cell(0, 0, ' '.$nilai_upah, 0, 0, 'L', 0, '', 0);
+
+        PDF::Cell(90, 0, 'Lbr. Biasa', 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' '.$karyawan->uang_makan, 0, 0, 'L', 0, '', 0);
+        PDF::Ln();
+
+        PDF::Cell(90, 0, 'Lembur Off', 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' '.$karyawan->uang_makan, 0, 0, 'L', 0, '', 0);
+        PDF::Ln(7);
+
+        PDF::Cell(90, 0, 'Potongan Jab', 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' '.$karyawan->uang_makan, 0, 0, 'L', 0, '', 0);
+        PDF::Ln();
+
+        PDF::Cell(90, 0, 'Potongan Umk', 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' '.$karyawan->uang_makan, 0, 0, 'L', 0, '', 0);
+        PDF::Ln();
+
+        PDF::Cell(90, 0, 'Potongan Koperasi', 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' '.$karyawan->uang_makan, 0, 0, 'L', 0, '', 0);
+        PDF::Ln(12);
+
+        PDF::Cell(90, 0, 'Total', 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' '.$karyawan->tunjangan, 0, 0, 'L', 0, '', 0);
         PDF::Ln();
 
         // Output ($name='doc.pdf', $dest='I'), I=inline, D=Download

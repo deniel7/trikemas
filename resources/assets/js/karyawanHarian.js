@@ -63,6 +63,9 @@ var karyawanHarianModule = (function(commonModule) {
                 data: 'uang_lembur',
                 name: 'karyawan_harians.uang_lembur'
             }, {
+                data: 'tunjangan',
+                name: 'karyawan_harians.tunjangan'
+            }, {
                 data: 'norek',
                 name: 'karyawan_harians.norek'
             }, {

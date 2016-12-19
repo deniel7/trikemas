@@ -156,7 +156,7 @@
 <!-- page script -->
     <script type="text/javascript">
     $(document).ready(function(){
-    karyawanModule.init();
+    karyawanValidation.init();
     });
     </script>
 @endsection

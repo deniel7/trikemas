@@ -92,6 +92,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('datatable/karyawan-harians', 'KaryawanHarianController@datatable');
     Route::post('datatable/absensi-harians', 'AbsensiHarianController@datatable');
     Route::post('datatable/absensi-approvals', 'AbsensiApprovalController@datatable');
+    Route::post('datatable/absensi-packings', 'AbsensiPackingController@datatable');
 
     /* karyawan */
     Route::post('karyawan-tetap/print/', 'KaryawanTetapController@doPrint');
@@ -104,7 +105,8 @@ Route::group(['middleware' => 'auth'], function () {
     /* Absensi */
     Route::resource('absensi-harian', 'AbsensiHarianController');
     Route::controller('absensi-harian', 'AbsensiHarianController');
-
+    Route::resource('absensi-packing', 'AbsensiPackingController');
+    Route::controller('absensi-packing', 'AbsensiPackingController');
     Route::resource('absensi-approval', 'AbsensiApprovalController');
 
     /* upload jam lembur */
@@ -112,5 +114,4 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('upload-absen', 'UploadAbsenController');
     Route::controller('upload-absen', 'UploadAbsenController');
 
-    /* System */
 });

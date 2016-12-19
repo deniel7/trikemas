@@ -9,6 +9,7 @@ var karyawanModule = (function(commonModule) {
         _applyDatepicker();
         _applyAutoNumeric();
 
+
     };
 
     var _applyAutoNumeric = function() {
@@ -19,98 +20,23 @@ var karyawanModule = (function(commonModule) {
             .on("keyup", function() {
                 $("#frmData").formValidation("revalidateField", $("#uang_makan"));
             });
-    };
-
-    var _applyValidation = function() {
-        $('#frmData').formValidation({
-            framework: "bootstrap",
-            button: {
-                selector: '#btnSubmit',
-                disabled: 'disabled'
-            },
-            icon: null,
-            fields: {
-                status_karyawan_id: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Status Karyawan harus diisi'
-                        }
-                    }
-                },
-                nik: {
-                    validators: {
-                        notEmpty: {
-                            message: 'NIK harus diisi'
-                        }
-                    }
-                },
-                nama: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Nama harus diisi'
-                        }
-                    }
-                },
-                alamat: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Alamat harus diisi'
-                        }
-                    }
-                },
-                phone: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Alamat harus diisi'
-                        }
-                    }
-                },
-                lulusan: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Lulusan harus diisi'
-                        }
-                    }
-                },
-                tgl_masuk: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Tanggal Masuk harus diisi'
-                        }
-                    }
-                },
-                nilai_upah: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Nilai Upah harus diisi'
-                        }
-                    }
-                },
-                uang_makan: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Alamat harus diisi'
-                        }
-                    }
-                },
-                uang_lembur: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Uang lembur harus diisi'
-                        }
-                    }
-                },
-                norek: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Nomor Rekening harus diisi'
-                        }
-                    }
-                }
-            }
-        });
+        $("#nilai_upah").autoNumeric("init", {
+                vMin: '0',
+                vMax: '9999999999999.99'
+            })
+            .on("keyup", function() {
+                $("#frmData").formValidation("revalidateField", $("#nilai_upah"));
+            });
+        $("#uang_lembur").autoNumeric("init", {
+                vMin: '0',
+                vMax: '9999999999999.99'
+            })
+            .on("keyup", function() {
+                $("#frmData").formValidation("revalidateField", $("#uang_lembur"));
+            });
 
     };
+
 
     var _applyThousandSeperator = function() {
         $("input.number").each(function() {
@@ -194,6 +120,9 @@ var karyawanModule = (function(commonModule) {
             }, {
                 data: 'uang_lembur',
                 name: 'karyawans.uang_lembur'
+            }, {
+                data: 'tunjangan',
+                name: 'karyawans.tunjangan'
             }, {
                 data: 'norek',
                 name: 'karyawans.norek'
