@@ -13,6 +13,7 @@ class CreateKaryawansTable extends Migration
         Schema::create('karyawans', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('status_karyawan_id');
+            $table->string('bagian');
             $table->integer('nik');
             $table->string('nama');
             $table->string('alamat');
@@ -22,6 +23,7 @@ class CreateKaryawansTable extends Migration
             $table->integer('nilai_upah');
             $table->integer('uang_makan');
             $table->integer('uang_lembur');
+            $table->integer('pot_koperasi');
             $table->integer('norek');
             $table->timestamps();
         });

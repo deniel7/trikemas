@@ -43,6 +43,7 @@
                   <th>Uang Makan</th>
                   <th>Uang Lembur</th>
                   <th>Tunjangan</th>
+                  <th>Pot. Koperasi</th>
                   <th width="10%">Norek</th>
             
                   <th width="10%">Actions</th>
@@ -63,6 +64,7 @@
                 <th>Uang Makan</th>
                 <th>Uang Lembur</th>
                 <th>Tunjangan</th>
+                <th>Pot. Koperasi</th>
                 <th>Norek</th>
                 <th></th>
               </tr>

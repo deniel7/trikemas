@@ -23,6 +23,7 @@ class AlterAbsensiHarians extends Migration
             $table->time('jml_kehadiran');
             $table->integer('jam')->nullable();
             $table->integer('menit')->nullable();
+            $table->integer('konfirmasi_lembur')->nullable();
 
         });
     }

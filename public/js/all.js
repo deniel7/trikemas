@@ -147,6 +147,9 @@ var karyawanModule = (function(commonModule) {
                 data: 'tunjangan',
                 name: 'karyawans.tunjangan'
             }, {
+                data: 'pot_koperasi',
+                name: 'karyawans.pot_koperasi'
+            }, {
                 data: 'norek',
                 name: 'karyawans.norek'
             }, {
@@ -555,6 +558,9 @@ var absensiHarianModule = (function(commonModule) {
                 data: 'plg_cepat',
                 name: 'absensi_harians.plg_cepat'
             }, {
+                data: 'jenis_lembur',
+                name: 'absensi_harians.jenis_lembur'
+            }, {
                 data: 'jam_lembur',
                 name: 'absensi_harians.jam_lembur'
             }, {
@@ -614,7 +620,7 @@ var absensiHarianModule = (function(commonModule) {
                 $('#detail_modal').find(".modal-body").append('<table class="table table-bordered table-striped"><thead><tr><th>NIK</th><th>Nama</th><th>Departemen</th><th>Scan Masuk</th><th>Scan Keluar</th><th>Lembur</th></tr></thead><tbody>');
 
                 $.each(response.records, function(i, record) {
-                    $('#detail_modal').find("tbody").append("<tr><td><input name ='id' type='hidden' value='" + record.id + "' /><input name ='tanggal' type='hidden' value='" + record.tanggal + "' />" + record.id + "</td><td>" + record.nama + "</td><td>" + record.departemen + "</td><td>" + record.scan_masuk + "</td><td>" + record.scan_pulang + "</td><td>" + record.jam_lembur + "</td></tr><tr><td colspan='5' align='right'>Koreksi Lembur</td><td><input name ='lembur' type='text' value='" + record.jam_lembur + "' /></td></tr>");
+                    $('#detail_modal').find("tbody").append("<tr><td><input name ='id' type='hidden' value='" + record.id + "' /><input name ='tanggal' type='hidden' value='" + record.tanggal + "' />" + record.id + "</td><td>" + record.nama + "</td><td>" + record.departemen + "</td><td>" + record.scan_masuk + "</td><td>" + record.scan_pulang + "</td><td>" + record.jam_lembur + "</td></tr><tr><td colspan='5' align='right'>Jenis Lembur</td><td> <select name='jenis_lembur' class='form-control selectpicker' title='-- Pilih Jenis Lembur --'><option value='0'>Tidak Ada</option><option value='1'>Rutin</option><option value='2'>Biasa</option><option value='3'>Off</option></select></td></tr><tr><td colspan='5' align='right'>Jam Lembur</td><td><input name ='lembur' type='text' /></td></tr>");
 
                 });
 
@@ -874,6 +880,10 @@ var absensiApprovalModule = (function(commonModule) {
             }, {
                 data: 'plg_cepat',
                 name: 'absensi_harians.plg_cepat'
+            }, {
+
+                data: 'jenis_lembur',
+                name: 'absensi_harians.jenis_lembur'
             }, {
                 data: 'jam_lembur',
                 name: 'absensi_harians.jam_lembur'

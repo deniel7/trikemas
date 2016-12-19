@@ -124,6 +124,9 @@ var karyawanModule = (function(commonModule) {
                 data: 'tunjangan',
                 name: 'karyawans.tunjangan'
             }, {
+                data: 'pot_koperasi',
+                name: 'karyawans.pot_koperasi'
+            }, {
                 data: 'norek',
                 name: 'karyawans.norek'
             }, {

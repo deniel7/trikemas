@@ -34,13 +34,15 @@ class UploadAbsenController extends Controller
     {
         $id = $request->input('id');
         $tanggal = $request->input('tanggal');
+        $jenis_lembur = $request->input('jenis_lembur');
 
         $absensies = AbsensiHarian::where('karyawan_id', '=', $id)->where('tanggal', '=', $tanggal)->get();
 
         if ($absensies->count() == 1) {
             $absensies = $absensies->first();
 
-            $absensies->jam_lembur = $request->input('lembur');
+            $absensies->konfirmasi_lembur = $request->input('lembur');
+            $absensies->jenis_lembur = $jenis_lembur;
             $absensies->status = 1;
 
             $absensies->save();

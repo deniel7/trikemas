@@ -198,6 +198,10 @@ var absensiApprovalModule = (function(commonModule) {
                 data: 'plg_cepat',
                 name: 'absensi_harians.plg_cepat'
             }, {
+
+                data: 'jenis_lembur',
+                name: 'absensi_harians.jenis_lembur'
+            }, {
                 data: 'jam_lembur',
                 name: 'absensi_harians.jam_lembur'
             }, {

@@ -19,11 +19,25 @@ class AbsensiApprovalController extends Controller
 
     public function datatable()
     {
-        $absensi_harians = AbsensiHarian::select(['absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.id', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'karyawans.nik', 'karyawans.nama', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.status'])
+        $absensi_harians = AbsensiHarian::select(['absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.id', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'karyawans.nik', 'karyawans.nama', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jenis_lembur', 'absensi_harians.status'])
         ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id');
 
         return Datatables::of($absensi_harians)
         ->addColumn('check', '<input type="checkbox" name="selected_karyawans[]" value="{{ $id_absen }}">')
+
+        ->editColumn('jenis_lembur', function ($absensi_harian) {
+
+            if ($absensi_harian->jenis_lembur == 1) {
+                return $absensi_harian->jenis_lembur = 'Rutin';
+            } elseif ($absensi_harian->jenis_lembur == 2) {
+                return $absensi_harian->jenis_lembur = 'Biasa';
+            } elseif ($absensi_harian->jenis_lembur == 3) {
+                return $absensi_harian->jenis_lembur = 'Off';
+            } else {
+                return $absensi_harian->jenis_lembur = '-';
+            }
+
+        })
 
         ->editColumn('status', function ($absensi_harian) {
 
