@@ -150,6 +150,9 @@ var karyawanModule = (function(commonModule) {
                 data: 'pot_koperasi',
                 name: 'karyawans.pot_koperasi'
             }, {
+                data: 'pot_bpjs',
+                name: 'karyawans.pot_bpjs'
+            }, {
                 data: 'norek',
                 name: 'karyawans.norek'
             }, {
@@ -564,6 +567,9 @@ var absensiHarianModule = (function(commonModule) {
                 data: 'jam_lembur',
                 name: 'absensi_harians.jam_lembur'
             }, {
+                data: 'konfirmasi_lembur',
+                name: 'absensi_harians.konfirmasi_lembur'
+            }, {
                 data: 'jml_kehadiran',
                 name: 'absensi_harians.jml_kehadiran'
             }, {
@@ -888,8 +894,14 @@ var absensiApprovalModule = (function(commonModule) {
                 data: 'jam_lembur',
                 name: 'absensi_harians.jam_lembur'
             }, {
+                data: 'konfirmasi_lembur',
+                name: 'absensi_harians.konfirmasi_lembur'
+            }, {
                 data: 'jml_kehadiran',
                 name: 'absensi_harians.jml_kehadiran'
+            }, {
+                data: 'pot_absensi',
+                name: 'absensi_harians.pot_absensi'
             }, {
                 data: 'status',
                 name: 'absensi_harians.status'
@@ -937,22 +949,38 @@ var absensiApprovalModule = (function(commonModule) {
                 $('#detail_modal').find(".modal-body").html("");
 
                 /* Insert Data to Modal Body */
-
-
-
-
-                $('#detail_modal').find(".modal-body").append('<table class="table table-bordered table-striped"><thead><tr><th>NIK</th><th>Nama</th><th>Departemen</th><th>Scan Masuk</th><th>Scans Keluar</th><th>Jam Lembur</th></tr></thead><tbody>');
+                $('#detail_modal').find(".modal-body").append('<table class="table table-bordered table-striped"><thead><tr><th>NIK</th><th>Nama</th><th>Departemen</th><th>Scan Masuk</th><th>Scans Keluar</th><th>Jam Lembur</th><th>Konfirmasi Lembur</th></tr></thead><tbody>');
 
                 $.each(response.records, function(i, record) {
-                    $('#detail_modal').find("tbody").append("<tr><td><input name ='id' type='hidden' value='" + record.id + "' /><input name ='tanggal' type='hidden' value='" + record.tanggal + "' />" + record.nik + "</td><td>" + record.nama + "</td><td>" + record.departemen + "</td><td>" + record.scan_masuk + "</td><td>" + record.scan_pulang + "</td><td>" + record.jam_lembur + "</td></tr>");
+                    $('#detail_modal').find("tbody").append("<tr><td><input name ='id' type='hidden' value='" + record.id + "' /><input name ='tanggal' type='hidden' value='" + record.tanggal + "' />" + record.nik + "</td><td>" + record.nama + "</td><td>" + record.departemen + "</td><td>" + record.scan_masuk + "</td><td>" + record.scan_pulang + "</td><td>" + record.jam_lembur + "</td><td>" + record.konfirmasi_lembur + "</td></tr>");
 
                 });
 
                 $('#detail_modal').find(".modal-body").append("</table>");
 
 
+
+                /* Clear Modal Body */
+                $('#detail_modal2').find(".modal-body2").html("");
+
+
+                /* Insert Data to Modal Body */
+                $('#detail_modal2').find(".modal-body2").append('<table class="table table-bordered table-striped"><thead><tr><th>Upah</th><th>Uang Makan</th><th>Pot. Koperasi</th><th>Pot. BPJS</th><th>Tunjangan</th></tr></thead><tbody>');
+
+                $.each(response.records, function(i, record) {
+                    $('#detail_modal2').find("tbody").append("<tr><td><input name ='id' type='hidden' value='" + record.id + "' /><input name ='tanggal' type='hidden' value='" + record.tanggal + "' />" + record.nilai_upah + "</td><td>" + record.uang_makan + "</td><td>" + record.pot_koperasi + "</td><td>" + record.pot_bpjs + "</td><td>" + record.tunjangan + "</td></tr>");
+
+                });
+
+                $('#detail_modal2').find(".modal-body2").append("</table>");
+
+
                 /* Finally show */
                 $('#detail_modal').modal();
+
+
+
+
             } else {
                 alert('Data Pegawai belum ada');
             }

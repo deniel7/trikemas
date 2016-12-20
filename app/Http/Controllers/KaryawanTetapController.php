@@ -21,7 +21,7 @@ class KaryawanTetapController extends Controller
     public function datatable()
     {
         $karyawans = DB::table('karyawans')
-        ->select(['karyawans.id', 'status_karyawans.keterangan', 'karyawans.nik', 'karyawans.nama', 'karyawans.alamat', 'karyawans.phone', 'karyawans.lulusan', 'karyawans.tgl_masuk', 'karyawans.nilai_upah', 'karyawans.uang_makan', 'karyawans.uang_lembur', 'karyawans.pot_koperasi', 'karyawans.tunjangan', 'karyawans.norek'])
+        ->select(['karyawans.id', 'status_karyawans.keterangan', 'karyawans.nik', 'karyawans.nama', 'karyawans.alamat', 'karyawans.phone', 'karyawans.lulusan', 'karyawans.tgl_masuk', 'karyawans.nilai_upah', 'karyawans.uang_makan', 'karyawans.uang_lembur', 'karyawans.pot_koperasi', 'karyawans.pot_bpjs', 'karyawans.tunjangan', 'karyawans.norek'])
         ->join('status_karyawans', 'karyawans.status_karyawan_id', '=', 'status_karyawans.id')
         ->where('karyawans.status_karyawan_id', '=', 1);
 
@@ -43,6 +43,8 @@ class KaryawanTetapController extends Controller
         ->editColumn('tunjangan', '<span class="pull-right">{{ number_format($tunjangan,0,".",",") }}</span>')
 
         ->editColumn('pot_koperasi', '<span class="pull-right">{{ number_format($pot_koperasi,0,".",",") }}</span>')
+
+        ->editColumn('pot_bpjs', '<span class="pull-right">{{ number_format($pot_bpjs,0,".",",") }}</span>')
 
         ->editColumn('norek', '<span class="pull-right">{{ $norek }}</span>')
         ->addColumn('action', function ($karyawan) {
@@ -174,6 +176,7 @@ class KaryawanTetapController extends Controller
         //HITUNG TOTAL JAM KERJA
         $total_jam = DB::table('absensi_harians')
         ->where('absensi_harians.karyawan_id', '=', $id)
+        ->where('absensi_harians.status', '=', 2)
         ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
         ->sum('jam');
 
@@ -183,6 +186,7 @@ class KaryawanTetapController extends Controller
         $hari_kerja = DB::table('absensi_harians')
         ->where('jml_kehadiran', '!=', '00:00:00')
         ->where('absensi_harians.karyawan_id', '=', $id)
+        ->where('absensi_harians.status', '=', 2)
         ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
         ->count('jml_kehadiran');
 
@@ -190,6 +194,7 @@ class KaryawanTetapController extends Controller
         $hari_off = DB::table('absensi_harians')
         ->where('jml_kehadiran', '=', '00:00:00')
         ->where('absensi_harians.karyawan_id', '=', $id)
+        ->where('absensi_harians.status', '=', 2)
         ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
         ->count('jml_kehadiran');
 
@@ -208,6 +213,7 @@ class KaryawanTetapController extends Controller
         $total_lembur_rutin = DB::table('absensi_harians')
         ->where('absensi_harians.karyawan_id', '=', $id)
         ->where('absensi_harians.jenis_lembur', '=', 1)
+        ->where('absensi_harians.status', '=', 2)
         ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
         ->sum('konfirmasi_lembur');
 
@@ -224,6 +230,7 @@ class KaryawanTetapController extends Controller
         $total_lembur_off = DB::table('absensi_harians')
         ->where('absensi_harians.karyawan_id', '=', $id)
         ->where('absensi_harians.jenis_lembur', '=', 3)
+        ->where('absensi_harians.status', '=', 2)
         ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
         ->sum('konfirmasi_lembur');
 
@@ -235,8 +242,15 @@ class KaryawanTetapController extends Controller
         // PERHITUNGAN POTONGAN UMK
         $pot_umk = ($gaji / 31) * $hari_off;
 
+        // PENJUMLAHAN POTONGAN ABSENSI
+        $total_pot_absensi = DB::table('absensi_harians')
+        ->where('absensi_harians.karyawan_id', '=', $id)
+        ->where('absensi_harians.status', '=', 2)
+        ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
+        ->sum('pot_absensi');
+
         // PERHITUNGAN TOTAL
-        $total = ($gaji + $karyawan->tunjangan + $uang_makan + $lembur_rutin + $lembur_biasa + $lembur_off) - $pot_jabatan - $pot_umk - $karyawan->pot_koperasi;
+        $total = ($gaji + $karyawan->tunjangan + $uang_makan + $lembur_rutin + $lembur_biasa + $lembur_off) - $pot_jabatan - $pot_umk - $karyawan->pot_koperasi - $total_pot_absensi;
 
         // set document information
         PDF::SetAuthor('PT. TRIMITRA KEMASINDO');
@@ -327,6 +341,10 @@ class KaryawanTetapController extends Controller
 
         PDF::Cell(90, 0, 'Potongan Umk', 0, 0, 'L', 0, '', 0);
         PDF::Cell(0, 0, ' '.number_format($pot_umk, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+        PDF::Ln();
+
+        PDF::Cell(90, 0, 'Potongan Absensi', 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' '.number_format($total_pot_absensi, 0, '.', ','), 0, 0, 'L', 0, '', 0);
         PDF::Ln();
 
         PDF::Cell(90, 0, 'Potongan Koperasi', 0, 0, 'L', 0, '', 0);

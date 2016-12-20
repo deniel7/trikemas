@@ -24,7 +24,7 @@ class AlterAbsensiHarians extends Migration
             $table->integer('jam')->nullable();
             $table->integer('menit')->nullable();
             $table->integer('konfirmasi_lembur')->nullable();
-
+            $table->bigInteger('pot_absensi')->nullable();
         });
     }
 

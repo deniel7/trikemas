@@ -199,6 +199,9 @@ var absensiHarianModule = (function(commonModule) {
                 data: 'jam_lembur',
                 name: 'absensi_harians.jam_lembur'
             }, {
+                data: 'konfirmasi_lembur',
+                name: 'absensi_harians.konfirmasi_lembur'
+            }, {
                 data: 'jml_kehadiran',
                 name: 'absensi_harians.jml_kehadiran'
             }, {

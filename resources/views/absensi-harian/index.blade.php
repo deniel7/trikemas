@@ -46,6 +46,7 @@
                   <th>Pulang Cepat</th>
                   <th>Jenis Lembur</th>
                   <th>Jumlah Lembur</th>
+                  <th>Konfirmasi Lembur</th>
                   <th>Jumlah Kehadiran</th>
                   <th>Status</th>
                   <th width="10%">Actions</th>
@@ -66,8 +67,8 @@
                   <th>Terlambat</th>
                   <th>Pulang Cepat</th>
                   <th>Jenis Lembur</th>
-                  <th>Lembur</th>
-                  
+                  <th>Jumlah Lembur</th>
+                  <th>Konfirmasi Lembur</th>
                   <th>Jumlah Kehadiran</th>
                   <th>Status</th>
                 <th></th>

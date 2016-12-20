@@ -12,6 +12,7 @@ class AlterTableKaryawansAddTunjangan extends Migration
     {
         Schema::table('karyawans', function (Blueprint $table) {
             $table->bigInteger('tunjangan')->nullable();
+            $table->bigInteger('pot_bpjs')->nullable();
             $table->bigInteger('nilai_upah')->change();
             $table->bigInteger('uang_makan')->change();
             $table->bigInteger('uang_lembur')->change();

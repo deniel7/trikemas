@@ -46,7 +46,9 @@
                   <th>Pulang Cepat</th>
                   <th>Jenis Lembur</th>
                   <th>Lembur</th>
+                  <th>Konfirmasi Lembur</th>
                   <th>Jumlah Kehadiran</th>
+                  <th>Pot. Absensi</th>
                   <th>Status</th>
                   <th width="10%">Actions</th>
                 </tr>
@@ -55,6 +57,7 @@
               </tbody>
               <tfoot>
               <tr>
+                  <th></th>
                   <th>Tanggal</th>
                   <th>Nama</th>
                   <th>Shift</th>
@@ -66,7 +69,9 @@
                   <th>Pulang Cepat</th>
                   <th>Jenis Lembur</th>
                   <th>Lembur</th>
+                  <th>Konfirmasi Lembur</th>
                   <th>Jumlah Kehadiran</th>
+                  <th>Pot. Absensi</th>
                   <th>Status</th>
                 <th></th>
               </tr>

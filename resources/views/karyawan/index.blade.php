@@ -44,6 +44,7 @@
                   <th>Uang Lembur</th>
                   <th>Tunjangan</th>
                   <th>Pot. Koperasi</th>
+                  <th>Pot. BPJS</th>
                   <th width="10%">Norek</th>
             
                   <th width="10%">Actions</th>

@@ -103,10 +103,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::controller('karyawan-harian', 'KaryawanHarianController');
 
     /* Absensi */
+
     Route::resource('absensi-harian', 'AbsensiHarianController');
     Route::controller('absensi-harian', 'AbsensiHarianController');
     Route::resource('absensi-packing', 'AbsensiPackingController');
     Route::controller('absensi-packing', 'AbsensiPackingController');
+    Route::post('absensi-approval/potongan/{id}', 'AbsensiApprovalController@postUpdate');
     Route::resource('absensi-approval', 'AbsensiApprovalController');
 
     /* upload jam lembur */
