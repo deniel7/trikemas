@@ -103,11 +103,38 @@
                 </div>
 
                 <div class="form-group">
-                  <label for="berat" class="col-sm-2 control-label">Uang Lembur *</label>
+                  <label for="uang_lembur" class="col-sm-2 control-label">Tunjangan Jabatan</label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" name="uang_lembur" id="uang_lembur" placeholder="Uang Lembur" value="{{ old('uang_lembur') !==null ? : $karyawan->uang_lembur  }}">
+                    <div class="input-group">
+                      <span class="input-group-addon">Rp</span>
+                      <input type="text" class="form-control number" name="tunjangan_jabatan"  id="tunjangan_jabatan" placeholder="Tunjangan Jabatan" data-input="tunjangan_jabatan" value="{{ old('tunjangan_jabatan') !==null ? : $karyawan->tunjangan }}">
+                      
+                    </div>
                   </div>
                 </div>
+
+                <div class="form-group">
+                  <label for="uang_lembur" class="col-sm-2 control-label">Potongan Koperasi</label>
+                  <div class="col-sm-10">
+                    <div class="input-group">
+                      <span class="input-group-addon">Rp</span>
+                      <input type="text" class="form-control number" name="pot_koperasi"  id="pot_koperasi" placeholder="Potongan Koperasi" data-input="pot_koperasi" value="{{ old('pot_koperasi') !==null ? : $karyawan->pot_koperasi }}">
+                      
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="uang_lembur" class="col-sm-2 control-label">Potongan BPJS</label>
+                  <div class="col-sm-10">
+                    <div class="input-group">
+                      <span class="input-group-addon">Rp</span>
+                      <input type="text" class="form-control number" name="pot_bpjs"  id="pot_bpjs" placeholder="Potongan Koperasi" data-input="pot_bpjs" value="{{ old('pot_bpjs') !==null ? : $karyawan->pot_bpjs }}">
+                     
+                    </div>
+                  </div>
+                </div>
+
                 <div class="form-group">
                   <label for="berat" class="col-sm-2 control-label">Nomor Rekening *</label>
                   <div class="col-sm-10">

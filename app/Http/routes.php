@@ -99,6 +99,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('karyawan-tetap', 'KaryawanTetapController');
     Route::controller('karyawan-tetap', 'KaryawanTetapController');
 
+    Route::post('karyawan-harian/print/', 'KaryawanHarianController@doPrint');
     Route::resource('karyawan-harian', 'KaryawanHarianController');
     Route::controller('karyawan-harian', 'KaryawanHarianController');
 

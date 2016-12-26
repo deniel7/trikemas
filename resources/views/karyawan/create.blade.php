@@ -113,15 +113,38 @@
                 </div>
 
                 <div class="form-group">
-                  <label for="uang_lembur" class="col-sm-2 control-label">Uang Lembur *</label>
+                  <label for="uang_lembur" class="col-sm-2 control-label">Tunjangan Jabatan</label>
                   <div class="col-sm-10">
                     <div class="input-group">
                       <span class="input-group-addon">Rp</span>
-                      <input type="text" class="form-control number" name="uang_lembur"  id="uang_lembur" placeholder="Uang Lembur" data-input="uang_lembur" value="{{ str_replace(',', '', old('uang_lembur')) }}">
+                      <input type="text" class="form-control number" name="tunjangan_jabatan"  id="tunjangan_jabatan" placeholder="Tunjangan Jabatan" data-input="tunjangan_jabatan" value="{{ str_replace(',', '', old('tunjangan_jabatan')) }}">
                       <!--<input type="hidden" name="uang_lembur">-->
                     </div>
                   </div>
                 </div>
+
+                <div class="form-group">
+                  <label for="uang_lembur" class="col-sm-2 control-label">Potongan Koperasi</label>
+                  <div class="col-sm-10">
+                    <div class="input-group">
+                      <span class="input-group-addon">Rp</span>
+                      <input type="text" class="form-control number" name="pot_koperasi"  id="pot_koperasi" placeholder="Potongan Koperasi" data-input="pot_koperasi" value="{{ str_replace(',', '', old('pot_koperasi')) }}">
+                      <!--<input type="hidden" name="uang_lembur">-->
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="uang_lembur" class="col-sm-2 control-label">Potongan BPJS</label>
+                  <div class="col-sm-10">
+                    <div class="input-group">
+                      <span class="input-group-addon">Rp</span>
+                      <input type="text" class="form-control number" name="pot_bpjs"  id="pot_bpjs" placeholder="Potongan Koperasi" data-input="pot_bpjs" value="{{ str_replace(',', '', old('pot_bpjs')) }}">
+                      <!--<input type="hidden" name="uang_lembur">-->
+                    </div>
+                  </div>
+                </div>
+
                 <div class="form-group">
                   <label for="norek" class="col-sm-2 control-label">Nomor Rekening *</label>
                   <div class="col-sm-10">
@@ -153,12 +176,7 @@
 
     </section>
     <!-- /.content -->
-<!-- page script -->
-    <script type="text/javascript">
-    $(document).ready(function(){
-    karyawanValidation.init();
-    });
-    </script>
+
 @endsection
 
 @section('other-js')
@@ -167,5 +185,13 @@
     
     <script src="{{ asset('bower_components/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
 
+    <script src="{{ asset('js/karyawanTetap.js') }}"></script>
+      
+    <!-- page script -->
+    <script type="text/javascript">
+    $(document).ready(function() {
+        validations.init();
+    });
+    </script>
 
 @endsection

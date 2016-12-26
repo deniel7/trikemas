@@ -41,7 +41,6 @@
                   <th>Tgl Masuk</th>
                   <th>Nilai Upah</th>
                   <th>Uang Makan</th>
-                  <th>Uang Lembur</th>
                   <th>Tunjangan</th>
                   <th>Pot. Koperasi</th>
                   <th>Pot. BPJS</th>
@@ -63,7 +62,6 @@
                 <th>Tgl Masuk</th>
                 <th>Nilai Upah</th>
                 <th>Uang Makan</th>
-                <th>Uang Lembur</th>
                 <th>Tunjangan</th>
                 <th>Pot. Koperasi</th>
                 <th>Norek</th>
@@ -91,4 +89,14 @@ $(document).ready(function(){
 karyawanModule.init();
 });
 </script>
+@endsection
+
+
+@section('other-js')
+    <script src="{{ asset('vendor/formvalidation/formValidation.min.js') }}"></script>
+    <script src="{{ asset('vendor/formvalidation/framework/bootstrap.min.js') }}"></script>
+    
+    <script src="{{ asset('bower_components/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
+
+
 @endsection

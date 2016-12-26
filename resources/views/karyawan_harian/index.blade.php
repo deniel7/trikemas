@@ -41,8 +41,9 @@
                   <th>Tgl Masuk</th>
                   <th>Nilai Upah</th>
                   <th>Uang Makan</th>
-                  <th>Uang Lembur</th>
                   <th>Tunjangan</th>
+                  <th>Pot. Koperasi</th>
+                  <th>Pot. BPJS</th>
                   <th width="10%">Norek</th>
             
                   <th width="10%">Actions</th>
@@ -61,9 +62,9 @@
                 <th>Tgl Masuk</th>
                 <th>Nilai Upah</th>
                 <th>Uang Makan</th>
-                <th>Uang Lembur</th>
                 <th>Tunjangan</th>
-                <th>Norek</th>
+                <th>Pot. Koperasi</th>
+                <th>Pot. BPJS</th>
                 <th></th>
               </tr>
               </tfoot>
@@ -80,8 +81,8 @@
   
 </section>
 <!-- /.content -->
-@include('karyawan.partials.add_modal')
-@include('karyawan.partials.print_modal')
+@include('karyawan_harian.partials.add_modal')
+@include('karyawan_harian.partials.print_modal')
 
 <!-- page script -->
 <script type="text/javascript">

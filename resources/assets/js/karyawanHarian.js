@@ -6,8 +6,45 @@ var karyawanHarianModule = (function(commonModule) {
 
     var init = function() {
         _applyDatatable();
+        _applyDatepicker();
+        _applyAutoNumeric();
     };
 
+
+    var _applyDatepicker = function() {
+        $('.datepicker').datepicker({
+            weekStart: 1,
+            todayHighlight: true,
+            clearBtn: true,
+            format: 'yyyy-mm-dd',
+            autoclose: true
+        });
+    };
+
+    var _applyAutoNumeric = function() {
+        $("#uang_makan").autoNumeric("init", {
+                vMin: '0',
+                vMax: '9999999999999.99'
+            })
+            .on("keyup", function() {
+                $("#frmData").formValidation("revalidateField", $("#uang_makan"));
+            });
+        $("#nilai_upah").autoNumeric("init", {
+                vMin: '0',
+                vMax: '9999999999999.99'
+            })
+            .on("keyup", function() {
+                $("#frmData").formValidation("revalidateField", $("#nilai_upah"));
+            });
+        $("#uang_lembur").autoNumeric("init", {
+                vMin: '0',
+                vMax: '9999999999999.99'
+            })
+            .on("keyup", function() {
+                $("#frmData").formValidation("revalidateField", $("#uang_lembur"));
+            });
+
+    };
 
     var _applyDatatable = function() {
         /* Tambah Input Field di TFOOT */
@@ -58,16 +95,19 @@ var karyawanHarianModule = (function(commonModule) {
                 name: 'karyawan_harians.nilai_upah'
             }, {
                 data: 'uang_makan',
-                name: 'karyawan_harians.uang_makan'
-            }, {
-                data: 'uang_lembur',
-                name: 'karyawan_harians.uang_lembur'
+                name: 'karyawans.uang_makan'
             }, {
                 data: 'tunjangan',
-                name: 'karyawan_harians.tunjangan'
+                name: 'karyawans.tunjangan'
+            }, {
+                data: 'pot_koperasi',
+                name: 'karyawans.pot_koperasi'
+            }, {
+                data: 'pot_bpjs',
+                name: 'karyawans.pot_bpjs'
             }, {
                 data: 'norek',
-                name: 'karyawan_harians.norek'
+                name: 'karyawans.norek'
             }, {
                 data: 'action',
                 name: 'action',

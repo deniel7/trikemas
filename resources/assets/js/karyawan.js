@@ -118,9 +118,6 @@ var karyawanModule = (function(commonModule) {
                 data: 'uang_makan',
                 name: 'karyawans.uang_makan'
             }, {
-                data: 'uang_lembur',
-                name: 'karyawans.uang_lembur'
-            }, {
                 data: 'tunjangan',
                 name: 'karyawans.tunjangan'
             }, {
