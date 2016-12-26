@@ -78,9 +78,9 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="konsumen_branch_id" class="col-sm-2 control-label">Konsumen Branch </label>
+                  <label for="konsumen_branch_id" class="col-sm-2 control-label">Toko </label>
                   <div class="col-sm-10">
-                    <select name="konsumen_branch_id" id="konsumen_branch_id" class="form-control selectpicker" title="-- Pilih konsumen branch --">
+                    <select name="konsumen_branch_id" id="konsumen_branch_id" class="form-control selectpicker" title="-- Pilih toko --">
                       @foreach($konsumen_branch as $branch)
                         <option value="{{ $branch->id }}" {{ $branch->id == (old('konsumen_branch_id') !== null ? old('konsumen_branch_id') : $invoice_penjualan->konsumen_branch_id) ? 'selected' : '' }} >{{ $branch->nama }}</option>
                       @endforeach
@@ -148,7 +148,7 @@
                       </div>
                       <!-- /.box-header -->
                       
-                      <div class="box-body table-responsive no-padding">
+                      <div class="box-body table-responsive no-padding" style="overflow: visible;">
                         <table class="table table-hover" id="tbl_detail">
                           <tr>
                             <th>Nama Barang</th>
@@ -163,7 +163,12 @@
                             
                             <tr>
                               <td>
-                                <input type="text" value="{{ $detail_penjualan[$i]->barang_id . ' | ' . $barang_helper->find($detail_penjualan[$i]->barang_id)->nama }}" style="width: 300px;" class="form-control nama_barang" name="nama_barang[]" id="nama_barang_{{ $i+1 }}" placeholder="Nama barang">
+                                <select name="nama_barang[]" id="nama_barang_{{ $i+1 }}" class="nama_barang" title="-- Pilih barang --">
+                                  @foreach($barang as $item)
+                                    <option value="{{ $item->id }}" {{$detail_penjualan[$i]->barang_id === $item->id ? 'selected' : ''}} >{{ $item->nama . ' - ' . $item->jenis . ' (' . $item->id . ')' }}</option>
+                                  @endforeach
+                                </select>
+                                <!--<input type="text" value="{{ $detail_penjualan[$i]->barang_id . ' | ' . $barang_helper->find($detail_penjualan[$i]->barang_id)->nama }}" style="width: 300px;" class="form-control nama_barang" name="nama_barang[]" id="nama_barang_{{ $i+1 }}" placeholder="Nama barang">-->
                               </td>
                               <td class="text-right">
                                 <input type="text" value="{{ number_format($detail_penjualan[$i]->jumlah_ball, 0, '.', ',') }}" style="width: 70px;" class="form-control text-right ball" name="ball[]" id="ball_{{ $i+1 }}" placeholder="Ball">
@@ -262,6 +267,7 @@
     <!-- /.content -->
     
     <input type="hidden" id="last_index" value="{{ sizeof($detail_penjualan) }}">
+    <input type="hidden" id="opts" value="{{ $opts }}">
     
 @endsection
 

@@ -138,6 +138,14 @@ class InvoiceController extends Controller
         $data['konsumen'] = Konsumen::select('id', 'nama')->orderBy('nama')->get();
         $data['angkutan'] = Angkutan::select('id', 'nama')->orderBy('nama')->get();
         $data['tujuan'] = Tujuan::select('id', 'kota as nama')->orderBy('nama')->get();
+        $barangs = Barang::select('id', 'nama', 'jenis')->orderBy('nama')->get();
+        $data['barang'] = $barangs;
+        
+        $opts = '';
+        foreach ($barangs as $barang) {
+            $opts .= '<option value="' . $barang->id . '">' . $barang->nama . ' - ' . $barang->jenis . ' (' . $barang->id . ')</option>';
+        }
+        $data['opts'] = $opts;
         
         return view('invoice.add', $data);
     }
@@ -194,12 +202,14 @@ class InvoiceController extends Controller
                     
                 // invoice detail
                 for ($i = 0; $i < sizeof($a_item); $i++) {
-                    $tmp_item = explode(' | ', $a_item[$i]);
-                    $item_id = isset($tmp_item[0]) ? $tmp_item[0] : -1;
-                    $item_name = isset($tmp_item[1]) ? $tmp_item[1] : '';
+                    //$tmp_item = explode(' | ', $a_item[$i]);
+                    //$item_id = isset($tmp_item[0]) ? $tmp_item[0] : -1;
+                    //$item_name = isset($tmp_item[1]) ? $tmp_item[1] : '';
                     
                     //$item_name = $a_item[$i];
                     //$barang = Barang::where('nama', $item_name)->first();
+                    
+                    $item_id = $a_item[$i];
                     $barang = Barang::find($item_id);
                     
                     $item = $barang ? $barang->id : -1;
@@ -255,6 +265,7 @@ class InvoiceController extends Controller
         $data['barang_helper'] = new Barang;
         $konsumen_branch = KonsumenBranch::find($invoice_penjualan->konsumen_branch_id);
         $data["konsumen_branch_nama"] = $konsumen_branch ? $konsumen_branch->nama : "";
+        $data['barang'] = Barang::select('id', 'nama', 'jenis')->orderBy('nama')->get();
             
         return view('invoice.detail', $data);
     }
@@ -276,7 +287,15 @@ class InvoiceController extends Controller
         $data['detail_penjualan'] = $invoice_penjualan->detail;
         $data['barang_helper'] = new Barang;
         $data['konsumen_branch'] = Konsumen::find($invoice_penjualan->konsumen_id)->branch;
-            
+        $barangs = Barang::select('id', 'nama', 'jenis')->orderBy('nama')->get();
+        $data['barang'] = $barangs;
+        
+        $opts = '';
+        foreach ($barangs as $barang) {
+            $opts .= '<option value="' . $barang->id . '">' . $barang->nama . ' - ' . $barang->jenis . ' (' . $barang->id . ')</option>';
+        }
+        $data['opts'] = $opts;
+        
         return view('invoice.edit', $data);
     }
 
@@ -332,12 +351,14 @@ class InvoiceController extends Controller
                     DetailPenjualan::where('invoice_penjualan_id', $id)->delete();
                     // then insert
                     for ($i = 0; $i < sizeof($a_item); $i++) {
-                        $tmp_item = explode(' | ', $a_item[$i]);
-                        $item_id = isset($tmp_item[0]) ? $tmp_item[0] : -1;
-                        $item_name = isset($tmp_item[1]) ? $tmp_item[1] : '';
+                        //$tmp_item = explode(' | ', $a_item[$i]);
+                        //$item_id = isset($tmp_item[0]) ? $tmp_item[0] : -1;
+                        //$item_name = isset($tmp_item[1]) ? $tmp_item[1] : '';
                         
                         //$item_name = $a_item[$i];
                         //$barang = Barang::where('nama', $item_name)->first();
+                        
+                        $item_id = $a_item[$i];
                         $barang = Barang::find($item_id);
                         
                         $item = $barang ? $barang->id : -1;

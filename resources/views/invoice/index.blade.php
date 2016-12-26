@@ -143,7 +143,7 @@
                       <th class="text-center">Jth. Tempo</th>
                       <th class="text-center">Notifikasi</th>
                       <th class="text-center">Konsumen</th>
-                      <th class="text-center">Konsumen Branch</th>
+                      <th class="text-center">Toko</th>
                       <th class="text-center">Tujuan</th>
                       <th class="text-center">Angkutan</th>
                       <th class="text-center">No. PO</th>

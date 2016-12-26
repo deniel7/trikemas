@@ -77,9 +77,9 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="konsumen_branch_id" class="col-sm-2 control-label">Konsumen Branch </label>
+                  <label for="konsumen_branch_id" class="col-sm-2 control-label">Toko </label>
                   <div class="col-sm-10">
-                    <select name="konsumen_branch_id" id="konsumen_branch_id" class="form-control selectpicker" title="-- Pilih konsumen branch --">
+                    <select name="konsumen_branch_id" id="konsumen_branch_id" class="form-control selectpicker" title="-- Pilih toko --">
                       
                     </select>
                   </div>
@@ -145,7 +145,7 @@
                       </div>
                       <!-- /.box-header -->
                       
-                      <div class="box-body table-responsive no-padding">
+                      <div class="box-body table-responsive no-padding" style="overflow: visible;">
                         <table class="table table-hover" id="tbl_detail">
                           <tr>
                             <th>Nama Barang</th>
@@ -157,7 +157,12 @@
                           </tr>
                           <tr>
                             <td>
-                              <input type="text" style="width: 300px;" class="form-control nama_barang" name="nama_barang[]" id="nama_barang_1" placeholder="Nama barang">
+                              <select name="nama_barang[]" id="nama_barang_1" class="nama_barang" title="-- Pilih barang --">
+                                @foreach($barang as $item)
+                                  <option value="{{ $item->id }}">{{ $item->nama . ' - ' . $item->jenis . ' (' . $item->id . ')' }}</option>
+                                @endforeach
+                              </select>
+                              <!--<input type="text" style="width: 300px;" class="form-control nama_barang" name="nama_barang[]" id="nama_barang_1" placeholder="Nama barang">-->
                             </td>
                             <td class="text-right">
                               <input type="text" style="width: 70px;" class="form-control text-right ball" name="ball[]" id="ball_1" placeholder="Ball" value="1">
@@ -253,6 +258,7 @@
     <!-- /.content -->
     
     <input type="hidden" id="last_index" value="1">
+    <input type="hidden" id="opts" value="{{ $opts }}">
     
 @endsection
 

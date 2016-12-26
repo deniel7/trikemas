@@ -1,5 +1,7 @@
+-- DONE
+
 CREATE TABLE `konsumen_branches` (
-  `id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL auto_increment,
   `nama` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `konsumen_id` int(11) NOT NULL,
   `alamat` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -12,9 +14,6 @@ CREATE TABLE `konsumen_branches` (
 );
 
 alter table invoice_penjualans add column konsumen_branch_id integer;
-
-
--- DONE
 
 alter table invoice_penjualans add column tanggal_bayar_angkutan date;
 alter table invoice_penjualans add column diskon_bayar_angkutan decimal(15,2);

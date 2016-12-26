@@ -381,7 +381,9 @@ var advanceElements = (function() {
         //_applyBallOnKeyUp("1");
         
         for (var i = 1; i <= last_index; i++) {
-            _applyAutocompleteBarang(i);
+            //_applyAutocompleteBarang(i);
+            _applyBootstrapSelectBarang(i);
+            _applyBarangOnChange(i);
             _applyAutoNumeric(i);
             _applyBallOnKeyUp(i);
         }
@@ -473,6 +475,41 @@ var advanceElements = (function() {
         //$("#jumlah_"+idx).autoNumeric("init", {vMin: '0', vMax: '9999999999999.99'});
     };
     
+     var _applyBootstrapSelectBarang = function(idx) {
+        $("#nama_barang_"+idx).selectpicker({
+            //style: "bg-teal",
+            size: 10
+        });
+    };
+    
+    var _applyBarangOnChange = function(idx) {
+        $("#nama_barang_"+idx).on("change", function() {
+            var item_id = $("option:selected", this).val();
+            if (item_id === "") {
+                item_id = -1;
+            }
+            var konsumen_id = $("#konsumen_id option:selected").val();
+            if (konsumen_id === "") {
+                konsumen_id = -1;
+            }
+            $.ajax({
+                type: "GET",
+                url: "/konsumen-barang/get-price-by-id/" + item_id + "/" + konsumen_id
+            })
+            .done(function(data) {
+                $("#pcs_in_ball_" + idx).val(data.pcs_in_ball);
+                $("#pcs_"+idx).val(data.pcs_in_ball);
+                var pcs = data.pcs_in_ball;
+                var jumlah = pcs * data.harga;
+                $("#harga_" + idx).val(addCommas(data.harga));
+                $("#jumlah_" + idx).val(addCommas(jumlah.toFixed(2)));
+                
+                //calculate invoice
+                calcInvoice();
+            });
+        });
+    };
+    
     var _applyAutocompleteBarang = function(idx) {
         var xhr;
         $("#nama_barang_"+idx).autoComplete({
@@ -546,10 +583,14 @@ var advanceElements = (function() {
         $(".btn-add-row").on("click", function(event) {
             event.preventDefault();
             
+            //"<input type='text' style='width: 300px;' class='form-control nama_barang' name='nama_barang[]' id='nama_barang_" + curr_index + "' placeholder='Nama barang'>" + 
+            var opts = $("#opts").val();
             var curr_index = parseInt($("#last_index").val()) + 1;
             var row = "<tr>" + 
-                        "<td>" + 
-                          "<input type='text' style='width: 300px;' class='form-control nama_barang' name='nama_barang[]' id='nama_barang_" + curr_index + "' placeholder='Nama barang'>" + 
+                        "<td>" +
+                            "<select name='nama_barang[]' id='nama_barang_" + curr_index + "' class='nama_barang' title='-- Pilih barang --'>" +
+                                opts + 
+                            "</select>" +
                         "</td>" + 
                         "<td class='text-right'>" + 
                           "<input type='text' style='width: 70px;' class='form-control text-right ball' name='ball[]' id='ball_" + curr_index + "' placeholder='Ball' value='1'>" + 
@@ -572,7 +613,9 @@ var advanceElements = (function() {
             $("#last_index").val(curr_index);
             
             _applyRemoveTableRow();
-            _applyAutocompleteBarang(curr_index);
+            _applyBootstrapSelectBarang(curr_index);
+            _applyBarangOnChange(curr_index);
+            //_applyAutocompleteBarang(curr_index);
             _applyAutoNumeric(curr_index);
             _applyBallOnKeyUp(curr_index);
         });  
@@ -589,11 +632,15 @@ var advanceElements = (function() {
                 //calculate invoice
                 calcInvoice();
                     
+                //"<input type='text' style='width: 300px;' class='form-control nama_barang' name='nama_barang[]' id='nama_barang_1' placeholder='Nama barang'>" + 
                 // leave at least one empty row
+                var opts = $("#opts").val();
                 if ($("#tbl_detail tr").length === 1) {
-                    var row = "<tr>" + 
-                                "<td>" + 
-                                  "<input type='text' style='width: 300px;' class='form-control nama_barang' name='nama_barang[]' id='nama_barang_1' placeholder='Nama barang'>" + 
+                    var row = "<tr>" +
+                                "<td>" +
+                                    "<select name='nama_barang[]' id='nama_barang_1' class='nama_barang' title='-- Pilih barang --'>" +
+                                        opts + 
+                                    "</select>" +
                                 "</td>" + 
                                 "<td class='text-right'>" + 
                                   "<input type='text' style='width: 70px;' class='form-control text-right ball' name='ball[]' id='ball_1' placeholder='Ball' value='1'>" + 
@@ -616,7 +663,9 @@ var advanceElements = (function() {
                     $("#last_index").val("1");
                     
                     _applyRemoveTableRow();
-                    _applyAutocompleteBarang("1");
+                    _applyBootstrapSelectBarang("1");
+                    _applyBarangOnChange("1");
+                    //_applyAutocompleteBarang("1");
                     _applyAutoNumeric("1");
                     _applyBallOnKeyUp("1");
                 }
