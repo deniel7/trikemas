@@ -77,7 +77,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/konsumen-barang', 'KonsumenBarangController');
 
     /* Invoice Penjualan */
-    Route::get('/invoice/list', 'InvoiceController@datatables');
+    Route::post('/invoice/list', 'InvoiceController@datatables');
     Route::get('/invoice/print/{id}', 'InvoiceController@doPrint');
     Route::post('/invoice/complete/{id}', 'InvoiceController@complete');
     Route::resource('/invoice', 'InvoiceController');

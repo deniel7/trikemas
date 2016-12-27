@@ -293,8 +293,9 @@ var datatables = (function() {
                     d.tujuan_id = $('#tujuan_id option:selected').val();
                     d.angkutan_id = $('#angkutan_id option:selected').val();
                     d.no_mobil = $('#no_mobil').val();
-                }
-                //"type": "POST"
+                },
+                beforeSend: function(xhr) { xhr.setRequestHeader("X-CSRF-Token", $("meta[name='csrf-token']").attr("content")); },
+                "type": "POST"
             },
             'columns': [
                 {data: 'tanggal', name: 'tanggal'},
