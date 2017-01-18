@@ -47,7 +47,17 @@
                       <option value="01">01</option>
                       <option value="03p">03p</option>
                       <option value="03s">03s</option>
-                    
+                      <option value="HB">HB</option>
+                      <option value="M2">M2</option>
+                      <option value="P6">P6</option>
+                      <option value="P7.5">P7.5</option>
+                      <option value="P9">P9</option>
+                      <option value="MTG">MTG</option>
+                      <option value="TR1">TR1</option>
+                      <option value="TR2">TR2</option>
+                      <option value="TR6">TR6</option>
+                      <option value="TR7">TR7</option>
+                      <option value="TR11">TR11</option>
                 </select>
               </div>
             </div>

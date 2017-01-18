@@ -23,6 +23,9 @@ elixir(function(mix) {
         'absensiHarian.js',
         'absensiApproval.js',
         'absensiPacking.js',
-        'karyawanValidation.js'
+        'karyawanValidation.js',
+        'reportAbsensiKaryawanTetap.js',
+        'reportAbsensiKaryawanHarian.js',
+        'reportAbsensiKaryawanPacking.js'
     ]);
 });

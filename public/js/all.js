@@ -236,6 +236,45 @@ var karyawanHarianModule = (function(commonModule) {
     };
 
 
+
+    var confirmDelete = function(event, id, kota) {
+        event.preventDefault();
+
+        swal({
+                title: "Apakah anda yakin?",
+                text: "Data Karyawan dengan nama " + kota + " akan dihapus!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Ya, lanjutkan!",
+                cancelButtonText: "Tidak, batalkan!",
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true,
+            },
+            function() {
+                $.ajax({
+                        beforeSend: function(xhr) {
+                            xhr.setRequestHeader("X-CSRF-Token", $("meta[name='csrf-token']").attr("content"));
+                        },
+                        type: "POST",
+                        data: {
+                            _method: 'DELETE'
+                        },
+                        url: "/karyawan-harian/" + id
+                    })
+                    .done(function(data) {
+                        if (data === "success") {
+                            // Redraw table
+                            table.draw();
+                            swal("", "Data berhasil dihapus.", "success");
+                        } else {
+                            swal("", data, "error");
+                        }
+                    });
+            });
+
+    };
+
     var _applyDatepicker = function() {
         $('.datepicker').datepicker({
             weekStart: 1,
@@ -981,15 +1020,29 @@ var absensiApprovalModule = (function(commonModule) {
 
             if (response.status == 1) {
 
+
+
+
                 /* Clear Modal Body */
                 $('#detail_modal').find(".modal-title").html("");
                 $('#detail_modal').find(".modal-body").html("");
 
                 /* Insert Data to Modal Body */
-                $('#detail_modal').find(".modal-body").append('<table class="table table-bordered table-striped"><thead><tr><th>NIK</th><th>Nama</th><th>Departemen</th><th>Scan Masuk</th><th>Scans Keluar</th><th>Jam Lembur</th><th>Konfirmasi Lembur</th></tr></thead><tbody>');
+                $('#detail_modal').find(".modal-body").append('<table class="table table-bordered table-striped"><thead><tr><th>NIK</th><th>Nama</th><th>Departemen</th><th>Scan Masuk</th><th>Scans Keluar</th><th>Jam Lembur</th><th>Konfirmasi Lembur</th><th>Jenis Lembur</th></tr></thead><tbody>');
 
                 $.each(response.records, function(i, record) {
-                    $('#detail_modal').find("tbody").append("<tr><td><input name ='id' type='hidden' value='" + record.id + "' /><input name ='tanggal' type='hidden' value='" + record.tanggal + "' />" + record.nik + "</td><td>" + record.nama + "</td><td>" + record.departemen + "</td><td>" + record.scan_masuk + "</td><td>" + record.scan_pulang + "</td><td>" + record.jam_lembur + "</td><td>" + record.konfirmasi_lembur + "</td></tr>");
+
+                    var jenis_lembur = 0;
+
+                    if (record.jenis_lembur == 1) {
+
+                        jenis_lembur = 'lembur rutin';
+
+                    } else if (record.jenis_lembur == 2) {
+                        jenis_lembur = 'lembur biasa';
+                    }
+
+                    $('#detail_modal').find("tbody").append("<tr><td><input name ='id' type='hidden' value='" + record.id + "' /><input name ='tanggal' type='hidden' value='" + record.tanggal + "' /><input name ='jenis_lembur' type='hidden' value='" + record.jenis_lembur + "' /><input name ='konfirmasi_lembur' type='hidden' value='" + record.konfirmasi_lembur + "' />" + record.nik + "</td><td>" + record.nama + "</td><td>" + record.departemen + "</td><td>" + record.scan_masuk + "</td><td>" + record.scan_pulang + "</td><td>" + record.jam_lembur + "</td><td>" + record.konfirmasi_lembur + "</td><td>" + jenis_lembur + "</td></tr>");
 
                 });
 
@@ -1005,7 +1058,7 @@ var absensiApprovalModule = (function(commonModule) {
                 $('#detail_modal2').find(".modal-body2").append('<table class="table table-bordered table-striped"><thead><tr><th>Upah</th><th>Uang Makan</th><th>Pot. Koperasi</th><th>Pot. BPJS</th><th>Tunjangan</th></tr></thead><tbody>');
 
                 $.each(response.records, function(i, record) {
-                    $('#detail_modal2').find("tbody").append("<tr><td><input name ='id' type='hidden' value='" + record.id + "' /><input name ='tanggal' type='hidden' value='" + record.tanggal + "' />" + record.nilai_upah + "</td><td>" + record.uang_makan + "</td><td>" + record.pot_koperasi + "</td><td>" + record.pot_bpjs + "</td><td>" + record.tunjangan + "</td></tr>");
+                    $('#detail_modal2').find("tbody").append("<tr><td><input name ='id' type='hidden' value='" + record.id + "' /><input name ='tanggal' type='hidden' value='" + record.tanggal + "' /><input name ='uang_makan' type='hidden' value='" + record.uang_makan + "' />" + record.nilai_upah + "</td><td>" + record.uang_makan + "</td><td>" + record.pot_koperasi + "</td><td>" + record.pot_bpjs + "</td><td>" + record.tunjangan + "</td></tr>");
 
                 });
 
@@ -1546,6 +1599,215 @@ var karyawanValidation = (function(commonModule) {
             format: 'yyyy-mm-dd',
             autoclose: true
         });
+    };
+
+
+    return {
+        init: init
+    };
+
+})(commonModule);
+var reportAbsensiKaryawanTetapModule = (function(commonModule) {
+
+    var existing_model = null;
+
+    var init = function() {
+        _applyValidation();
+    };
+
+    var _applyValidation = function() {
+
+        $('#frmData').formValidation({
+                framework: "bootstrap",
+                button: {
+                    selector: '#btnSubmit',
+                    disabled: 'disabled'
+                },
+                icon: null,
+                fields: {
+                    bulan: {
+                        validators: {
+                            notEmpty: {
+                                message: 'Bulan harus diisi'
+                            }
+                        }
+                    }
+                }
+            })
+            // submit button always enable
+            .on('err.field.fv', function(e, data) {
+                data.fv.disableSubmitButtons(false);
+            })
+            .on('success.field.fv', function(e, data) {
+                data.fv.disableSubmitButtons(false);
+            })
+            .on('success.form.fv', function(e) {
+                // Prevent form submission
+                e.preventDefault();
+
+
+                var bulan = $("#bulan").val();
+
+                var url = "/report/absensi-karyawan-tetap/preview/" + bulan;
+
+
+                window.open(url, "_blank");
+            });
+
+    };
+
+
+    return {
+        init: init
+    };
+
+})(commonModule);
+var reportAbsensiKaryawanHarianModule = (function(commonModule) {
+
+    var existing_model = null;
+
+    var init = function() {
+        _applyValidation();
+        _applyDatePicker();
+    };
+
+    var _applyDatePicker = function() {
+
+        $("#tanggal").datepicker({
+            format: 'dd-mm-yyyy',
+            autoclose: true
+        }).on("change", function() {
+            // Revalidate form
+            $('#frmData').formValidation('revalidateField', 'tanggal');
+        });
+
+        $("#hingga").datepicker({
+            format: 'dd-mm-yyyy',
+            autoclose: true
+        }).on("change", function() {
+            // Revalidate form
+            $('#frmData').formValidation('revalidateField', 'tanggal');
+        });
+    };
+
+
+
+    var _applyValidation = function() {
+
+        $('#frmData').formValidation({
+                framework: "bootstrap",
+                button: {
+                    selector: '#btnSubmit',
+                    disabled: 'disabled'
+                },
+                icon: null,
+                fields: {
+                    bulan: {
+                        validators: {
+                            notEmpty: {
+                                message: 'Bulan harus diisi'
+                            }
+                        }
+                    }
+                }
+            })
+            // submit button always enable
+            .on('err.field.fv', function(e, data) {
+                data.fv.disableSubmitButtons(false);
+            })
+            .on('success.field.fv', function(e, data) {
+                data.fv.disableSubmitButtons(false);
+            })
+            .on('success.form.fv', function(e) {
+                // Prevent form submission
+                e.preventDefault();
+
+                var tanggal = $("#tanggal").val();
+                var hingga = $("#hingga").val();
+
+                var url = "/report/absensi-karyawan-harian/preview/" + tanggal + "/" + hingga;
+
+
+                window.open(url, "_blank");
+            });
+
+    };
+
+
+    return {
+        init: init
+    };
+
+})(commonModule);
+var reportAbsensiKaryawanPackingModule = (function(commonModule) {
+
+    var existing_model = null;
+
+    var init = function() {
+        _applyValidation();
+        _applyDatePicker();
+    };
+
+    var _applyDatePicker = function() {
+
+        $("#tanggal").datepicker({
+            format: 'dd-mm-yyyy',
+            autoclose: true
+        }).on("change", function() {
+            // Revalidate form
+            $('#frmData').formValidation('revalidateField', 'tanggal');
+        });
+
+        $("#hingga").datepicker({
+            format: 'dd-mm-yyyy',
+            autoclose: true
+        }).on("change", function() {
+            // Revalidate form
+            $('#frmData').formValidation('revalidateField', 'tanggal');
+        });
+    };
+
+
+
+    var _applyValidation = function() {
+
+        $('#frmData').formValidation({
+                framework: "bootstrap",
+                button: {
+                    selector: '#btnSubmit',
+                    disabled: 'disabled'
+                },
+                icon: null,
+                fields: {
+                    bulan: {
+                        validators: {
+                            notEmpty: {
+                                message: 'Bulan harus diisi'
+                            }
+                        }
+                    }
+                }
+            })
+            // submit button always enable
+            .on('err.field.fv', function(e, data) {
+                data.fv.disableSubmitButtons(false);
+            })
+            .on('success.field.fv', function(e, data) {
+                data.fv.disableSubmitButtons(false);
+            })
+            .on('success.form.fv', function(e) {
+                // Prevent form submission
+                e.preventDefault();
+
+                var tanggal = $("#tanggal").val();
+                var hingga = $("#hingga").val();
+
+                var url = "/report/absensi-karyawan-packing/preview/" + tanggal + "/" + hingga;
+
+
+                window.open(url, "_blank");
+            });
+
     };
 
 

@@ -382,6 +382,7 @@ class ComposerStaticInit673dc2dbeee6f0c2856b868bb9add844
     );
 
     public static $classMap = array (
+        'AddUpahHarianOnAbsensiHarians' => __DIR__ . '/../..' . '/database/migrations/2017_01_18_153906_add_upah_harian_on_absensi_harians.php',
         'AlterAbsensiHarians' => __DIR__ . '/../..' . '/database/migrations/2016_11_11_103830_alter_absensi_harians.php',
         'AlterDetailPenjualanAddHarga' => __DIR__ . '/../..' . '/database/migrations/2016_09_11_114301_alter_detail_penjualan_add_harga.php',
         'AlterDetailPenjualansAddJumlahBall' => __DIR__ . '/../..' . '/database/migrations/2016_10_10_222707_alter_detail_penjualans_add_jumlah_ball.php',
@@ -414,6 +415,7 @@ class ComposerStaticInit673dc2dbeee6f0c2856b868bb9add844
         'CreatePembayaranAngkutansTable' => __DIR__ . '/../..' . '/database/migrations/2016_09_08_092230_create_pembayaran_angkutans_table.php',
         'CreatePermissionRoleTable' => __DIR__ . '/../..' . '/database/migrations/2016_03_16_150858_create_permission_role_table.php',
         'CreatePermissionsTable' => __DIR__ . '/../..' . '/database/migrations/2016_03_16_150821_create_permissions_table.php',
+        'CreateReortJenisTable' => __DIR__ . '/../..' . '/database/migrations/2017_01_18_154402_create_reort_jenis_table.php',
         'CreateRolesTable' => __DIR__ . '/../..' . '/database/migrations/2016_03_16_150257_create_roles_table.php',
         'CreateSessionsTable' => __DIR__ . '/../..' . '/database/migrations/2016_03_23_133312_create_sessions_table.php',
         'CreateStatusKaryawansTable' => __DIR__ . '/../..' . '/database/migrations/2016_09_07_154552_create_status_karyawans_table.php',

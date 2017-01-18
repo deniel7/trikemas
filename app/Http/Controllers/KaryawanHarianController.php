@@ -48,8 +48,12 @@ class KaryawanHarianController extends Controller
 
             $html = '<div class="text-center btn-group btn-group-justified">';
 
-            $html .= '<a href="karyawan-tetap/'.$karyawan_harian->id.'/edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a>';
             $html .= '<a href="javascript:;" onClick="karyawanHarianModule.showPrint('.$karyawan_harian->id.');"><button type="button" class="btn btn-sm"><i class="fa fa-print"></i></button></a>';
+
+            $html .= '<a href="karyawan-tetap/'.$karyawan_harian->id.'/edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a>';
+
+            $html .= '<a href="karyawan-tetap/'.$karyawan_harian->id.'/destroy" title="Delete" onclick="confirmDelete(event, \''.$karyawan_harian->id.'\', \''.$karyawan_harian->nama.'\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
+
             $html .= '</div>';
 
             return $html;
@@ -138,8 +142,15 @@ class KaryawanHarianController extends Controller
         ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
         ->sum('pot_absensi');
 
+        $total_upah_harian = DB::table('absensi_harians')
+                    ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+                    ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
+                    ->where('absensi_harians.status', '=', 2)
+                    ->where('karyawans.id', '=', $id)
+                    ->sum('absensi_harians.upah_harian');
+        //dd($total_upah_harian);
         // PERHITUNGAN TOTAL
-        $total = ($gaji + $uang_makan + $lembur_rutin + $lembur_biasa) - $karyawan->pot_bpjs - $total_pot_absensi;
+        $total = ($nilai_upah + $uang_makan + $lembur_rutin + $lembur_biasa) - $karyawan->pot_bpjs - $total_pot_absensi;
 
         // set document information
         PDF::SetAuthor('PT. TRIMITRA KEMASINDO');
@@ -237,5 +248,24 @@ class KaryawanHarianController extends Controller
 
         // need to call exit, i don't know why
         exit;
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $karyawan = Karyawan::find($id);
+
+        try {
+            $karyawan->delete();
+            echo 'success';
+        } catch (\Illuminate\Database\QueryException $e) {
+            echo 'Error ('.$e->errorInfo[1].'): '.$e->errorInfo[2].'.';
+        }
     }
 }

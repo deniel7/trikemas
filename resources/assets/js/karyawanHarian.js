@@ -11,6 +11,45 @@ var karyawanHarianModule = (function(commonModule) {
     };
 
 
+
+    var confirmDelete = function(event, id, kota) {
+        event.preventDefault();
+
+        swal({
+                title: "Apakah anda yakin?",
+                text: "Data Karyawan dengan nama " + kota + " akan dihapus!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Ya, lanjutkan!",
+                cancelButtonText: "Tidak, batalkan!",
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true,
+            },
+            function() {
+                $.ajax({
+                        beforeSend: function(xhr) {
+                            xhr.setRequestHeader("X-CSRF-Token", $("meta[name='csrf-token']").attr("content"));
+                        },
+                        type: "POST",
+                        data: {
+                            _method: 'DELETE'
+                        },
+                        url: "/karyawan-harian/" + id
+                    })
+                    .done(function(data) {
+                        if (data === "success") {
+                            // Redraw table
+                            table.draw();
+                            swal("", "Data berhasil dihapus.", "success");
+                        } else {
+                            swal("", data, "error");
+                        }
+                    });
+            });
+
+    };
+
     var _applyDatepicker = function() {
         $('.datepicker').datepicker({
             weekStart: 1,

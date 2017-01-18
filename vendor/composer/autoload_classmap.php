@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'AddUpahHarianOnAbsensiHarians' => $baseDir . '/database/migrations/2017_01_18_153906_add_upah_harian_on_absensi_harians.php',
     'AlterAbsensiHarians' => $baseDir . '/database/migrations/2016_11_11_103830_alter_absensi_harians.php',
     'AlterDetailPenjualanAddHarga' => $baseDir . '/database/migrations/2016_09_11_114301_alter_detail_penjualan_add_harga.php',
     'AlterDetailPenjualansAddJumlahBall' => $baseDir . '/database/migrations/2016_10_10_222707_alter_detail_penjualans_add_jumlah_ball.php',
@@ -38,6 +39,7 @@ return array(
     'CreatePembayaranAngkutansTable' => $baseDir . '/database/migrations/2016_09_08_092230_create_pembayaran_angkutans_table.php',
     'CreatePermissionRoleTable' => $baseDir . '/database/migrations/2016_03_16_150858_create_permission_role_table.php',
     'CreatePermissionsTable' => $baseDir . '/database/migrations/2016_03_16_150821_create_permissions_table.php',
+    'CreateReortJenisTable' => $baseDir . '/database/migrations/2017_01_18_154402_create_reort_jenis_table.php',
     'CreateRolesTable' => $baseDir . '/database/migrations/2016_03_16_150257_create_roles_table.php',
     'CreateSessionsTable' => $baseDir . '/database/migrations/2016_03_23_133312_create_sessions_table.php',
     'CreateStatusKaryawansTable' => $baseDir . '/database/migrations/2016_09_07_154552_create_status_karyawans_table.php',

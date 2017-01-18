@@ -51,6 +51,9 @@ class KaryawanTetapController extends Controller
 
             $html .= '<a href="karyawan-tetap/'.$karyawan->id.'/edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a>';
             $html .= '<a href="javascript:;" onClick="karyawanModule.showPrint('.$karyawan->id.');"><button type="button" class="btn btn-sm"><i class="fa fa-print"></i></button></a>';
+
+            $html .= '<a href="karyawan-tetap/'.$karyawan->id.'/destroy" title="Delete" onclick="confirmDelete(event, \''.$karyawan->id.'\', \''.$karyawan->nama.'\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
+
             $html .= '</div>';
 
             return $html;
@@ -371,5 +374,24 @@ class KaryawanTetapController extends Controller
 
         // need to call exit, i don't know why
         exit;
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $karyawan = Karyawan::find($id);
+
+        try {
+            $karyawan->delete();
+            echo 'success';
+        } catch (\Illuminate\Database\QueryException $e) {
+            echo 'Error ('.$e->errorInfo[1].'): '.$e->errorInfo[2].'.';
+        }
     }
 }

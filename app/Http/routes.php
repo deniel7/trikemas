@@ -32,6 +32,15 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/report/penjualan', 'ReportController@penjualan');
     Route::get('/report/penjualan/preview/{dari}/{hingga?}', 'ReportController@previewPenjualan');
 
+    Route::get('/report/absensi-karyawan-tetap', 'ReportController@absensiKaryawanTetap');
+    Route::get('/report/absensi-karyawan-tetap/preview/{bulan}', 'ReportController@previewAbsensiKaryawanTetap');
+
+    Route::get('/report/absensi-karyawan-harian', 'ReportController@absensiKaryawanHarian');
+    Route::get('/report/absensi-karyawan-harian/preview/{dari}/{hingga?}', 'ReportController@previewAbsensiKaryawanHarian');
+
+    Route::get('/report/absensi-karyawan-packing', 'ReportController@absensiKaryawanPacking');
+    Route::get('/report/absensi-karyawan-packing/preview/{dari}/{hingga?}', 'ReportController@previewAbsensiKaryawanPacking');
+
     /* Dashboard sebagai halaman pertama setelah login */
     Route::get('home', 'DashboardController@getIndex');
 

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Datatables;
 use Carbon\Carbon;
 use App\AbsensiHarian;
+use App\Karyawan;
 use Illuminate\Http\Request;
 use Flash;
 use DB;
@@ -90,13 +91,67 @@ class AbsensiApprovalController extends Controller
         $tanggal = $request->input('tanggal');
         $potongan = $request->input('potongan');
 
+        $lembur_rutin = 0;
+        $lembur_biasa = 0;
+        $lembur_off = 0;
+
+        $id = $request->input('id');
+        $tanggal = $request->input('tanggal');
+        $jenis_lembur = $request->input('jenis_lembur');
+        $uang_makan = $request->input('uang_makan');
+        $konfirmasi_lembur = $request->input('konfirmasi_lembur');
+
+        $karyawan = Karyawan::find($id);
+
+        $gaji = $karyawan->nilai_upah;
+
+        // HITUNG UANG MAKAN
+        $uang_makan = $karyawan->uang_makan;
+
         $absensies = AbsensiHarian::where('karyawan_id', '=', $id)->where('tanggal', '=', $tanggal)->get();
 
         if ($absensies->count() == 1) {
             $absensies = $absensies->first();
 
+            // PENJUMLAHAN POTONGAN ABSENSI
             $absensies->pot_absensi = $potongan;
             $absensies->status = 2;
+
+            // PERHITUNGAN TOTAL
+
+            //karyawan tetap / bulanan
+            if ($karyawan->status_karyawan_id == 1) {
+                $gaji_harian = $gaji / 31;
+
+                if ($jenis_lembur == 1) {
+                    $lembur_rutin = ($gaji / 173) * $konfirmasi_lembur;
+                    $lembur_biasa = 0;
+                    $lembur_off = 0;
+                } elseif ($jenis_lembur == 2) {
+                    $lembur_biasa = ($gaji / 173) * $konfirmasi_lembur * 1.5;
+                    $lembur_rutin = 0;
+                    $lembur_off = 0;
+                } else {
+                    $lembur_off = ($gaji / 173) * $konfirmasi_lembur * 2;
+                    $lembur_rutin = 0;
+                    $lembur_biasa = 0;
+                }
+
+                $upah_harian = ($gaji_harian + $uang_makan + $lembur_rutin + $lembur_biasa + $lembur_off) - $potongan;
+
+            // karyawan harian / lepas
+            } elseif ($karyawan->status_karyawan_id == 2) {
+                // PERHITUNGAN LEMBUR
+                if ($jenis_lembur == 1) {
+                    $lembur_rutin = $konfirmasi_lembur * 10500;
+                } elseif ($jenis_lembur == 2) {
+                    $lembur_biasa = $konfirmasi_lembur * 15700;
+                }
+
+                $upah_harian = ($gaji + $uang_makan + $lembur_rutin + $lembur_biasa) - $potongan;
+            }
+
+            $absensies->upah_harian = $upah_harian;
 
             $absensies->save();
         }
