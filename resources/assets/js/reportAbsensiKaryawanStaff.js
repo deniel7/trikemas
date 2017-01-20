@@ -1,32 +1,10 @@
-var reportAbsensiKaryawanHarianModule = (function(commonModule) {
+var reportAbsensiKaryawanStaffModule = (function(commonModule) {
 
     var existing_model = null;
 
     var init = function() {
         _applyValidation();
-        _applyDatePicker();
     };
-
-    var _applyDatePicker = function() {
-
-        $("#tanggal").datepicker({
-            format: 'dd-mm-yyyy',
-            autoclose: true
-        }).on("change", function() {
-            // Revalidate form
-            $('#frmData').formValidation('revalidateField', 'tanggal');
-        });
-
-        $("#hingga").datepicker({
-            format: 'dd-mm-yyyy',
-            autoclose: true
-        }).on("change", function() {
-            // Revalidate form
-            $('#frmData').formValidation('revalidateField', 'tanggal');
-        });
-    };
-
-
 
     var _applyValidation = function() {
 
@@ -38,7 +16,7 @@ var reportAbsensiKaryawanHarianModule = (function(commonModule) {
                 },
                 icon: null,
                 fields: {
-                bulan: {
+                    bulan: {
                         validators: {
                             notEmpty: {
                                 message: 'Bulan harus diisi'
@@ -58,10 +36,10 @@ var reportAbsensiKaryawanHarianModule = (function(commonModule) {
                 // Prevent form submission
                 e.preventDefault();
 
-                var tanggal = $("#tanggal").val();
-                var hingga = $("#hingga").val();
 
-                var url = "/report/absensi-karyawan-harian/preview/" + tanggal + "/" + hingga;
+                var bulan = $("#bulan").val();
+
+                var url = "/report/absensi-karyawan-staff/preview/" + bulan;
 
 
                 window.open(url, "_blank");

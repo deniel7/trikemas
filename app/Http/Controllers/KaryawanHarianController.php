@@ -52,7 +52,7 @@ class KaryawanHarianController extends Controller
 
             $html .= '<a href="karyawan-tetap/'.$karyawan_harian->id.'/edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a>';
 
-            $html .= '<a href="karyawan-tetap/'.$karyawan_harian->id.'/destroy" title="Delete" onclick="confirmDelete(event, \''.$karyawan_harian->id.'\', \''.$karyawan_harian->nama.'\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
+            $html .= '<a href="javascript:;" onclick="karyawanHarianModule.confirmDelete(event, \''.$karyawan_harian->id.'\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
 
             $html .= '</div>';
 
@@ -257,14 +257,17 @@ class KaryawanHarianController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($karyawan_harian)
     {
-        $karyawan = Karyawan::find($id);
+        DB::beginTransaction();
 
         try {
-            $karyawan->delete();
+            $karyawan_harian->delete();
+
+            DB::commit();
             echo 'success';
         } catch (\Illuminate\Database\QueryException $e) {
+            DB::rollBack();
             echo 'Error ('.$e->errorInfo[1].'): '.$e->errorInfo[2].'.';
         }
     }

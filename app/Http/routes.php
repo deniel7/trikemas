@@ -32,6 +32,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/report/penjualan', 'ReportController@penjualan');
     Route::get('/report/penjualan/preview/{dari}/{hingga?}', 'ReportController@previewPenjualan');
 
+    Route::get('/report/absensi-karyawan-staff', 'ReportController@absensiKaryawanStaff');
+    Route::get('/report/absensi-karyawan-staff/preview/{bulan}', 'ReportController@previewAbsensiKaryawanStaff');
+
     Route::get('/report/absensi-karyawan-tetap', 'ReportController@absensiKaryawanTetap');
     Route::get('/report/absensi-karyawan-tetap/preview/{bulan}', 'ReportController@previewAbsensiKaryawanTetap');
 
@@ -52,6 +55,7 @@ Route::group(['middleware' => 'auth'], function () {
     /* Provide controller methods with object instead of ID */
     Route::model('karyawan-tetap', 'App\Karyawan');
     Route::model('karyawan-harian', 'App\Karyawan');
+    Route::model('karyawan-staff', 'App\Karyawan');
 
     /* Tujuan */
     Route::get('/tujuan/list', 'TujuanController@datatables');
@@ -97,6 +101,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/pembayaran-angkutan', 'PembayaranAngkutanController');
 
     /* Datatable */
+    Route::post('datatable/karyawan-staff', 'KaryawanStaffController@datatable');
     Route::post('datatable/karyawans', 'KaryawanTetapController@datatable');
     Route::post('datatable/karyawan-harians', 'KaryawanHarianController@datatable');
     Route::post('datatable/absensi-harians', 'AbsensiHarianController@datatable');
@@ -104,6 +109,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('datatable/absensi-packings', 'AbsensiPackingController@datatable');
 
     /* karyawan */
+    Route::post('karyawan-staff/print/', 'KaryawanStaffController@doPrint');
+    Route::resource('karyawan-staff', 'KaryawanStaffController');
+    Route::controller('karyawan-staff', 'KaryawanStaffController');
+
     Route::post('karyawan-tetap/print/', 'KaryawanTetapController@doPrint');
     Route::resource('karyawan-tetap', 'KaryawanTetapController');
     Route::controller('karyawan-tetap', 'KaryawanTetapController');

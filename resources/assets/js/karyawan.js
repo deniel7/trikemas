@@ -158,6 +158,45 @@ var karyawanModule = (function(commonModule) {
 
     };
 
+    var confirmDelete = function(event, id) {
+
+        event.preventDefault();
+
+        swal({
+                title: "Apakah anda yakin?",
+                text: "Data Karyawan akan dihapus!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Ya, lanjutkan!",
+                cancelButtonText: "Tidak, batalkan!",
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true,
+            },
+            function() {
+                $.ajax({
+                        beforeSend: function(xhr) {
+                            xhr.setRequestHeader("X-CSRF-Token", $("meta[name='csrf-token']").attr("content"));
+                        },
+                        type: "POST",
+                        data: {
+                            _method: 'DELETE'
+                        },
+                        url: "/karyawan-tetap/" + id
+                    })
+                    .done(function(data) {
+                        if (data === "success") {
+                            // Redraw table
+                            $('#datatable').DataTable().draw();
+                            swal("", "Data berhasil dihapus.", "success");
+                        } else {
+                            swal("", data, "error");
+                        }
+                    });
+            });
+
+    };
+
     var showPrint = function(id) {
 
         $.ajax({
@@ -196,7 +235,8 @@ var karyawanModule = (function(commonModule) {
 
     return {
         init: init,
-        showPrint: showPrint
+        showPrint: showPrint,
+        confirmDelete: confirmDelete,
     };
 
 })(commonModule);

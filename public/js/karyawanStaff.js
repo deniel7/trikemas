@@ -127,12 +127,12 @@ var validations = (function() {
 
 })();
 
-var confirmDelete = function(event, id, nama) {
+var confirmDelete = function(event, id) {
     event.preventDefault();
 
     swal({
             title: "Apakah anda yakin?",
-            text: "Data angkutan dengan nama " + nama + " akan dihapus!",
+            text: "Invoice dengan nomor " + id + " akan dihapus!",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
@@ -150,7 +150,7 @@ var confirmDelete = function(event, id, nama) {
                     data: {
                         _method: 'DELETE'
                     },
-                    url: "/angkutan/" + id
+                    url: "/invoice/" + id
                 })
                 .done(function(data) {
                     if (data === "success") {

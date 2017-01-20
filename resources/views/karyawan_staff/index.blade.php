@@ -1,16 +1,19 @@
 @extends('layouts.backend')
-@section('title', 'Master Karyawan Harian')
+@section('title', 'Master Karyawan Staff')
+@section('other-css')
+    <link rel="stylesheet" href="{{ asset('bower_components/sweetalert/dist/sweetalert.css') }}">
+@endsection
 @section('content')
 <!-- Content Header (Page header) -->
 <section class="content-header">
   <h1>
-  Karyawan Harian
+  Karyawan Staff
   <small>List</small>
   </h1>
   <ol class="breadcrumb">
     <li><a href="{{ url('/') }}"><i class="fa fa-tachometer"></i> Dashboard</a></li>
     <li><a href="#">Master</a></li>
-    <li><a href="{{ url('/karyawan-harian') }}">Karyawan Harians</a></li>
+    <li><a href="{{ url('/karyawan-tetap') }}">Karyawan Staff</a></li>
     <li class="active">List</li>
   </ol>
 </section>
@@ -22,7 +25,7 @@
         <!-- /.box-header -->
         <div class="box-body">
           <div class="btn-group">
-                <a href="{{ url('/karyawan-tetap/create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Add</a>
+                <a href="{{ url('/karyawan-staff/create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Add</a>
               </div>
               <br><br>
           <div class="table-responsive">
@@ -64,7 +67,7 @@
                 <th>Uang Makan</th>
                 <th>Tunjangan</th>
                 <th>Pot. Koperasi</th>
-                <th>Pot. BPJS</th>
+                <th>Norek</th>
                 <th></th>
               </tr>
               </tfoot>
@@ -81,13 +84,25 @@
   
 </section>
 <!-- /.content -->
-@include('karyawan_harian.partials.add_modal')
-@include('karyawan_harian.partials.print_modal')
 
-<!-- page script -->
 <script type="text/javascript">
 $(document).ready(function(){
-karyawanHarianModule.init();
+karyawanStaffModule.init();
 });
 </script>
+
+@include('karyawan_staff.partials.add_modal')
+@include('karyawan_staff.partials.print_modal')
+
+@endsection
+
+
+@section('other-js')
+<script src="{{ asset('bower_components/sweetalert/dist/sweetalert.min.js') }}"></script>
+    <script src="{{ asset('vendor/formvalidation/formValidation.min.js') }}"></script>
+    <script src="{{ asset('vendor/formvalidation/framework/bootstrap.min.js') }}"></script>
+    
+    <script src="{{ asset('bower_components/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
+
+
 @endsection

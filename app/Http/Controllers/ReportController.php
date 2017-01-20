@@ -1012,4 +1012,292 @@ class ReportController extends Controller
         // need to call exit, i don't know why
         exit;
     }
+
+    public function absensiKaryawanStaff()
+    {
+        $data['default_date'] = date('d-m-Y');
+
+        return view('report.absensi_karyawan_staff_params', $data);
+    }
+
+    // preview
+    public function previewAbsensiKaryawanStaff($bulan)
+    {
+        $tahun_skrg = date('Y');
+
+        $bulanLbl = '';
+        switch ($bulan) {
+            case 1:
+                $bulanLbl = 'Januari';
+                break;
+            case 2:
+                $bulanLbl = 'Februari';
+                break;
+            case 3:
+                $bulanLbl = 'Maret';
+                break;
+            case 4:
+                $bulanLbl = 'April';
+                break;
+            case 5:
+                $bulanLbl = 'Mei';
+                break;
+            case 6:
+                $bulanLbl = 'Juni';
+                break;
+            case 7:
+                $bulanLbl = 'Juli';
+                break;
+            case 8:
+                $bulanLbl = 'Agustus';
+                break;
+            case 9:
+                $bulanLbl = 'September';
+                break;
+            case 10:
+                $bulanLbl = 'Oktober';
+                break;
+            case 11:
+                $bulanLbl = 'November';
+                break;
+            case 12:
+                $bulanLbl = 'Desember';
+                break;
+        }
+
+        $data = AbsensiHarian::select('absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.id', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.jenis_lembur', 'absensi_harians.status', 'absensi_harians.pot_absensi', 'karyawans.nik', 'karyawans.nama', 'karyawans.norek', 'karyawans.nilai_upah', 'karyawans.pot_koperasi', 'karyawans.tgl_masuk')
+        ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+        ->whereMonth('absensi_harians.tanggal', '=', $bulan)
+        ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
+        ->where('absensi_harians.status', '=', 2)
+        ->where('karyawans.status_karyawan_id', '=', 3)
+        ->groupBy('karyawans.id')
+        ->get();
+
+        // set document information
+        PDF::SetAuthor('PT. TRIMITRA KEMASINDO');
+        PDF::SetTitle('Laporan Penjualan - Trimitra Kemasindo');
+        PDF::SetSubject('Laporan Penjualan');
+        PDF::SetKeywords('Laporan Penjualan Trimitra Kemasindo');
+
+        PDF::setFooterCallback(function ($pdf) {
+            $pdf->SetMargins(15, 10, 15);
+
+            // Position at 15 mm from bottom
+            $pdf->SetY(-15);
+            // Set font
+            $pdf->SetFont('helvetica', 'I', 8);
+            // Page number
+            $pdf->Cell(0, 4, 'Page '.$pdf->getAliasNumPage().'/'.$pdf->getAliasNbPages(), 0, 0, 'R', 0, '', 0);
+        });
+
+        // AddPage ($orientation='', $format='', $keepmargins=false, $tocpage=false)
+        PDF::AddPage('L', 'A2');
+
+        // SetMargins ($left, $top, $right=-1, $keepmargins=false)
+        PDF::SetMargins(15, 10, 15);
+
+        // Image ($file, $x='', $y='', $w=0, $h=0, $type='', $link='', $align='', $resize=false, $dpi=300, $palign='', $ismask=false, $imgmask=false, $border=0, $fitbox=false, $hidden=false, $fitonpage=false, $alt=false, $altimgs=array())
+        //PDF::Image(asset('/image/bmt.png'), 15, 5, 35, 15, '', '', 'T', true);
+
+        // SetFont ($family, $style='', $size=null, $fontfile='', $subset='default', $out=true)
+        PDF::SetFont('times', 'B', 12);
+
+        //PDF::setXY(54, 10);
+        PDF::setX(15);
+        PDF::Cell(0, 0, 'PT. Trimitra Kemasindo', 0, 0, 'L', 0, '', 0);
+        PDF::Ln();
+        //PDF::setXY(54, 16);
+        PDF::setX(15);
+        PDF::SetFont('', '', 10);
+        PDF::Cell(0, 0, 'Jalan Raya Sapan KM 1 No. 15 Bandung, Telp. (022) 87304121, Fax. (022) 87304123', 0, 0, 'L', 0, '', 0);
+
+         // Line ($x1, $y1, $x2, $y2, $style=array())
+        $style = array('width' => 0.7, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0));
+        PDF::Line(15, 21, 576, 21); // $y2 = 282 for A4
+        PDF::Line(15, 22, 576, 22, $style); // $y2 = 402 for A3
+        PDF::setLineStyle(array('width' => 0, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0)));
+
+        PDF::Ln(12);
+
+        PDF::SetFont('', 'B', 12);
+
+        // Cell ($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='', $stretch=0, $ignore_min_height=false, $calign='T', $valign='M')
+        PDF::Cell(0, 0, 'LAPORAN ABSENSI PEGAWAI STAFF', 0, 0, 'C', 0, '', 0);
+        PDF::Ln(8);
+
+        PDF::SetFont('', '', 10);
+
+        PDF::Cell(30, 0, 'BULAN', 1, 0, 'C', 0, '', 0);
+        PDF::Ln();
+        PDF::Cell(30, 0, $bulanLbl, 1, 0, 'C', 0, '', 0);
+
+        PDF::Ln(8);
+
+        PDF::Cell(40, 0, 'NAMA KARYAWAN', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(40, 0, 'TGL. MASUK KERJA', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(50, 0, 'NO. REKENING', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(30, 0, 'TOTAL UPAH', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(45, 0, 'POTONGAN KOPERASI', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(40, 0, 'POTONGAN ABSENSI', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(35, 0, 'SETELAH DI POT', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(30, 0, 'TOTAL ABSEN', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(30, 0, 'LEMBUR RUTIN', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(50, 0, 'LEMBUR BIASA / NERUS', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(30, 0, 'LEMBUR OFF', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(30, 0, 'SAKIT', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(30, 0, 'IZIN', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(30, 0, 'ALFA', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(30, 0, 'CUTI', 1, 0, 'C', 0, '', 0);
+        PDF::Ln();
+
+        $count = sizeof($data);
+        if ($count > 0) {
+            $checkInvoice = '';
+            $grandTotal = 0;
+            foreach ($data as $item) {
+                $total_absensi = AbsensiHarian::select('absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.id', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.jenis_lembur', 'absensi_harians.status', 'absensi_harians.pot_absensi', 'absensi_harians.upah_harian', 'karyawans.nik', 'karyawans.nama', 'karyawans.norek', 'karyawans.nilai_upah', 'karyawans.pot_koperasi', 'karyawans.tgl_masuk')
+                ->join('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+                ->whereMonth('absensi_harians.tanggal', '=', $bulan)
+                ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
+                ->where('karyawans.id', '=', $item->id)
+                ->where('absensi_harians.status', '=', 2)
+                ->where('karyawans.status_karyawan_id', '=', 3)
+                ->count('karyawans.id');
+
+                //  1=rutin 2= biasa 3= off
+
+                $data_lembur_rutin = DB::table('absensi_harians')
+                    ->select('*')
+                    ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+                    ->whereMonth('absensi_harians.tanggal', '=', $bulan)
+                    ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
+                    ->where('absensi_harians.jenis_lembur', '=', 1)
+                    ->where('karyawans.id', '=', $item->id)
+                    ->where('absensi_harians.status', '=', 2)
+                    ->where('karyawans.status_karyawan_id', '=', 3)
+                    ->count('karyawans.id');
+
+                $data_lembur_biasa = DB::table('absensi_harians')
+                    ->select('*')
+                    ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+                    ->whereMonth('absensi_harians.tanggal', '=', $bulan)
+                    ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
+                    ->where('absensi_harians.jenis_lembur', '=', 2)
+                    ->where('karyawans.id', '=', $item->id)
+                    ->where('absensi_harians.status', '=', 2)
+                    ->where('karyawans.status_karyawan_id', '=', 3)
+                    ->count('karyawans.id');
+
+                $data_lembur_off = DB::table('absensi_harians')
+                    ->select('*')
+                    ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+                    ->whereMonth('absensi_harians.tanggal', '=', $bulan)
+                    ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
+                    ->where('absensi_harians.jenis_lembur', '=', 3)
+                    ->where('karyawans.id', '=', $item->id)
+                    ->where('absensi_harians.status', '=', 2)
+                    ->where('karyawans.status_karyawan_id', '=', 3)
+                    ->count('karyawans.id');
+
+                $pot_absensi = DB::table('absensi_harians')
+                    ->select('absensi_harians.pot_absensi')
+                    ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+                    ->whereMonth('absensi_harians.tanggal', '=', $bulan)
+                    ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
+                    ->where('karyawans.id', '=', $item->id)
+                    ->where('absensi_harians.status', '=', 2)
+                    ->where('karyawans.status_karyawan_id', '=', 3)
+                    ->sum('absensi_harians.pot_absensi');
+
+                $total_upah_harian = DB::table('absensi_harians')
+                    ->select('absensi_harians.pot_absensi')
+                    ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+                    ->whereMonth('absensi_harians.tanggal', '=', $bulan)
+                    ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
+                    ->where('absensi_harians.status', '=', 2)
+                    ->where('karyawans.status_karyawan_id', '=', 3)
+                    ->where('karyawans.id', '=', $item->id)
+                    ->sum('absensi_harians.upah_harian');
+
+                //HITUNG JUMLAH TIDAK MASUK KERJA
+                $hari_off = DB::table('absensi_harians')
+                ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+                ->where('jml_kehadiran', '=', '00:00:00')
+                ->whereMonth('absensi_harians.tanggal', '=', $bulan)
+                ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
+                ->where('absensi_harians.status', '=', 2)
+                ->where('karyawans.status_karyawan_id', '=', 3)
+                ->where('karyawans.id', '=', $item->id)
+                ->count('jml_kehadiran');
+
+                // PERHITUNGAN POTONGAN UMK
+                $pot_umk = ($item->nilai_upah / 31) * $hari_off;
+
+                // PERHITUNGAN POTONGAN JABATAN
+                $pot_jabatan = (0.25 * $item->tunjangan) * $hari_off;
+
+                $setelah_dipot = ($total_upah_harian + $item->tunjangan) - $pot_jabatan - $pot_umk - $item->pot_koperasi - $item->pot_bpjs;
+
+                $totals = DB::table('absensi_harians')
+                    ->select('absensi_harians.pot_absensi')
+                    ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+                    ->whereMonth('absensi_harians.tanggal', '=', $bulan)
+                    ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
+                    ->where('absensi_harians.status', '=', 2)
+                    ->where('karyawans.status_karyawan_id', '=', 3)
+                    ->sum('absensi_harians.upah_harian');
+
+                PDF::Cell(40, 0, $item->nama, 1, 0, 'L', 0, '', 1);
+                PDF::Cell(40, 0, $item->tgl_masuk, 1, 0, 'R', 0, '', 1);
+                PDF::Cell(50, 0, $item->norek, 1, 0, 'R', 0, '', 1);
+                PDF::Cell(30, 0, number_format($total_upah_harian, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+                PDF::Cell(45, 0, number_format($item->pot_koperasi, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+                PDF::Cell(40, 0, number_format($pot_absensi, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+                PDF::Cell(35, 0, number_format($setelah_dipot, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+                PDF::Cell(30, 0, $total_absensi, 1, 0, 'R', 0, '', 1);
+                PDF::Cell(30, 0, $data_lembur_rutin, 1, 0, 'R', 0, '', 1);
+                PDF::Cell(50, 0, $data_lembur_biasa, 1, 0, 'R', 0, '', 1);
+                PDF::Cell(30, 0, $data_lembur_off, 1, 0, 'R', 0, '', 1);
+                PDF::Cell(30, 0, 0, 1, 0, 'R', 0, '', 1);
+                PDF::Cell(30, 0, 0, 1, 0, 'R', 0, '', 1);
+                PDF::Cell(30, 0, 0, 1, 0, 'R', 0, '', 1);
+                PDF::Cell(30, 0, 0, 1, 0, 'R', 0, '', 1);
+                PDF::Ln();
+
+                //$checkInvoice = $item->no_invoice;
+            }
+            PDF::SetFont('', 'B', 10);
+            // grand total
+            PDF::Cell(245, 0, 'TOTAL ', 1, 0, 'R', 0, '', 1);
+            PDF::Cell(35, 0, number_format($totals, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+            PDF::Cell(260, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Ln();
+            PDF::SetFont('', '', 10);
+        } else {
+            PDF::Cell(22, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(26, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(50, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(30, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(40, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(40, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(12, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(12, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(20, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(24, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(24, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(24, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(24, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(24, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(24, 0, '', 1, 0, 'C', 0, '', 0);
+
+            PDF::Ln();
+        }
+
+        // Output ($name='doc.pdf', $dest='I'), I=inline, D=Download
+        PDF::Output('laporan_absensi_karyawan_staff.pdf');
+
+        // need to call exit, i don't know why
+        exit;
+    }
 }

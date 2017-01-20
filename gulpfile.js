@@ -20,12 +20,14 @@ elixir(function(mix) {
         'common.js',
         'karyawan.js',
         'karyawanHarian.js',
+        'karyawanStaff.js',
         'absensiHarian.js',
         'absensiApproval.js',
         'absensiPacking.js',
         'karyawanValidation.js',
         'reportAbsensiKaryawanTetap.js',
         'reportAbsensiKaryawanHarian.js',
-        'reportAbsensiKaryawanPacking.js'
+        'reportAbsensiKaryawanPacking.js',
+        'reportAbsensiKaryawanStaff.js',
     ]);
 });

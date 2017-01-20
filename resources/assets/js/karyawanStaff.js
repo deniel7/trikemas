@@ -1,6 +1,5 @@
-var karyawanHarianModule = (function(commonModule) {
-
-    var datatableBaseURL = commonModule.datatableBaseURL + 'karyawan-harians';
+var karyawanStaffModule = (function(commonModule) {
+    var datatableBaseURL = commonModule.datatableBaseURL + 'karyawan-staff';
 
     var existing_model = null;
 
@@ -18,7 +17,7 @@ var karyawanHarianModule = (function(commonModule) {
 
         swal({
                 title: "Apakah anda yakin?",
-                text: "Data Karyawan akan dihapus!",
+                text: "Data Karyawan dengan ID " + id + " akan dihapus!",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#DD6B55",
@@ -36,7 +35,7 @@ var karyawanHarianModule = (function(commonModule) {
                         data: {
                             _method: 'DELETE'
                         },
-                        url: "/karyawan-harian/" + id
+                        url: "/karyawan-staff/" + id
                     })
                     .done(function(data) {
                         if (data === "success") {
@@ -180,7 +179,7 @@ var karyawanHarianModule = (function(commonModule) {
 
         $.ajax({
             method: "GET",
-            url: "/karyawan-harian/" + id,
+            url: "/karyawan-staff/" + id,
             dataType: "json",
         }).done(function(response) {
 
@@ -215,7 +214,7 @@ var karyawanHarianModule = (function(commonModule) {
     return {
         init: init,
         showPrint: showPrint,
-        confirmDelete: confirmDelete,
+        confirmDelete: confirmDelete
     };
 
 })(commonModule);

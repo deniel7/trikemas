@@ -11,11 +11,16 @@ use Datatables;
 use Carbon\Carbon;
 use PDF;
 
-class KaryawanTetapController extends Controller
+class KaryawanStaffController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
-        return view('karyawan.index');
+        return view('karyawan_staff.index');
     }
 
     public function datatable()
@@ -23,7 +28,7 @@ class KaryawanTetapController extends Controller
         $karyawans = DB::table('karyawans')
         ->select(['karyawans.id', 'status_karyawans.keterangan', 'karyawans.nik', 'karyawans.nama', 'karyawans.alamat', 'karyawans.phone', 'karyawans.lulusan', 'karyawans.tgl_masuk', 'karyawans.nilai_upah', 'karyawans.uang_makan', 'karyawans.pot_koperasi', 'karyawans.pot_bpjs', 'karyawans.tunjangan', 'karyawans.norek'])
         ->join('status_karyawans', 'karyawans.status_karyawan_id', '=', 'status_karyawans.id')
-        ->where('karyawans.status_karyawan_id', '=', 1);
+        ->where('karyawans.status_karyawan_id', '=', 3);
 
         return Datatables::of($karyawans)
 
@@ -49,10 +54,11 @@ class KaryawanTetapController extends Controller
 
             $html = '<div class="text-center btn-group btn-group-justified">';
 
-            $html .= '<a href="karyawan-tetap/'.$karyawan->id.'/edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a>';
-            $html .= '<a href="javascript:;" onClick="karyawanModule.showPrint('.$karyawan->id.');"><button type="button" class="btn btn-sm"><i class="fa fa-print"></i></button></a>';
+            $html .= '<a href="karyawan-staff/'.$karyawan->id.'/edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a>';
 
-            $html .= '<a href="javascript:;" onclick="karyawanModule.confirmDelete(event, \''.$karyawan->id.'\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
+            $html .= '<a href="javascript:;" onClick="karyawanStaffModule.showPrint('.$karyawan->id.');"><button type="button" class="btn btn-sm"><i class="fa fa-print"></i></button></a>';
+
+            $html .= '<a href="javascript:;" onclick="karyawanStaffModule.confirmDelete(event, \''.$karyawan->id.'\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
 
             $html .= '</div>';
 
@@ -61,13 +67,25 @@ class KaryawanTetapController extends Controller
         ->make(true);
     }
 
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function create()
     {
         $data['status_karyawans'] = StatusKaryawan::select('id', 'keterangan')->orderBy('id')->get();
 
-        return view('karyawan/create', $data);
+        return view('karyawan_staff/create', $data);
     }
 
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function store(Request $request)
     {
         $nilai_upah = str_replace(',', '', $request->input('nilai_upah'));
@@ -101,20 +119,43 @@ class KaryawanTetapController extends Controller
         DB::commit();
         //Flash::success('Saved');
 
-        if ($karyawan->status_karyawan_id == 1) {
-            return redirect('karyawan-tetap');
-        } else {
-            return redirect('karyawan-harian');
-        }
+        return redirect('karyawan-staff');
     }
 
-    public function edit(Karyawan $karyawan)
+    /**
+     * Display the specified resource.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($karyawan)
     {
         $data['status_karyawans'] = StatusKaryawan::select('id', 'keterangan')->orderBy('id')->get();
 
-        return view('karyawan/edit', compact('karyawan'), $data);
+        return view('karyawan_staff/edit', compact('karyawan'), $data);
     }
 
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function update(Karyawan $karyawan, Request $request)
     {
         $nilai_upah = str_replace(',', '', $request->input('nilai_upah'));
@@ -138,34 +179,28 @@ class KaryawanTetapController extends Controller
         $karyawan->save();
         DB::commit();
 
-        if ($karyawan->status_karyawan_id == 1) {
-            return redirect('karyawan-tetap');
-        } else {
-            return redirect('karyawan-harian');
-        }
+        return redirect('karyawan-staff');
     }
 
-    public function show($karyawan_tetap)
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($karyawan)
     {
-        $id = $karyawan_tetap->id;
+        DB::beginTransaction();
 
-        $details = DB::table('karyawans')
-        ->select('karyawans.id', 'nik', 'nama', 'norek', 'status_karyawans.keterangan')
-        ->join('status_karyawans', 'status_karyawans.id', '=', 'karyawans.status_karyawan_id')
-        ->where('karyawans.id', '=', $id)
-        ->get();
+        try {
+            $karyawan->delete();
 
-        // $test = Karyawan::find($id);
-        if (count($details) == 1) {
-            return response()->json([
-                'status' => 1,
-                'records' => $details,
-                ]);
-        } else {
-            return response()->json([
-                'status' => 0,
-                'message' => 'Failed',
-                ]);
+            DB::commit();
+            echo 'success';
+        } catch (\Illuminate\Database\QueryException $e) {
+            DB::rollBack();
+            echo 'Error ('.$e->errorInfo[1].'): '.$e->errorInfo[2].'.';
         }
     }
 
@@ -374,27 +409,5 @@ class KaryawanTetapController extends Controller
 
         // need to call exit, i don't know why
         exit;
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($karyawan)
-    {
-        DB::beginTransaction();
-
-        try {
-            $karyawan->delete();
-
-            DB::commit();
-            echo 'success';
-        } catch (\Illuminate\Database\QueryException $e) {
-            DB::rollBack();
-            echo 'Error ('.$e->errorInfo[1].'): '.$e->errorInfo[2].'.';
-        }
     }
 }
