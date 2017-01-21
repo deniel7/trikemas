@@ -11,13 +11,13 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Konsumen Branch
+        Toko
         <small>Add</small>
       </h1>
         
       <ol class="breadcrumb">
         <li><a href="{{ url('/') }}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="{{ url('/konsumen-branch') }}"> Konsumen Branch</a></li>
+        <li><a href="{{ url('/konsumen-branch') }}"> Toko</a></li>
         <li class="active">Add</li>
       </ol>
     </section>
@@ -34,7 +34,7 @@
           <div class="box box-primary">
             
             <div class="box-header with-border">
-              <h3 class="box-title">Data Konsumen Branch</h3>
+              <h3 class="box-title">Data Toko</h3>
             </div>
             <!-- /.box-header -->
             
@@ -64,9 +64,9 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="konsumen_id" class="col-sm-2 control-label">Nama Konsumen </label>
+                  <label for="konsumen_id" class="col-sm-2 control-label">Distributor </label>
                   <div class="col-sm-10">
-                    <select name="konsumen_id" id="konsumen_id" class="form-control selectpicker" title="-- Pilih konsumen --">
+                    <select name="konsumen_id" id="konsumen_id" class="form-control selectpicker" title="-- Pilih distributor --">
                       @foreach($konsumen as $item)
                         <option value="{{ $item->id }}" {{ $item->id == old('konsumen_id') ? 'selected' : '' }} >{{ $item->nama }}</option>
                       @endforeach

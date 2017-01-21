@@ -50,7 +50,7 @@ var confirmDelete = function(event, id, nama, nama_grup) {
     
     swal({
         title: "Apakah anda yakin?",
-        text: "Data konsumen branch dengan nama " + nama + " pada konsumen " + nama_grup + " akan dihapus!",
+        text: "Data toko dengan nama " + nama + " pada distributor " + nama_grup + " akan dihapus!",
         type: "warning",
         showCancelButton: true,
         confirmButtonColor: "#DD6B55",

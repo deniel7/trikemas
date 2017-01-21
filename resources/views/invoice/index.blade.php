@@ -75,9 +75,9 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="konsumen_id" class="col-sm-2 control-label">Konsumen</label>
+                  <label for="konsumen_id" class="col-sm-2 control-label">Distributor</label>
                   <div class="col-sm-3">
-                    <select name="konsumen_id" id="konsumen_id" class="form-control selectpicker" title="-- Pilih konsumen --">
+                    <select name="konsumen_id" id="konsumen_id" class="form-control selectpicker" title="-- Pilih distributor --">
                       @foreach($konsumen as $item)
                         <option value="{{ $item->id }}">{{ $item->nama }}</option>
                       @endforeach
@@ -142,7 +142,7 @@
                       <th class="text-center">Total</th>
                       <th class="text-center">Jth. Tempo</th>
                       <th class="text-center">Notifikasi</th>
-                      <th class="text-center">Konsumen</th>
+                      <th class="text-center">Distributor</th>
                       <th class="text-center">Toko</th>
                       <th class="text-center">Tujuan</th>
                       <th class="text-center">Angkutan</th>
@@ -153,7 +153,7 @@
                       <th class="text-center">Tgl. Bayar</th>
                       <th class="text-center">Bank Tujuan</th>
                       <th class="text-center">Keterangan</th>
-                      <th class="text-center" width="5%">Action</th>
+                      <th class="text-center" width="6%">Action</th>
                     </tr>
                   </thead>
                   <tbody>

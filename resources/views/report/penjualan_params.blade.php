@@ -4,6 +4,8 @@
     <link rel="stylesheet" href="{{ asset('vendor/formvalidation/formValidation.css') }}">
     <!-- bootstrap datepicker -->
     <link rel="stylesheet" href="{{ asset('bower_components/AdminLTE/plugins/datepicker/datepicker3.css') }}">
+    <!-- bootstrap select -->
+    <link rel="stylesheet" href="{{ asset('bower_components/bootstrap-select/dist/css/bootstrap-select.min.css') }}">
 @endsection
 
 @section('content')
@@ -44,6 +46,16 @@
               
               <div class="box-body">
                 
+                <div class="form-group">
+                  <label for="ppn" class="col-sm-2 control-label">PPN *</label>
+                  <div class="col-sm-10">
+                    <select name="ppn" id="ppn" class="form-control selectpicker" title="-- Pilih PPN --">
+                        <option value="A">All</option>
+                        <option value="Y">PPN</option>
+                        <option value="N">Non PPN</option>
+                    </select>
+                  </div>
+                </div>
                 <div class="form-group">
                   <label for="tanggal_lahir" class="col-sm-2 control-label">Tanggal *</label>
                   <div class="col-sm-10">
@@ -98,6 +110,8 @@
     <script src="{{ asset('vendor/formvalidation/framework/bootstrap.min.js') }}"></script>
     <!-- bootstrap datepicker -->
     <script src="{{ asset('bower_components/AdminLTE/plugins/datepicker/bootstrap-datepicker.js') }}"></script>
+    <!-- bootstrap select -->
+    <script src="{{ asset('bower_components/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
     <script src="{{ asset('js/report.js') }}"></script>
       
     <!-- page script -->

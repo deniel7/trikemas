@@ -50,6 +50,12 @@
               <div class="box-body">
                 
                 <div class="form-group">
+                  <label for="no_invoice" class="col-sm-2 control-label">PPN *</label>
+                  <div class="col-sm-10">
+                    <input type="checkbox" checked name="chk_ppn" id="chk_ppn">
+                  </div>
+                </div>
+                <div class="form-group">
                   <label for="no_invoice" class="col-sm-2 control-label">No. Invoice *</label>
                   <div class="col-sm-10">
                     <input type="text" class="form-control" name="no_invoice" id="no_invoice" placeholder="No. Invoice" value="{{ old('no_invoice') }}">
@@ -67,9 +73,9 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="konsumen_id" class="col-sm-2 control-label">Konsumen *</label>
+                  <label for="konsumen_id" class="col-sm-2 control-label">Distributor *</label>
                   <div class="col-sm-10">
-                    <select name="konsumen_id" id="konsumen_id" class="form-control selectpicker" title="-- Pilih konsumen --">
+                    <select name="konsumen_id" id="konsumen_id" class="form-control selectpicker" title="-- Pilih distributor --">
                       @foreach($konsumen as $item)
                         <option value="{{ $item->id }}" {{ $item->id == old('konsumen_id') ? 'selected' : '' }} >{{ $item->nama }}</option>
                       @endforeach
@@ -218,10 +224,12 @@
                 </div>
                 <div class="form-group">
                   <label for="ppn" class="col-sm-9 control-label">PPN</label>
+                  <!--
                   <div class="col-sm-1 text-right">
                     <input type="checkbox" checked name="chk_ppn" id="chk_ppn">
                   </div>
-                  <div class="col-sm-2">
+                  -->
+                  <div class="col-sm-3">
                     <input type="text" style="background: #EDF7FA;" class="form-control text-right" name="ppn" id="ppn" placeholder="PPN" value="{{ old('ppn') }}" readonly>
                   </div>
                 </div>

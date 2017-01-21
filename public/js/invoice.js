@@ -144,7 +144,7 @@ var validation = (function() {
               konsumen_id: {
                 validators: {
                   notEmpty: {
-                    message: 'Konsumen harus diisi'
+                    message: 'Distributor harus diisi'
                   }
                 }
               },

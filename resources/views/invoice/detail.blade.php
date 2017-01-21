@@ -65,7 +65,7 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="konsumen_id" class="col-sm-2 control-label">Konsumen </label>
+                  <label for="konsumen_id" class="col-sm-2 control-label">Distributor </label>
                   <div class="col-sm-10">
                     <input type="text" style="background: #EDF7FA;" class="form-control" name="konsumen_id" id="konsumen_id" placeholder="Konsumen" value="{{ $konsumen->find($invoice_penjualan->konsumen_id)->nama }}" readonly>
                   </div>
@@ -143,7 +143,7 @@
                             
                             <tr>
                               <td>
-                                <input type="text" value="{{ $barang_helper->find($detail_penjualan[$i]->barang_id)->nama . ' - ' . $barang_helper->find($detail_penjualan[$i]->barang_id)->jenis . '(' . $detail_penjualan[$i]->barang_id . ')' }}" style="width: 310px; background: #EDF7FA;" class="form-control nama_barang" name="nama_barang[]" id="nama_barang_{{ $i+1 }}" placeholder="Nama barang" readonly>
+                                <input type="text" value="{{ $barang_helper->find($detail_penjualan[$i]->barang_id)->nama . ' - ' . $barang_helper->find($detail_penjualan[$i]->barang_id)->jenis . ' (' . $detail_penjualan[$i]->barang_id . ')' }}" style="width: 310px; background: #EDF7FA;" class="form-control nama_barang" name="nama_barang[]" id="nama_barang_{{ $i+1 }}" placeholder="Nama barang" readonly>
                               </td>
                               <td class="text-right">
                                 <input type="text" value="{{ number_format($detail_penjualan[$i]->jumlah_ball, 0, '.', ',') }}" style="width: 80px; background: #EDF7FA;" class="form-control text-right ball" name="ball[]" id="ball_{{ $i+1 }}" placeholder="Ball" readonly>

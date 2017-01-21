@@ -47,9 +47,9 @@
               <div class="box-body">
                 
                 <div class="form-group">
-                  <label for="konsumen_id" class="col-sm-2 control-label">Konsumen *</label>
+                  <label for="konsumen_id" class="col-sm-2 control-label">Distributor *</label>
                   <div class="col-sm-10">
-                    <select name="konsumen_id" id="konsumen_id" class="form-control selectpicker" title="-- Pilih konsumen --">
+                    <select name="konsumen_id" id="konsumen_id" class="form-control selectpicker" title="-- Pilih distributor --">
                       @foreach($konsumen as $item)
                         <option value="{{ $item->id }}" {{ $item->id == (old('konsumen_id') !== null ? old('konsumen_id') : $konsumen_barang->konsumen_id) ? 'selected' : '' }} >{{ $item->nama }}</option>
                       @endforeach
@@ -57,9 +57,9 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="barang_id" class="col-sm-2 control-label">Barang *</label>
+                  <label for="barang_id" class="col-sm-2 control-label">Jenis Barang *</label>
                   <div class="col-sm-10">
-                    <select name="barang_id" id="barang_id" class="form-control selectpicker" title="-- Pilih barang --">
+                    <select name="barang_id" id="barang_id" class="form-control selectpicker" title="-- Pilih jenis barang --">
                       @foreach($barang as $item)
                         <option value="{{ $item->id }}" {{ $item->id == (old('barang_id') !== null ? old('barang_id') : $konsumen_barang->barang_id) ? 'selected' : '' }} >{{ $item->id . ' | ' . $item->nama }}</option>
                       @endforeach

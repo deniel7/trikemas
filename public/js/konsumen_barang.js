@@ -27,14 +27,14 @@ var validation = (function() {
               konsumen_id: {
                 validators: {
                   notEmpty: {
-                    message: 'Konsumen harus diisi'
+                    message: 'Distributor harus diisi'
                   }
                 }
               },
               barang_id: {
                 validators: {
                   notEmpty: {
-                    message: 'Barang harus diisi'
+                    message: 'Jenis barang harus diisi'
                   }
                 }
               },
@@ -61,7 +61,7 @@ var confirmDelete = function(event, id, konsumen, barang) {
     
     swal({
         title: "Apakah anda yakin?",
-        text: "Data harga dengan konsumen " + konsumen + " dan barang " + barang + " akan dihapus!",
+        text: "Data harga dengan distributor " + konsumen + " dan jenis barang " + barang + " akan dihapus!",
         type: "warning",
         showCancelButton: true,
         confirmButtonColor: "#DD6B55",

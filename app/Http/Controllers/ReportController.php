@@ -74,14 +74,95 @@ class ReportController extends Controller
     }
 
     // preview
-    public function previewPenjualan($tanggal, $hingga = '')
+    public function previewPenjualan($ppn, $tanggal, $hingga = '')
     {
         $tanggal_en = Carbon::createFromFormat('d-m-Y', $tanggal)->format('Y-m-d');
 
         if ($hingga !== '') {
             $hingga_en = Carbon::createFromFormat('d-m-Y', $hingga)->format('Y-m-d');
-
-            $data = DB::table('invoice_penjualans')
+            
+            if ($ppn == "Y") {
+                $data = DB::table('invoice_penjualans')
+                    ->join('detail_penjualans', 'detail_penjualans.invoice_penjualan_id', '=', 'invoice_penjualans.id')
+                    ->join('barangs', 'barangs.id', '=', 'detail_penjualans.barang_id')
+                    ->join('konsumens', 'konsumens.id', '=', 'invoice_penjualans.konsumen_id')
+                    ->join('angkutans', 'angkutans.id', '=', 'invoice_penjualans.angkutan_id')
+                    ->join('tujuans', 'tujuans.id', '=', 'invoice_penjualans.tujuan_id')
+                    ->select(
+                        'invoice_penjualans.id',
+                        'invoice_penjualans.tanggal',
+                        'invoice_penjualans.no_invoice',
+                        'invoice_penjualans.no_po',
+                        'invoice_penjualans.no_surat_jalan',
+                        'invoice_penjualans.no_mobil',
+                        'invoice_penjualans.tgl_jatuh_tempo',
+                        'invoice_penjualans.bank_tujuan_bayar',
+                        'invoice_penjualans.tanggal_bayar',
+                        'invoice_penjualans.status_bayar',
+                        'invoice_penjualans.keterangan',
+                        'invoice_penjualans.sub_total',
+                        'invoice_penjualans.diskon',
+                        'invoice_penjualans.total',
+                        'invoice_penjualans.ppn',
+                        'invoice_penjualans.grand_total',
+                        'detail_penjualans.jumlah_ball',
+                        'detail_penjualans.jumlah as jumlah_pcs',
+                        'detail_penjualans.harga_barang',
+                        'detail_penjualans.subtotal',
+                        'angkutans.nama as nama_angkutan',
+                        'tujuans.kota as nama_tujuan',
+                        'konsumens.nama as nama_konsumen',
+                        'barangs.jenis as jenis_barang',
+                        'barangs.nama as nama_barang',
+                        'barangs.berat as berat_barang'
+                    )
+                    ->whereBetween('invoice_penjualans.tanggal', [$tanggal_en, $hingga_en])
+                    ->where('invoice_penjualans.ppn', '>', 0)
+                    ->orderBy('invoice_penjualans.tanggal')->orderBy('invoice_penjualans.no_invoice')->orderBy('barangs.nama')
+                    ->get();
+            }
+            else if ($ppn == "N") {
+                $data = DB::table('invoice_penjualans')
+                    ->join('detail_penjualans', 'detail_penjualans.invoice_penjualan_id', '=', 'invoice_penjualans.id')
+                    ->join('barangs', 'barangs.id', '=', 'detail_penjualans.barang_id')
+                    ->join('konsumens', 'konsumens.id', '=', 'invoice_penjualans.konsumen_id')
+                    ->join('angkutans', 'angkutans.id', '=', 'invoice_penjualans.angkutan_id')
+                    ->join('tujuans', 'tujuans.id', '=', 'invoice_penjualans.tujuan_id')
+                    ->select(
+                        'invoice_penjualans.id',
+                        'invoice_penjualans.tanggal',
+                        'invoice_penjualans.no_invoice',
+                        'invoice_penjualans.no_po',
+                        'invoice_penjualans.no_surat_jalan',
+                        'invoice_penjualans.no_mobil',
+                        'invoice_penjualans.tgl_jatuh_tempo',
+                        'invoice_penjualans.bank_tujuan_bayar',
+                        'invoice_penjualans.tanggal_bayar',
+                        'invoice_penjualans.status_bayar',
+                        'invoice_penjualans.keterangan',
+                        'invoice_penjualans.sub_total',
+                        'invoice_penjualans.diskon',
+                        'invoice_penjualans.total',
+                        'invoice_penjualans.ppn',
+                        'invoice_penjualans.grand_total',
+                        'detail_penjualans.jumlah_ball',
+                        'detail_penjualans.jumlah as jumlah_pcs',
+                        'detail_penjualans.harga_barang',
+                        'detail_penjualans.subtotal',
+                        'angkutans.nama as nama_angkutan',
+                        'tujuans.kota as nama_tujuan',
+                        'konsumens.nama as nama_konsumen',
+                        'barangs.jenis as jenis_barang',
+                        'barangs.nama as nama_barang',
+                        'barangs.berat as berat_barang'
+                    )
+                    ->whereBetween('invoice_penjualans.tanggal', [$tanggal_en, $hingga_en])
+                    ->where('invoice_penjualans.ppn', '=', 0)
+                    ->orderBy('invoice_penjualans.tanggal')->orderBy('invoice_penjualans.no_invoice')->orderBy('barangs.nama')
+                    ->get();
+            }
+            else {
+                $data = DB::table('invoice_penjualans')
                     ->join('detail_penjualans', 'detail_penjualans.invoice_penjualan_id', '=', 'invoice_penjualans.id')
                     ->join('barangs', 'barangs.id', '=', 'detail_penjualans.barang_id')
                     ->join('konsumens', 'konsumens.id', '=', 'invoice_penjualans.konsumen_id')
@@ -117,9 +198,93 @@ class ReportController extends Controller
                     )
                     ->whereBetween('invoice_penjualans.tanggal', [$tanggal_en, $hingga_en])
                     ->orderBy('invoice_penjualans.tanggal')->orderBy('invoice_penjualans.no_invoice')->orderBy('barangs.nama')
+                    ->get();    
+            }
+            
+        }
+        else {
+            if ($ppn == "Y") {
+                $data = DB::table('invoice_penjualans')
+                    ->join('detail_penjualans', 'detail_penjualans.invoice_penjualan_id', '=', 'invoice_penjualans.id')
+                    ->join('barangs', 'barangs.id', '=', 'detail_penjualans.barang_id')
+                    ->join('konsumens', 'konsumens.id', '=', 'invoice_penjualans.konsumen_id')
+                    ->join('angkutans', 'angkutans.id', '=', 'invoice_penjualans.angkutan_id')
+                    ->join('tujuans', 'tujuans.id', '=', 'invoice_penjualans.tujuan_id')
+                    ->select(
+                        'invoice_penjualans.id',
+                        'invoice_penjualans.tanggal',
+                        'invoice_penjualans.no_invoice',
+                        'invoice_penjualans.no_po',
+                        'invoice_penjualans.no_surat_jalan',
+                        'invoice_penjualans.no_mobil',
+                        'invoice_penjualans.tgl_jatuh_tempo',
+                        'invoice_penjualans.bank_tujuan_bayar',
+                        'invoice_penjualans.tanggal_bayar',
+                        'invoice_penjualans.status_bayar',
+                        'invoice_penjualans.keterangan',
+                        'invoice_penjualans.sub_total',
+                        'invoice_penjualans.diskon',
+                        'invoice_penjualans.total',
+                        'invoice_penjualans.ppn',
+                        'invoice_penjualans.grand_total',
+                        'detail_penjualans.jumlah_ball',
+                        'detail_penjualans.jumlah as jumlah_pcs',
+                        'detail_penjualans.harga_barang',
+                        'detail_penjualans.subtotal',
+                        'angkutans.nama as nama_angkutan',
+                        'tujuans.kota as nama_tujuan',
+                        'konsumens.nama as nama_konsumen',
+                        'barangs.jenis as jenis_barang',
+                        'barangs.nama as nama_barang',
+                        'barangs.berat as berat_barang'
+                    )
+                    ->where('invoice_penjualans.tanggal', $tanggal_en)
+                    ->where('invoice_penjualans.ppn', '>', 0)
+                    ->orderBy('invoice_penjualans.tanggal')->orderBy('invoice_penjualans.no_invoice')->orderBy('barangs.nama')
                     ->get();
-        } else {
-            $data = DB::table('invoice_penjualans')
+            }
+            else if ($ppn == "N") {
+                $data = DB::table('invoice_penjualans')
+                    ->join('detail_penjualans', 'detail_penjualans.invoice_penjualan_id', '=', 'invoice_penjualans.id')
+                    ->join('barangs', 'barangs.id', '=', 'detail_penjualans.barang_id')
+                    ->join('konsumens', 'konsumens.id', '=', 'invoice_penjualans.konsumen_id')
+                    ->join('angkutans', 'angkutans.id', '=', 'invoice_penjualans.angkutan_id')
+                    ->join('tujuans', 'tujuans.id', '=', 'invoice_penjualans.tujuan_id')
+                    ->select(
+                        'invoice_penjualans.id',
+                        'invoice_penjualans.tanggal',
+                        'invoice_penjualans.no_invoice',
+                        'invoice_penjualans.no_po',
+                        'invoice_penjualans.no_surat_jalan',
+                        'invoice_penjualans.no_mobil',
+                        'invoice_penjualans.tgl_jatuh_tempo',
+                        'invoice_penjualans.bank_tujuan_bayar',
+                        'invoice_penjualans.tanggal_bayar',
+                        'invoice_penjualans.status_bayar',
+                        'invoice_penjualans.keterangan',
+                        'invoice_penjualans.sub_total',
+                        'invoice_penjualans.diskon',
+                        'invoice_penjualans.total',
+                        'invoice_penjualans.ppn',
+                        'invoice_penjualans.grand_total',
+                        'detail_penjualans.jumlah_ball',
+                        'detail_penjualans.jumlah as jumlah_pcs',
+                        'detail_penjualans.harga_barang',
+                        'detail_penjualans.subtotal',
+                        'angkutans.nama as nama_angkutan',
+                        'tujuans.kota as nama_tujuan',
+                        'konsumens.nama as nama_konsumen',
+                        'barangs.jenis as jenis_barang',
+                        'barangs.nama as nama_barang',
+                        'barangs.berat as berat_barang'
+                    )
+                    ->where('invoice_penjualans.tanggal', $tanggal_en)
+                    ->where('invoice_penjualans.ppn', '=', 0)
+                    ->orderBy('invoice_penjualans.tanggal')->orderBy('invoice_penjualans.no_invoice')->orderBy('barangs.nama')
+                    ->get();
+            }
+            else {
+                $data = DB::table('invoice_penjualans')
                     ->join('detail_penjualans', 'detail_penjualans.invoice_penjualan_id', '=', 'invoice_penjualans.id')
                     ->join('barangs', 'barangs.id', '=', 'detail_penjualans.barang_id')
                     ->join('konsumens', 'konsumens.id', '=', 'invoice_penjualans.konsumen_id')
@@ -156,6 +321,7 @@ class ReportController extends Controller
                     ->where('invoice_penjualans.tanggal', $tanggal_en)
                     ->orderBy('invoice_penjualans.tanggal')->orderBy('invoice_penjualans.no_invoice')->orderBy('barangs.nama')
                     ->get();
+            }
         }
 
         // set document information
@@ -221,7 +387,7 @@ class ReportController extends Controller
 
         PDF::Cell(22, 0, 'TANGGAL', 1, 0, 'C', 0, '', 0);
         PDF::Cell(26, 0, 'NO. FAKTUR', 1, 0, 'C', 0, '', 0);
-        PDF::Cell(50, 0, 'KONSUMEN', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(50, 0, 'DISTRIBUTOR', 1, 0, 'C', 0, '', 0);
         PDF::Cell(30, 0, 'KOTA', 1, 0, 'C', 0, '', 0);
         PDF::Cell(40, 0, 'JENIS BARANG', 1, 0, 'C', 0, '', 0);
         PDF::Cell(40, 0, 'NAMA BARANG', 1, 0, 'C', 0, '', 0);

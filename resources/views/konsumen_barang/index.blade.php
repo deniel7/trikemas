@@ -42,9 +42,9 @@
                 <table id="list" class="table table-bordered table-striped table-condensed">
                   <thead>
                     <tr>
-                      <th class="text-center">Konsumen</th>
+                      <th class="text-center">Distributor</th>
                       <th class="text-center" width="12%">ID Barang</th>
-                      <th class="text-center">Nama Barang</th>
+                      <th class="text-center">Jenis Barang</th>
                       <th class="text-center">Harga</th>
                       <th class="text-center" width="10%">Action</th>
                     </tr>

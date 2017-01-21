@@ -45,6 +45,13 @@ var validation = (function() {
             },
             icon: null,
             fields: {
+              ppn: {
+                validators: {
+                  notEmpty: {
+                    message: 'Pilih status PPN'
+                  }
+                }
+              },
               tanggal: {
                 validators: {
                   notEmpty: {
@@ -66,13 +73,14 @@ var validation = (function() {
             e.preventDefault();
             
             var url = "";
+            var ppn = $("#ppn option:selected").val();
             var tanggal = $("#tanggal").val();
             var hingga = $("#hingga").val();
             if (hingga !== "") {
-                url = "/report/penjualan/preview/" + tanggal + "/" + hingga;
+                url = "/report/penjualan/preview/" + ppn + "/" + tanggal + "/" + hingga;
             }
             else {
-                url = "/report/penjualan/preview/" + tanggal;
+                url = "/report/penjualan/preview/" + ppn + "/" + tanggal;
             }
             
             window.open(url, "_blank");

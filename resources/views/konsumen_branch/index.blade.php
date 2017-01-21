@@ -9,13 +9,13 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Konsumen Branch
+        Toko
         <small>List</small>
       </h1>
         
       <ol class="breadcrumb">
         <li><a href="{{ url('/') }}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Konsumen Branch</li>
+        <li class="active">Toko</li>
       </ol>
     </section>
 
@@ -45,7 +45,7 @@
                       <th class="text-center">Nama</th>
                       <th class="text-center">Alamat</th>
                       <th class="text-center">No. HP</th>
-                      <th class="text-center">Nama Konsumen</th>
+                      <th class="text-center">Distributor</th>
                       <th class="text-center" width="10%">Action</th>
                     </tr>
                   </thead>
