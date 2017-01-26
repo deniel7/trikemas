@@ -43,8 +43,9 @@
                   <thead>
                     <tr>
                       <th class="text-center">Distributor</th>
-                      <th class="text-center" width="12%">ID Barang</th>
                       <th class="text-center">Jenis Barang</th>
+                      <th class="text-center">Jenis</th>
+                      <th class="text-center" width="12%">ID Barang</th>
                       <th class="text-center">Harga</th>
                       <th class="text-center" width="10%">Action</th>
                     </tr>

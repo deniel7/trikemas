@@ -21,7 +21,7 @@ class KonsumenBarangController extends Controller
         $list = DB::table('konsumen_barangs')
                 ->join('konsumens', 'konsumen_barangs.konsumen_id', '=', 'konsumens.id')
                 ->join('barangs', 'konsumen_barangs.barang_id', '=', 'barangs.id')
-                ->select('konsumen_barangs.id', 'konsumen_barangs.konsumen_id', 'konsumen_barangs.barang_id', 'konsumen_barangs.harga', 'barangs.nama as nama_barang', 'konsumens.nama as nama_konsumen');
+                ->select('konsumen_barangs.id', 'konsumen_barangs.konsumen_id', 'konsumen_barangs.barang_id', 'konsumen_barangs.harga', 'barangs.nama as nama_barang', 'barangs.jenis as jenis_barang', 'konsumens.nama as nama_konsumen');
         
         return Datatables::of($list)
                 ->addColumn('action', function ($list) {
@@ -34,6 +34,21 @@ class KonsumenBarangController extends Controller
                 })
                 ->editColumn('harga', '{{ number_format($harga, "2", ".", ",") }}')
                 ->make(true);
+    }
+    
+    public function getBarangsByKonsumen($konsumen_id) {
+        $barangs = DB::table('konsumen_barangs')
+                    ->join('barangs', 'konsumen_barangs.barang_id', '=', 'barangs.id')
+                    ->select('barangs.id', 'barangs.nama', 'barangs.jenis')
+                    ->where('konsumen_barangs.konsumen_id', '=', $konsumen_id)
+                    ->orderBy('barangs.nama')->get();
+        
+        $opts = '';
+        foreach ($barangs as $barang) {
+            $opts .= '<option value="' . $barang->id . '">' . $barang->nama . ' - ' . $barang->jenis . ' (' . $barang->id . ')</option>';
+        }
+        
+        echo $opts;
     }
     
     public function getPrice($item_name, $konsumen_id) {
@@ -104,7 +119,7 @@ class KonsumenBarangController extends Controller
     public function create()
     {
         $data['konsumen'] = Konsumen::select('id', 'nama')->orderBy('nama')->get();
-        $data['barang'] = Barang::select('id', 'nama')->orderBy('nama')->get();
+        $data['barang'] = Barang::select('id', 'nama', 'jenis')->orderBy('nama')->get();
         
         return view('konsumen_barang.add', $data);
     }
@@ -125,7 +140,8 @@ class KonsumenBarangController extends Controller
             $barang = Barang::find($request->barang_id);
             $nama_konsumen = $konsumen ? $konsumen->nama : '';
             $nama_barang = $barang ? $barang->nama : '';
-            Flash::error('Error: Data harga dengan konsumen ' . $nama_konsumen . ' dan barang ' . $request->barang_id . ' | ' . $nama_barang . ' sudah ada.');
+            $jenis_barang = $barang ? $barang->jenis : '';
+            Flash::error('Error: Data harga dengan konsumen ' . $nama_konsumen . ' dan barang ' . $nama_barang . ' (' . $jenis_barang . ') sudah ada.');
             return redirect('/konsumen-barang/create')->withInput();
         }
         else {
@@ -166,7 +182,7 @@ class KonsumenBarangController extends Controller
     public function edit($id)
     {
         $data['konsumen'] = Konsumen::select('id', 'nama')->orderBy('nama')->get();
-        $data['barang'] = Barang::select('id', 'nama')->orderBy('nama')->get();
+        $data['barang'] = Barang::select('id', 'nama', 'jenis')->orderBy('nama')->get();
         $data['konsumen_barang'] = KonsumenBarang::find($id);
         
         return view('konsumen_barang.edit', $data);
@@ -205,7 +221,8 @@ class KonsumenBarangController extends Controller
             $barang = Barang::find($request->barang_id);
             $nama_konsumen = $konsumen ? $konsumen->nama : '';
             $nama_barang = $barang ? $barang->nama : '';
-            Flash::error('Error: Data harga dengan konsumen ' . $nama_konsumen . ' dan barang ' . $request->barang_id . ' | ' . $nama_barang . ' sudah ada.');
+            $jenis_barang = $barang ? $barang->jenis : '';
+            Flash::error('Error: Data harga dengan konsumen ' . $nama_konsumen . ' dan barang ' . $nama_barang. ' (' . $jenis_barang . ') sudah ada.');
             return redirect('/konsumen-barang/' . $id . '/edit')->withInput();
         }
     }

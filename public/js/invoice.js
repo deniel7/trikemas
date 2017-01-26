@@ -397,12 +397,24 @@ var advanceElements = (function() {
         $("#konsumen_id").on("change", function() {
             var id = $("option:selected", this).val();
             if (id !== "") {
+                // toko
                 $.ajax({
                     type: "GET",
                     url: "/konsumen/branch/" + id 
                 })
                 .done(function(data) {
                     $("#konsumen_branch_id").html(data).selectpicker('refresh');
+                });
+                
+                // barang
+                $.ajax({
+                    type: "GET",
+                    url: "/konsumen-barang/get-barangs-by-konsumen/" + id 
+                })
+                .done(function(data) {
+                    $("#opts").val(data);
+                    $("[name='nama_barang[]']").html(data).selectpicker('refresh');
+                    resetCalc();
                 });
             }
         });
@@ -703,6 +715,17 @@ var advanceElements = (function() {
     
 
 })();
+
+function resetCalc() {
+    $("[name='pcs[]']").val("");
+    $("[name='harga[]']").val("");
+    $("[name='jumlah[]']").val("");
+    $("#sub_total").val("");
+    $("#discount").val("");
+    $("#total").val("");
+    $("#ppn").val("");
+    $("#grand_total").val("");
+}
 
 function calcInvoice() {
     var sub_total = 0;

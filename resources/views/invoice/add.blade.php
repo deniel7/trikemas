@@ -58,7 +58,7 @@
                 <div class="form-group">
                   <label for="no_invoice" class="col-sm-2 control-label">No. Invoice *</label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" name="no_invoice" id="no_invoice" placeholder="No. Invoice" value="{{ old('no_invoice') }}">
+                    <input type="text" class="form-control" name="no_invoice" id="no_invoice" placeholder="Auto generate.." value="Auto generate.." readonly style="background: #FAFAF2;">
                   </div>
                 </div>
                 <div class="form-group">
@@ -164,9 +164,11 @@
                           <tr>
                             <td>
                               <select name="nama_barang[]" id="nama_barang_1" class="nama_barang" title="-- Pilih barang --">
+                                <!--
                                 @foreach($barang as $item)
                                   <option value="{{ $item->id }}">{{ $item->nama . ' - ' . $item->jenis . ' (' . $item->id . ')' }}</option>
                                 @endforeach
+                                -->
                               </select>
                               <!--<input type="text" style="width: 300px;" class="form-control nama_barang" name="nama_barang[]" id="nama_barang_1" placeholder="Nama barang">-->
                             </td>

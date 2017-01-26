@@ -18,6 +18,7 @@ use App\Barang;
 use App\Angkutan;
 use App\Tujuan;
 use App\AngkutanTujuan;
+use App\InvoiceSequence;
 use DB;
 use PDF;
 
@@ -142,9 +143,9 @@ class InvoiceController extends Controller
         $data['barang'] = $barangs;
         
         $opts = '';
-        foreach ($barangs as $barang) {
-            $opts .= '<option value="' . $barang->id . '">' . $barang->nama . ' - ' . $barang->jenis . ' (' . $barang->id . ')</option>';
-        }
+        //foreach ($barangs as $barang) {
+        //    $opts .= '<option value="' . $barang->id . '">' . $barang->nama . ' - ' . $barang->jenis . ' (' . $barang->id . ')</option>';
+        //}
         $data['opts'] = $opts;
         
         return view('invoice.add', $data);
@@ -172,10 +173,29 @@ class InvoiceController extends Controller
                 // invoice header
                 $invoice = new InvoicePenjualan;
                 
+                // code generator
+                $dt = Carbon::now();
+                $tahun = $dt->year;
+                $bulan = $dt->month;
+                $cur_val = 1;
+                $no_invoice = '';
+                if ($request->ppn > 0) {
+                    $tanda = 'TKS'; // ppn
+                }
+                else {
+                    $tanda = ''; // non ppn
+                }
+                $seq = InvoiceSequence::where('tahun', $tahun)->where('tanda', $tanda)->first();
+                if ($seq) {
+                    $cur_val = $seq->nomor + 1;
+                }
+                $no_invoice = str_pad($cur_val, 4, '0', STR_PAD_LEFT) . (!empty($tanda) ? '/' . $tanda : '') . '/' . str_pad($bulan, 2, '0', STR_PAD_LEFT) . '/' . $tahun;
+                // end generator
+                
                 $invoice->tanggal = Carbon::createFromFormat('d/m/Y', $request->tanggal)->format('Y-m-d');
                 $invoice->konsumen_id = $request->konsumen_id;
                 $invoice->konsumen_branch_id = $request->konsumen_branch_id;
-                $invoice->no_invoice = $request->no_invoice;
+                $invoice->no_invoice = $no_invoice;
                 $invoice->tgl_jatuh_tempo = Carbon::createFromFormat('d/m/Y', $request->tanggal_jatuh_tempo)->format('Y-m-d');
                 $invoice->no_po = $request->no_po;
                 $invoice->angkutan_id = $request->angkutan_id;
@@ -234,6 +254,19 @@ class InvoiceController extends Controller
                     }
                 }
                 
+                // update sequence
+                if ($seq) {
+                    $seq->nomor = $cur_val;
+                    $seq->save();
+                }
+                else {
+                    $seq = new InvoiceSequence;
+                    $seq->tahun = $tahun;
+                    $seq->tanda = $tanda;
+                    $seq->nomor = $cur_val;
+                    $seq->save();
+                }
+                
                 DB::commit();
                 return redirect('/invoice');
             }
@@ -283,14 +316,23 @@ class InvoiceController extends Controller
         $data['angkutan'] = Angkutan::select('id', 'nama')->orderBy('nama')->get();
         $data['tujuan'] = Tujuan::select('id', 'kota as nama')->orderBy('nama')->get();
         $invoice_penjualan = InvoicePenjualan::find($id);
+        $konsumen_id = $invoice_penjualan->konsumen_id;
         $data['invoice_penjualan'] = $invoice_penjualan;
         $data['detail_penjualan'] = $invoice_penjualan->detail;
         $data['barang_helper'] = new Barang;
         $data['konsumen_branch'] = Konsumen::find($invoice_penjualan->konsumen_id)->branch;
-        $barangs = Barang::select('id', 'nama', 'jenis')->orderBy('nama')->get();
+        //$barangs = Barang::select('id', 'nama', 'jenis')->orderBy('nama')->get();
+        $barangs = DB::table('konsumen_barangs')
+                        ->join('barangs', 'konsumen_barangs.barang_id', '=', 'barangs.id')
+                        ->select('barangs.id', 'barangs.nama', 'barangs.jenis')
+                        ->where('konsumen_barangs.konsumen_id', '=', $konsumen_id)
+                        ->orderBy('barangs.nama')->get();
         $data['barang'] = $barangs;
         
         $opts = '';
+        //foreach ($barangs as $barang) {
+        //    $opts .= '<option value="' . $barang->id . '">' . $barang->nama . ' - ' . $barang->jenis . ' (' . $barang->id . ')</option>';
+        //}
         foreach ($barangs as $barang) {
             $opts .= '<option value="' . $barang->id . '">' . $barang->nama . ' - ' . $barang->jenis . ' (' . $barang->id . ')</option>';
         }

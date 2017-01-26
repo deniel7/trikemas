@@ -85,6 +85,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     /* Harga Barang */
     Route::get('/konsumen-barang/list', 'KonsumenBarangController@datatables');
+    Route::get('/konsumen-barang/get-barangs-by-konsumen/{konsumen_id}', 'KonsumenBarangController@getBarangsByKonsumen');
     Route::get('/konsumen-barang/get-price-by-id/{item_id}/{konsumen_id}', 'KonsumenBarangController@getPriceById');
     Route::get('/konsumen-barang/get-price/{item_name}/{konsumen_id}', 'KonsumenBarangController@getPrice');
     Route::resource('/konsumen-barang', 'KonsumenBarangController');

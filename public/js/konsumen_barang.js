@@ -116,8 +116,9 @@ var datatables = (function() {
             },
             'columns': [
                 {data: 'nama_konsumen', name: 'konsumens.nama'},
-                {data: 'barang_id', name: 'konsumen_barangs.barang_id', className: "text-right"},
                 {data: 'nama_barang', name: 'barangs.nama'},
+                {data: 'jenis_barang', name: 'barangs.jenis'},
+                {data: 'barang_id', name: 'konsumen_barangs.barang_id', className: "text-right"},
                 {data: 'harga', name: 'konsumen_barangs.harga', className: "text-right"},
                 {data: 'action', name: 'action', orderable: false, searchable: false}
             ]
