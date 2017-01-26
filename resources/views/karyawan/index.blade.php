@@ -1,16 +1,16 @@
 @extends('layouts.backend')
-@section('title', 'Master Karyawan Tetap')
+@section('title', 'Master Karyawan Kontrak')
 @section('content')
 <!-- Content Header (Page header) -->
 <section class="content-header">
   <h1>
-  Karyawan Tetap
+  Karyawan Kontrak
   <small>List</small>
   </h1>
   <ol class="breadcrumb">
     <li><a href="{{ url('/') }}"><i class="fa fa-tachometer"></i> Dashboard</a></li>
     <li><a href="#">Master</a></li>
-    <li><a href="{{ url('/karyawan-tetap') }}">Karyawan Tetap</a></li>
+    <li><a href="{{ url('/karyawan-tetap') }}">Karyawan Kontrak</a></li>
     <li class="active">List</li>
   </ol>
 </section>

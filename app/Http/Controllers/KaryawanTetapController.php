@@ -103,8 +103,10 @@ class KaryawanTetapController extends Controller
 
         if ($karyawan->status_karyawan_id == 1) {
             return redirect('karyawan-tetap');
-        } else {
+        } elseif ($karyawan->status_karyawan_id == 2) {
             return redirect('karyawan-harian');
+        } else {
+            return redirect('karyawan-staff');
         }
     }
 
@@ -140,8 +142,10 @@ class KaryawanTetapController extends Controller
 
         if ($karyawan->status_karyawan_id == 1) {
             return redirect('karyawan-tetap');
-        } else {
+        } elseif ($karyawan->status_karyawan_id == 2) {
             return redirect('karyawan-harian');
+        } else {
+            return redirect('karyawan-staff');
         }
     }
 

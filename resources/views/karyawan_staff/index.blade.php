@@ -85,14 +85,15 @@
 </section>
 <!-- /.content -->
 
+@include('karyawan_staff.partials.add_modal')
+@include('karyawan_staff.partials.print_modal')
+
 <script type="text/javascript">
 $(document).ready(function(){
 karyawanStaffModule.init();
 });
 </script>
 
-@include('karyawan_staff.partials.add_modal')
-@include('karyawan_staff.partials.print_modal')
 
 @endsection
 

@@ -152,7 +152,7 @@ class AbsensiHarianController extends Controller
         }
 
         if (!empty($file2)) {
-            Excel::selectSheetsByIndex(0)->load($file, function ($reader) {
+            Excel::selectSheetsByIndex(0)->load($file2, function ($reader) {
 
                 $reader->skip(2);
                 $reader->noHeading();
@@ -221,7 +221,7 @@ class AbsensiHarianController extends Controller
         }
 
         if (!empty($file3)) {
-            Excel::selectSheetsByIndex(0)->load($file, function ($reader) {
+            Excel::selectSheetsByIndex(0)->load($file3, function ($reader) {
 
                 $reader->skip(2);
                 $reader->noHeading();

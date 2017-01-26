@@ -149,6 +149,26 @@ class AbsensiApprovalController extends Controller
                 }
 
                 $upah_harian = ($gaji + $uang_makan + $lembur_rutin + $lembur_biasa) - $potongan;
+
+            //karyawan Staff
+            } elseif ($karyawan->status_karyawan_id == 3) {
+                $gaji_harian = $gaji / 31;
+
+                if ($jenis_lembur == 1) {
+                    $lembur_rutin = ($gaji / 173) * $konfirmasi_lembur;
+                    $lembur_biasa = 0;
+                    $lembur_off = 0;
+                } elseif ($jenis_lembur == 2) {
+                    $lembur_biasa = ($gaji / 173) * $konfirmasi_lembur * 1.5;
+                    $lembur_rutin = 0;
+                    $lembur_off = 0;
+                } else {
+                    $lembur_off = ($gaji / 173) * $konfirmasi_lembur * 2;
+                    $lembur_rutin = 0;
+                    $lembur_biasa = 0;
+                }
+
+                $upah_harian = ($gaji_harian + $uang_makan + $lembur_rutin + $lembur_biasa + $lembur_off) - $potongan;
             }
 
             $absensies->upah_harian = $upah_harian;

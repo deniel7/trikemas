@@ -131,7 +131,26 @@ class KaryawanStaffController extends Controller
      */
     public function show($id)
     {
-        //
+        $id = $id->id;
+
+        $details = DB::table('karyawans')
+        ->select('karyawans.id', 'nik', 'nama', 'norek', 'status_karyawans.keterangan')
+        ->join('status_karyawans', 'status_karyawans.id', '=', 'karyawans.status_karyawan_id')
+        ->where('karyawans.id', '=', $id)
+        ->get();
+
+        // $test = Karyawan::find($id);
+        if (count($details) == 1) {
+            return response()->json([
+                'status' => 1,
+                'records' => $details,
+                ]);
+        } else {
+            return response()->json([
+                'status' => 0,
+                'message' => 'Failed',
+                ]);
+        }
     }
 
     /**
