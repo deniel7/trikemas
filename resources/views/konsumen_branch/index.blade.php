@@ -33,7 +33,9 @@
             <div class="box-body">
               
               <div class="btn-group">
-                <a href="{{ url('/konsumen-branch/create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Add</a>
+                @if (in_array(181, session()->get('allowed_menus')))
+                  <a href="{{ url('/konsumen-branch/create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Add</a>
+                @endif
               </div>
               <br><br>
               

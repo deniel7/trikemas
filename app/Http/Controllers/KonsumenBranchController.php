@@ -24,8 +24,12 @@ class KonsumenBranchController extends Controller
         return Datatables::of($list)
                 ->addColumn('action', function ($list) {
                     $html  = '<div class="text-center btn-group btn-group-justified">';
-                    $html .= '<a href="/konsumen-branch/' . $list->id . '/edit" title="Edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a> '; 
-                    $html .= '<a href="/konsumen-branch/' . $list->id . '/destroy" title="Delete" onclick="confirmDelete(event, \'' . $list->id . '\', \'' . $list->nama . '\', \'' . $list->nama_konsumen . '\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
+                    if (in_array(182, session()->get('allowed_menus'))) {
+                        $html .= '<a href="/konsumen-branch/' . $list->id . '/edit" title="Edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a> ';
+                    }
+                    if (in_array(183, session()->get('allowed_menus'))) {
+                        $html .= '<a href="/konsumen-branch/' . $list->id . '/destroy" title="Delete" onclick="confirmDelete(event, \'' . $list->id . '\', \'' . $list->nama . '\', \'' . $list->nama_konsumen . '\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
+                    }
                     $html .= '</div>';
                     
                     return $html;
@@ -40,7 +44,12 @@ class KonsumenBranchController extends Controller
      */
     public function index()
     {
-        return view('konsumen_branch.index');
+        if (in_array(180, session()->get('allowed_menus'))) {
+            return view('konsumen_branch.index');
+        }
+        else {
+            //
+        }
     }
 
     /**
@@ -50,9 +59,14 @@ class KonsumenBranchController extends Controller
      */
     public function create()
     {
-        $data['konsumen'] = Konsumen::select('id', 'nama')->orderBy('nama')->get();
+        if (in_array(181, session()->get('allowed_menus'))) {
+            $data['konsumen'] = Konsumen::select('id', 'nama')->orderBy('nama')->get();
         
-        return view('konsumen_branch.add', $data);
+            return view('konsumen_branch.add', $data);
+        }
+        else {
+            //
+        }
     }
 
     /**
@@ -108,10 +122,15 @@ class KonsumenBranchController extends Controller
      */
     public function edit($id)
     {
-        $data['konsumen'] = Konsumen::select('id', 'nama')->orderBy('nama')->get();
-        $data['konsumen_branch'] = KonsumenBranch::find($id);
-        
-        return view('konsumen_branch.edit', $data);
+        if (in_array(182, session()->get('allowed_menus'))) {
+            $data['konsumen'] = Konsumen::select('id', 'nama')->orderBy('nama')->get();
+            $data['konsumen_branch'] = KonsumenBranch::find($id);
+            
+            return view('konsumen_branch.edit', $data);
+        }
+        else {
+            //
+        }
     }
 
     /**

@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\User;
+//use App\User;
+use App\SysUser;
+use App\SysUserAttribute;
 use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use Illuminate\Http\Request;
+use Auth;
 
 class AuthController extends Controller
 {
@@ -38,7 +42,73 @@ class AuthController extends Controller
     {
         $this->middleware('guest', ['except' => 'getLogout']);
     }
+    
+    /**
+     * overriding method
+     * add active status for valid user
+     * added by: Jerry, 26-Jun-16
+     */
+    public function getCredentials($request)
+    {
+        $credentials = $request->only($this->loginUsername(), 'password');
 
+        return array_add($credentials, 'active', '1');
+    }
+    
+    /**
+     * Handle a login request to the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     * added by: Jerry, 28-Jan-17
+     */
+    public function postLogin(Request $request)
+    {
+        $this->validate($request, [
+            $this->loginUsername() => 'required', 'password' => 'required',
+        ]);
+
+        // If the class is using the ThrottlesLogins trait, we can automatically throttle
+        // the login attempts for this application. We'll key this by the username and
+        // the IP address of the client making these requests into this application.
+        $throttles = $this->isUsingThrottlesLoginsTrait();
+
+        if ($throttles && $this->hasTooManyLoginAttempts($request)) {
+            return $this->sendLockoutResponse($request);
+        }
+
+        $credentials = $this->getCredentials($request);
+
+        if (Auth::attempt($credentials, $request->has('remember'))) {
+            
+            $user_picture = '';
+            $user_attributes = SysUserAttribute::where('id_user', Auth::user()->id)->where('attribute_name', 'photo')->get();
+            if ($user_attributes->count() > 0) {
+                $user_picture = $user_attributes->first()->attribute_value;
+            }
+            $request->session()->set('user_picture', $user_picture);
+            
+            // load allowed menus and store to session here
+            $allowed_menus = Auth::user()->role->detailMenu();
+            $request->session()->set('allowed_menus', $allowed_menus);
+            
+            return $this->handleUserWasAuthenticated($request, $throttles);
+        }
+
+        // If the login attempt was unsuccessful we will increment the number of attempts
+        // to login and redirect the user back to the login form. Of course, when this
+        // user surpasses their maximum number of attempts they will get locked out.
+        if ($throttles) {
+            $this->incrementLoginAttempts($request);
+        }
+
+        return redirect($this->loginPath())
+            ->withInput($request->only($this->loginUsername(), 'remember'))
+            ->withErrors([
+                $this->loginUsername() => $this->getFailedLoginMessage(),
+            ]);
+    }
+    
     /**
      * Get a validator for an incoming registration request.
      *

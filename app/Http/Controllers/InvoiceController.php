@@ -38,12 +38,20 @@ class InvoiceController extends Controller
         return Datatables::of($list)
                 ->addColumn('action', function ($list) {
                     $html  = '<div class="text-center btn-group btn-group-justified">';
-                    $html .= '<a href="/invoice/print/' . $list->id . '" title="Print" target="_blank"><button type="button" class="btn btn-sm"><i class="fa fa-print"></i></button></a> '; 
-                    $html .= '<a href="/invoice/' . $list->id . '" title="Detail"><button type="button" class="btn btn-sm bg-purple"><i class="fa fa-search"></i></button></a> '; 
-                    if ($list->status_bayar == 0) {
-                        $html .= '<a href="/invoice/' . $list->id . '/edit" title="Edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a> ';     
+                    if (in_array(335, session()->get('allowed_menus'))) {
+                        $html .= '<a href="/invoice/print/' . $list->id . '" title="Print" target="_blank"><button type="button" class="btn btn-sm"><i class="fa fa-print"></i></button></a> ';
                     }
-                    $html .= '<a href="/invoice/' . $list->id . '/destroy" title="Delete" onclick="confirmDelete(event, \'' . $list->id . '\', \'' . $list->no_invoice . '\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
+                    if (in_array(334, session()->get('allowed_menus'))) {
+                        $html .= '<a href="/invoice/' . $list->id . '" title="Detail"><button type="button" class="btn btn-sm bg-purple"><i class="fa fa-search"></i></button></a> '; 
+                    }
+                    if (in_array(332, session()->get('allowed_menus'))) {
+                        if ($list->status_bayar == 0) {
+                            $html .= '<a href="/invoice/' . $list->id . '/edit" title="Edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a> ';     
+                        }
+                    }
+                    if (in_array(333, session()->get('allowed_menus'))) {
+                        $html .= '<a href="/invoice/' . $list->id . '/destroy" title="Delete" onclick="confirmDelete(event, \'' . $list->id . '\', \'' . $list->no_invoice . '\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
+                    }
                     $html .= '</div>';
                     
                     return $html;
@@ -120,12 +128,17 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        $data['default_date'] = date('d/m/Y');
-        $data['konsumen'] = Konsumen::select('id', 'nama')->orderBy('nama')->get();
-        $data['angkutan'] = Angkutan::select('id', 'nama')->orderBy('nama')->get();
-        $data['tujuan'] = Tujuan::select('id', 'kota as nama')->orderBy('nama')->get();
-        
-        return view('invoice.index', $data);
+        if (in_array(330, session()->get('allowed_menus'))) {
+            $data['default_date'] = date('d/m/Y');
+            $data['konsumen'] = Konsumen::select('id', 'nama')->orderBy('nama')->get();
+            $data['angkutan'] = Angkutan::select('id', 'nama')->orderBy('nama')->get();
+            $data['tujuan'] = Tujuan::select('id', 'kota as nama')->orderBy('nama')->get();
+            
+            return view('invoice.index', $data);
+        }
+        else {
+            //
+        }
     }
 
     /**
@@ -135,20 +148,25 @@ class InvoiceController extends Controller
      */
     public function create()
     {
-        $data['default_date'] = date('d/m/Y');
-        $data['konsumen'] = Konsumen::select('id', 'nama')->orderBy('nama')->get();
-        $data['angkutan'] = Angkutan::select('id', 'nama')->orderBy('nama')->get();
-        $data['tujuan'] = Tujuan::select('id', 'kota as nama')->orderBy('nama')->get();
-        $barangs = Barang::select('id', 'nama', 'jenis')->orderBy('nama')->get();
-        $data['barang'] = $barangs;
-        
-        $opts = '';
-        //foreach ($barangs as $barang) {
-        //    $opts .= '<option value="' . $barang->id . '">' . $barang->nama . ' - ' . $barang->jenis . ' (' . $barang->id . ')</option>';
-        //}
-        $data['opts'] = $opts;
-        
-        return view('invoice.add', $data);
+        if (in_array(331, session()->get('allowed_menus'))) {
+            $data['default_date'] = date('d/m/Y');
+            $data['konsumen'] = Konsumen::select('id', 'nama')->orderBy('nama')->get();
+            $data['angkutan'] = Angkutan::select('id', 'nama')->orderBy('nama')->get();
+            $data['tujuan'] = Tujuan::select('id', 'kota as nama')->orderBy('nama')->get();
+            $barangs = Barang::select('id', 'nama', 'jenis')->orderBy('nama')->get();
+            $data['barang'] = $barangs;
+            
+            $opts = '';
+            //foreach ($barangs as $barang) {
+            //    $opts .= '<option value="' . $barang->id . '">' . $barang->nama . ' - ' . $barang->jenis . ' (' . $barang->id . ')</option>';
+            //}
+            $data['opts'] = $opts;
+            
+            return view('invoice.add', $data);
+        }
+        else {
+            //
+        }
     }
     
     /**
@@ -288,19 +306,24 @@ class InvoiceController extends Controller
      */
     public function show($id)
     {
-        $data['default_date'] = date('d/m/Y');
-        $data['konsumen'] = new Konsumen;
-        $data['angkutan'] = new Angkutan;
-        $data['tujuan'] = new Tujuan;
-        $invoice_penjualan = InvoicePenjualan::find($id);
-        $data['invoice_penjualan'] = $invoice_penjualan;
-        $data['detail_penjualan'] = $invoice_penjualan->detail;
-        $data['barang_helper'] = new Barang;
-        $konsumen_branch = KonsumenBranch::find($invoice_penjualan->konsumen_branch_id);
-        $data["konsumen_branch_nama"] = $konsumen_branch ? $konsumen_branch->nama : "";
-        $data['barang'] = Barang::select('id', 'nama', 'jenis')->orderBy('nama')->get();
-            
-        return view('invoice.detail', $data);
+        if (in_array(334, session()->get('allowed_menus'))) {
+            $data['default_date'] = date('d/m/Y');
+            $data['konsumen'] = new Konsumen;
+            $data['angkutan'] = new Angkutan;
+            $data['tujuan'] = new Tujuan;
+            $invoice_penjualan = InvoicePenjualan::find($id);
+            $data['invoice_penjualan'] = $invoice_penjualan;
+            $data['detail_penjualan'] = $invoice_penjualan->detail;
+            $data['barang_helper'] = new Barang;
+            $konsumen_branch = KonsumenBranch::find($invoice_penjualan->konsumen_branch_id);
+            $data["konsumen_branch_nama"] = $konsumen_branch ? $konsumen_branch->nama : "";
+            $data['barang'] = Barang::select('id', 'nama', 'jenis')->orderBy('nama')->get();
+                
+            return view('invoice.detail', $data);
+        }
+        else {
+            //
+        }
     }
 
     /**
@@ -311,34 +334,39 @@ class InvoiceController extends Controller
      */
     public function edit($id)
     {
-        $data['default_date'] = date('d/m/Y');
-        $data['konsumen'] = Konsumen::select('id', 'nama')->orderBy('nama')->get();
-        $data['angkutan'] = Angkutan::select('id', 'nama')->orderBy('nama')->get();
-        $data['tujuan'] = Tujuan::select('id', 'kota as nama')->orderBy('nama')->get();
-        $invoice_penjualan = InvoicePenjualan::find($id);
-        $konsumen_id = $invoice_penjualan->konsumen_id;
-        $data['invoice_penjualan'] = $invoice_penjualan;
-        $data['detail_penjualan'] = $invoice_penjualan->detail;
-        $data['barang_helper'] = new Barang;
-        $data['konsumen_branch'] = Konsumen::find($invoice_penjualan->konsumen_id)->branch;
-        //$barangs = Barang::select('id', 'nama', 'jenis')->orderBy('nama')->get();
-        $barangs = DB::table('konsumen_barangs')
-                        ->join('barangs', 'konsumen_barangs.barang_id', '=', 'barangs.id')
-                        ->select('barangs.id', 'barangs.nama', 'barangs.jenis')
-                        ->where('konsumen_barangs.konsumen_id', '=', $konsumen_id)
-                        ->orderBy('barangs.nama')->get();
-        $data['barang'] = $barangs;
-        
-        $opts = '';
-        //foreach ($barangs as $barang) {
-        //    $opts .= '<option value="' . $barang->id . '">' . $barang->nama . ' - ' . $barang->jenis . ' (' . $barang->id . ')</option>';
-        //}
-        foreach ($barangs as $barang) {
-            $opts .= '<option value="' . $barang->id . '">' . $barang->nama . ' - ' . $barang->jenis . ' (' . $barang->id . ')</option>';
+        if (in_array(332, session()->get('allowed_menus'))) {
+            $data['default_date'] = date('d/m/Y');
+            $data['konsumen'] = Konsumen::select('id', 'nama')->orderBy('nama')->get();
+            $data['angkutan'] = Angkutan::select('id', 'nama')->orderBy('nama')->get();
+            $data['tujuan'] = Tujuan::select('id', 'kota as nama')->orderBy('nama')->get();
+            $invoice_penjualan = InvoicePenjualan::find($id);
+            $konsumen_id = $invoice_penjualan->konsumen_id;
+            $data['invoice_penjualan'] = $invoice_penjualan;
+            $data['detail_penjualan'] = $invoice_penjualan->detail;
+            $data['barang_helper'] = new Barang;
+            $data['konsumen_branch'] = Konsumen::find($invoice_penjualan->konsumen_id)->branch;
+            //$barangs = Barang::select('id', 'nama', 'jenis')->orderBy('nama')->get();
+            $barangs = DB::table('konsumen_barangs')
+                            ->join('barangs', 'konsumen_barangs.barang_id', '=', 'barangs.id')
+                            ->select('barangs.id', 'barangs.nama', 'barangs.jenis')
+                            ->where('konsumen_barangs.konsumen_id', '=', $konsumen_id)
+                            ->orderBy('barangs.nama')->get();
+            $data['barang'] = $barangs;
+            
+            $opts = '';
+            //foreach ($barangs as $barang) {
+            //    $opts .= '<option value="' . $barang->id . '">' . $barang->nama . ' - ' . $barang->jenis . ' (' . $barang->id . ')</option>';
+            //}
+            foreach ($barangs as $barang) {
+                $opts .= '<option value="' . $barang->id . '">' . $barang->nama . ' - ' . $barang->jenis . ' (' . $barang->id . ')</option>';
+            }
+            $data['opts'] = $opts;
+            
+            return view('invoice.edit', $data);
         }
-        $data['opts'] = $opts;
-        
-        return view('invoice.edit', $data);
+        else {
+            //
+        }
     }
 
     /**
@@ -487,167 +515,172 @@ class InvoiceController extends Controller
     
     // do print
     public function doPrint($id) {
-        $invoice = InvoicePenjualan::find($id);
-        $invoice_detail = $invoice->detail;
-        
-        // set document information
-        PDF::SetAuthor('PT. TRIMITRA KEMASINDO');
-        PDF::SetTitle('Invoice Penjualan - Trimitra Kemasindo');
-        PDF::SetSubject('Invoice Penjualan');
-        PDF::SetKeywords('Invoice Penjualan Trimitra Kemasindo');
-        
-        // AddPage ($orientation='', $format='', $keepmargins=false, $tocpage=false)
-        PDF::AddPage('P', 'A4');
-        
-        // SetMargins ($left, $top, $right=-1, $keepmargins=false)
-        PDF::SetMargins(15, 10);
-        
-        // Image ($file, $x='', $y='', $w=0, $h=0, $type='', $link='', $align='', $resize=false, $dpi=300, $palign='', $ismask=false, $imgmask=false, $border=0, $fitbox=false, $hidden=false, $fitonpage=false, $alt=false, $altimgs=array())
-        //PDF::Image(asset('/image/logo-ponpes-darussalam.png'), 15, 5, 15, 15, '', '', 'T', true);
-        //PDF::Image(asset('/image/bmt.png'), 15, 5, 35, 15, '', '', 'T', true);
-        
-        PDF::setX(15);
-        
-        // SetFont ($family, $style='', $size=null, $fontfile='', $subset='default', $out=true)
-        PDF::SetFont('times', 'B', 11);
-        // Cell ($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='', $stretch=0, $ignore_min_height=false, $calign='T', $valign='M')
-        PDF::Cell(0, 0, 'PT. Trimitra Kemasindo', 0, 0, 'L', 0, '', 0);
-        PDF::Ln();
-        PDF::SetFont('', '', 9);
-        PDF::Cell(0, 0, 'Jalan Raya Sapan KM 1 No. 15', 0, 0, 'L', 0, '', 0);
-        PDF::Ln();
-        PDF::Cell(0, 0, 'Tlp. (022) 87304121', 0, 0, 'L', 0, '', 0);
-        PDF::Ln();
-        PDF::Cell(0, 0, 'Fax. (022) 87304123', 0, 0, 'L', 0, '', 0);
-        PDF::Ln();
-        PDF::Cell(0, 0, 'Bandung', 0, 0, 'L', 0, '', 0);
-        PDF::Ln();
-        
-        PDF::SetFont('times', 'B', 16);
-        PDF::setXY(151, 10);
-        PDF::Cell(0, 0, 'I  N  V  O  I  C  E', 0, 0, 'L', 0, '', 0);
-        PDF::Ln();
-        
-        PDF::setX(130);
-        PDF::SetFont('', '', 10);
-        PDF::Cell(30, 0, 'No. :', 0, 0, 'R', 0, '', 0);
-        PDF::Cell(0, 0, ' ' . $invoice->no_invoice, 0, 0, 'L', 0, '', 0);
-        PDF::Ln();
-        PDF::setX(130);
-        PDF::Cell(30, 0, 'Tanggal :', 0, 0, 'R', 0, '', 0);
-        PDF::Cell(0, 0, ' ' . $invoice->tanggal->format('d-m-Y'), 0, 0, 'L', 0, '', 0);
-        PDF::Ln();
-        PDF::setX(130);
-        PDF::Cell(30, 0, 'Konsumen :', 0, 0, 'R', 0, '', 0);
-        $konsumen_branch = KonsumenBranch::find($invoice->konsumen_branch_id);
-        $konsumen_nama = $konsumen_branch ? $konsumen_branch->nama : Konsumen::find($invoice->konsumen_id)->nama;
-        PDF::Cell(0, 0, ' ' . $konsumen_nama, 0, 0, 'L', 0, '', 0);
-        PDF::Ln();
-        PDF::setX(130);
-        PDF::Cell(30, 0, 'No. PO :', 0, 0, 'R', 0, '', 0);
-        PDF::Cell(0, 0, ' ' . $invoice->no_po, 0, 0, 'L', 0, '', 0);
-        PDF::Ln();
-        PDF::setX(130);
-        PDF::Cell(30, 0, 'Tgl. Jatuh Tempo :', 0, 0, 'R', 0, '', 0);
-        PDF::Cell(0, 0, ' ' . $invoice->tgl_jatuh_tempo->format('d-m-Y'), 0, 0, 'L', 0, '', 0);
-        PDF::Ln();
-        
-        PDF::Ln(10); 
-        
-        PDF::Cell(8, 10, 'No', 1, 0, 'C', 0, '', 0);
-        PDF::Cell(25, 10, 'Jenis', 1, 0, 'C', 0, '', 0);
-        PDF::Cell(60, 10, 'Barang', 1, 0, 'C', 0, '', 0);
-        PDF::Cell(30, 5, 'Qty', 1, 0, 'C', 0, '', 0);
-        PDF::Cell(25, 10, 'Harga / Pcs', 1, 0, 'C', 0, '', 0);
-        PDF::Cell(30, 10, 'Jumlah', 1, 0, 'C', 0, '', 0);
-        PDF::Ln();
-        
-        $curY = PDF::getY();
-        PDF::setXY(108, $curY-5);
-        PDF::Cell(15, 5, 'Ball', 1, 0, 'C', 0, '', 0);
-        PDF::Cell(15, 5, 'Pcs', 1, 0, 'C', 0, '', 0);
-        PDF::Ln();
-        
-        
-        $no = 1;
-        foreach($invoice_detail as $item) {
-            $barang = Barang::find($item->barang_id);
+        if (in_array(335, session()->get('allowed_menus'))) {
+            $invoice = InvoicePenjualan::find($id);
+            $invoice_detail = $invoice->detail;
             
-            PDF::Cell(8, 6, $no, 1, 0, 'R', 0, '', 1);
-            PDF::Cell(25, 6, $barang->jenis, 1, 0, 'L', 0, '', 1);
-            PDF::Cell(60, 6, $barang->nama, 1, 0, 'L', 0, '', 1);
-            PDF::Cell(15, 6, number_format($item->jumlah_ball, 0, '.', ','), 1, 0, 'R', 0, '', 1);
-            PDF::Cell(15, 6, number_format($item->jumlah, 0, '.', ','), 1, 0, 'R', 0, '', 1);
-            PDF::Cell(25, 6, number_format($item->harga_barang, 2, '.', ','), 1, 0, 'R', 0, '', 1);
-            PDF::Cell(30, 6, number_format($item->subtotal, 2, '.', ','), 1, 0, 'R', 0, '', 1);
+            // set document information
+            PDF::SetAuthor('PT. TRIMITRA KEMASINDO');
+            PDF::SetTitle('Invoice Penjualan - Trimitra Kemasindo');
+            PDF::SetSubject('Invoice Penjualan');
+            PDF::SetKeywords('Invoice Penjualan Trimitra Kemasindo');
+            
+            // AddPage ($orientation='', $format='', $keepmargins=false, $tocpage=false)
+            PDF::AddPage('P', 'A4');
+            
+            // SetMargins ($left, $top, $right=-1, $keepmargins=false)
+            PDF::SetMargins(15, 10);
+            
+            // Image ($file, $x='', $y='', $w=0, $h=0, $type='', $link='', $align='', $resize=false, $dpi=300, $palign='', $ismask=false, $imgmask=false, $border=0, $fitbox=false, $hidden=false, $fitonpage=false, $alt=false, $altimgs=array())
+            //PDF::Image(asset('/image/logo-ponpes-darussalam.png'), 15, 5, 15, 15, '', '', 'T', true);
+            //PDF::Image(asset('/image/bmt.png'), 15, 5, 35, 15, '', '', 'T', true);
+            
+            PDF::setX(15);
+            
+            // SetFont ($family, $style='', $size=null, $fontfile='', $subset='default', $out=true)
+            PDF::SetFont('times', 'B', 11);
+            // Cell ($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='', $stretch=0, $ignore_min_height=false, $calign='T', $valign='M')
+            PDF::Cell(0, 0, 'PT. Trimitra Kemasindo', 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            PDF::SetFont('', '', 9);
+            PDF::Cell(0, 0, 'Jalan Raya Sapan KM 1 No. 15', 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            PDF::Cell(0, 0, 'Tlp. (022) 87304121', 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            PDF::Cell(0, 0, 'Fax. (022) 87304123', 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            PDF::Cell(0, 0, 'Bandung', 0, 0, 'L', 0, '', 0);
             PDF::Ln();
             
-            $no++;
+            PDF::SetFont('times', 'B', 16);
+            PDF::setXY(151, 10);
+            PDF::Cell(0, 0, 'I  N  V  O  I  C  E', 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            
+            PDF::setX(130);
+            PDF::SetFont('', '', 10);
+            PDF::Cell(30, 0, 'No. :', 0, 0, 'R', 0, '', 0);
+            PDF::Cell(0, 0, ' ' . $invoice->no_invoice, 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            PDF::setX(130);
+            PDF::Cell(30, 0, 'Tanggal :', 0, 0, 'R', 0, '', 0);
+            PDF::Cell(0, 0, ' ' . $invoice->tanggal->format('d-m-Y'), 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            PDF::setX(130);
+            PDF::Cell(30, 0, 'Konsumen :', 0, 0, 'R', 0, '', 0);
+            $konsumen_branch = KonsumenBranch::find($invoice->konsumen_branch_id);
+            $konsumen_nama = $konsumen_branch ? $konsumen_branch->nama : Konsumen::find($invoice->konsumen_id)->nama;
+            PDF::Cell(0, 0, ' ' . $konsumen_nama, 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            PDF::setX(130);
+            PDF::Cell(30, 0, 'No. PO :', 0, 0, 'R', 0, '', 0);
+            PDF::Cell(0, 0, ' ' . $invoice->no_po, 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            PDF::setX(130);
+            PDF::Cell(30, 0, 'Tgl. Jatuh Tempo :', 0, 0, 'R', 0, '', 0);
+            PDF::Cell(0, 0, ' ' . $invoice->tgl_jatuh_tempo->format('d-m-Y'), 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            
+            PDF::Ln(10); 
+            
+            PDF::Cell(8, 10, 'No', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(25, 10, 'Jenis', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(60, 10, 'Barang', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(30, 5, 'Qty', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(25, 10, 'Harga / Pcs', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(30, 10, 'Jumlah', 1, 0, 'C', 0, '', 0);
+            PDF::Ln();
+            
+            $curY = PDF::getY();
+            PDF::setXY(108, $curY-5);
+            PDF::Cell(15, 5, 'Ball', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(15, 5, 'Pcs', 1, 0, 'C', 0, '', 0);
+            PDF::Ln();
+            
+            
+            $no = 1;
+            foreach($invoice_detail as $item) {
+                $barang = Barang::find($item->barang_id);
+                
+                PDF::Cell(8, 6, $no, 1, 0, 'R', 0, '', 1);
+                PDF::Cell(25, 6, $barang->jenis, 1, 0, 'L', 0, '', 1);
+                PDF::Cell(60, 6, $barang->nama, 1, 0, 'L', 0, '', 1);
+                PDF::Cell(15, 6, number_format($item->jumlah_ball, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+                PDF::Cell(15, 6, number_format($item->jumlah, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+                PDF::Cell(25, 6, number_format($item->harga_barang, 2, '.', ','), 1, 0, 'R', 0, '', 1);
+                PDF::Cell(30, 6, number_format($item->subtotal, 2, '.', ','), 1, 0, 'R', 0, '', 1);
+                PDF::Ln();
+                
+                $no++;
+            }
+            
+            PDF::Cell(8, 6, '', 1, 0, 'R', 0, '', 1);
+            PDF::Cell(25, 6, '', 1, 0, 'L', 0, '', 1);
+            PDF::Cell(60, 6, '', 1, 0, 'L', 0, '', 1);
+            PDF::Cell(15, 6, '', 1, 0, 'R', 0, '', 1);
+            PDF::Cell(15, 6, '', 1, 0, 'R', 0, '', 1);
+            PDF::Cell(25, 6, '', 1, 0, 'R', 0, '', 1);
+            PDF::Cell(30, 6, '', 1, 0, 'R', 0, '', 1);
+            PDF::Ln();
+            
+            PDF::setX(138);
+            PDF::Cell(25, 6, 'Sub Total', 1, 0, 'R', 0, '', 0);
+            PDF::Cell(30, 6, number_format($invoice->sub_total, 0, '.', ','), 1, 0, 'R', 0, '', 0);
+            PDF::Ln();
+            
+            // get this y position
+            $curY = PDF::getY();
+            
+            PDF::setX(138);
+            PDF::Cell(25, 6, 'Discount', 1, 0, 'R', 0, '', 0);
+            PDF::Cell(30, 6, number_format($invoice->diskon, 0, '.', ','), 1, 0, 'R', 0, '', 0);
+            PDF::Ln();
+            
+            PDF::setX(138);
+            PDF::Cell(25, 6, 'Total', 1, 0, 'R', 0, '', 0);
+            PDF::Cell(30, 6, number_format($invoice->total, 0, '.', ','), 1, 0, 'R', 0, '', 0);
+            PDF::Ln();
+            
+            PDF::setX(138);
+            PDF::Cell(25, 6, 'PPN', 1, 0, 'R', 0, '', 0);
+            PDF::Cell(30, 6, number_format($invoice->ppn, 0, '.', ','), 1, 0, 'R', 0, '', 0);
+            PDF::Ln();
+            
+            PDF::SetFont('', 'b', 10);
+            PDF::setX(138);
+            PDF::Cell(25, 6, 'Grand Total', 1, 0, 'R', 0, '', 0);
+            PDF::Cell(30, 6, number_format($invoice->grand_total, 0, '.', ','), 1, 0, 'R', 0, '', 0);
+            PDF::Ln();
+            
+            PDF::SetFont('', '', 10);
+            
+            //MultiCell ($w, $h, $txt, $border=0, $align=‘J’, $fill=false, $ln=1, $x=“, $y=”, $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0, $valign=’T’, $fitcell=false)
+            
+            PDF::setY($curY);
+            PDF::MultiCell(120, 0, 'Pembayaran untuk invoice ini mohon ditransfer ke rekening di bawah ini:', 0, 'L', false, 0);
+            PDF::Ln(7);
+            PDF::Cell(90, 0, 'BRI', 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            PDF::Cell(90, 0, 'No. Rek: 0286.01.000829.30.7', 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            PDF::Cell(90, 0, 'a/n: PT. Trimitra Kemasindo', 0, 0, 'L', 0, '', 0);
+            PDF::Ln(7);
+            PDF::Cell(90, 0, 'BCA', 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            PDF::Cell(90, 0, 'No. Rek: 775.036.0850', 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            PDF::Cell(90, 0, 'a/n: Ety Juniati Buntaran', 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            
+            
+            // Output ($name='doc.pdf', $dest='I'), I=inline, D=Download
+            PDF::Output('invoice_penjualan.pdf');
+            
+            // need to call exit, i don't know why
+            exit;
         }
-        
-        PDF::Cell(8, 6, '', 1, 0, 'R', 0, '', 1);
-        PDF::Cell(25, 6, '', 1, 0, 'L', 0, '', 1);
-        PDF::Cell(60, 6, '', 1, 0, 'L', 0, '', 1);
-        PDF::Cell(15, 6, '', 1, 0, 'R', 0, '', 1);
-        PDF::Cell(15, 6, '', 1, 0, 'R', 0, '', 1);
-        PDF::Cell(25, 6, '', 1, 0, 'R', 0, '', 1);
-        PDF::Cell(30, 6, '', 1, 0, 'R', 0, '', 1);
-        PDF::Ln();
-        
-        PDF::setX(138);
-        PDF::Cell(25, 6, 'Sub Total', 1, 0, 'R', 0, '', 0);
-        PDF::Cell(30, 6, number_format($invoice->sub_total, 0, '.', ','), 1, 0, 'R', 0, '', 0);
-        PDF::Ln();
-        
-        // get this y position
-        $curY = PDF::getY();
-        
-        PDF::setX(138);
-        PDF::Cell(25, 6, 'Discount', 1, 0, 'R', 0, '', 0);
-        PDF::Cell(30, 6, number_format($invoice->diskon, 0, '.', ','), 1, 0, 'R', 0, '', 0);
-        PDF::Ln();
-        
-        PDF::setX(138);
-        PDF::Cell(25, 6, 'Total', 1, 0, 'R', 0, '', 0);
-        PDF::Cell(30, 6, number_format($invoice->total, 0, '.', ','), 1, 0, 'R', 0, '', 0);
-        PDF::Ln();
-        
-        PDF::setX(138);
-        PDF::Cell(25, 6, 'PPN', 1, 0, 'R', 0, '', 0);
-        PDF::Cell(30, 6, number_format($invoice->ppn, 0, '.', ','), 1, 0, 'R', 0, '', 0);
-        PDF::Ln();
-        
-        PDF::SetFont('', 'b', 10);
-        PDF::setX(138);
-        PDF::Cell(25, 6, 'Grand Total', 1, 0, 'R', 0, '', 0);
-        PDF::Cell(30, 6, number_format($invoice->grand_total, 0, '.', ','), 1, 0, 'R', 0, '', 0);
-        PDF::Ln();
-        
-        PDF::SetFont('', '', 10);
-        
-        //MultiCell ($w, $h, $txt, $border=0, $align=‘J’, $fill=false, $ln=1, $x=“, $y=”, $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0, $valign=’T’, $fitcell=false)
-        
-        PDF::setY($curY);
-        PDF::MultiCell(120, 0, 'Pembayaran untuk invoice ini mohon ditransfer ke rekening di bawah ini:', 0, 'L', false, 0);
-        PDF::Ln(7);
-        PDF::Cell(90, 0, 'BRI', 0, 0, 'L', 0, '', 0);
-        PDF::Ln();
-        PDF::Cell(90, 0, 'No. Rek: 0286.01.000829.30.7', 0, 0, 'L', 0, '', 0);
-        PDF::Ln();
-        PDF::Cell(90, 0, 'a/n: PT. Trimitra Kemasindo', 0, 0, 'L', 0, '', 0);
-        PDF::Ln(7);
-        PDF::Cell(90, 0, 'BCA', 0, 0, 'L', 0, '', 0);
-        PDF::Ln();
-        PDF::Cell(90, 0, 'No. Rek: 775.036.0850', 0, 0, 'L', 0, '', 0);
-        PDF::Ln();
-        PDF::Cell(90, 0, 'a/n: Ety Juniati Buntaran', 0, 0, 'L', 0, '', 0);
-        PDF::Ln();
-        
-        
-        // Output ($name='doc.pdf', $dest='I'), I=inline, D=Download
-        PDF::Output('invoice_penjualan.pdf');
-        
-        // need to call exit, i don't know why
-        exit;
+        else {
+            
+        }
     }
 }

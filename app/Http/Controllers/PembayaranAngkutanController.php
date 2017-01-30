@@ -32,8 +32,10 @@ class PembayaranAngkutanController extends Controller
         return Datatables::of($list)
                 ->addColumn('action', function ($list) {
                     $html  = '<div class="text-center btn-group btn-group-justified">';
-                    if ($list->status_bayar_angkutan == 0) {
-                        $html .= '<a href="/pembayaran-angkutan/complete/' . $list->id . '" title="Konfirmasi Pembayaran" onclick="confirmComplete(event, \'' . $list->id . '\', \'' . $list->no_surat_jalan . '\', \'' . $list->harga_angkutan . '\');"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-flag"></i></button></a>';    
+                    if (in_array(341, session()->get('allowed_menus'))) {
+                        if ($list->status_bayar_angkutan == 0) {
+                            $html .= '<a href="/pembayaran-angkutan/complete/' . $list->id . '" title="Konfirmasi Pembayaran" onclick="confirmComplete(event, \'' . $list->id . '\', \'' . $list->no_surat_jalan . '\', \'' . $list->harga_angkutan . '\');"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-flag"></i></button></a>';    
+                        }
                     }
                     $html .= '</div>';
                     
@@ -81,12 +83,17 @@ class PembayaranAngkutanController extends Controller
      */
     public function index()
     {
-        $data['default_date'] = date('d/m/Y');
-        $data['konsumen'] = Konsumen::select('id', 'nama')->orderBy('nama')->get();
-        $data['angkutan'] = Angkutan::select('id', 'nama')->orderBy('nama')->get();
-        $data['tujuan'] = Tujuan::select('id', 'kota as nama')->orderBy('nama')->get();
-        
-        return view('pembayaran_angkutan.index', $data);
+        if (in_array(340, session()->get('allowed_menus'))) {
+            $data['default_date'] = date('d/m/Y');
+            $data['konsumen'] = Konsumen::select('id', 'nama')->orderBy('nama')->get();
+            $data['angkutan'] = Angkutan::select('id', 'nama')->orderBy('nama')->get();
+            $data['tujuan'] = Tujuan::select('id', 'kota as nama')->orderBy('nama')->get();
+            
+            return view('pembayaran_angkutan.index', $data);
+        }
+        else {
+            //
+        }
     }
 
     /**

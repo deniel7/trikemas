@@ -20,8 +20,12 @@ class KonsumenController extends Controller
         return Datatables::of($list)
                 ->addColumn('action', function ($list) {
                     $html  = '<div class="text-center btn-group btn-group-justified">';
-                    $html .= '<a href="/konsumen/' . $list->id . '/edit" title="Edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a> '; 
-                    $html .= '<a href="/konsumen/' . $list->id . '/destroy" title="Delete" onclick="confirmDelete(event, \'' . $list->id . '\', \'' . $list->nama . '\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
+                    if (in_array(172, session()->get('allowed_menus'))) {
+                        $html .= '<a href="/konsumen/' . $list->id . '/edit" title="Edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a> ';
+                    }
+                    if (in_array(173, session()->get('allowed_menus'))) {
+                        $html .= '<a href="/konsumen/' . $list->id . '/destroy" title="Delete" onclick="confirmDelete(event, \'' . $list->id . '\', \'' . $list->nama . '\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
+                    }
                     $html .= '</div>';
                     
                     return $html;
@@ -48,7 +52,12 @@ class KonsumenController extends Controller
      */
     public function index()
     {
-        return view('konsumen.index');
+        if (in_array(170, session()->get('allowed_menus'))) {
+            return view('konsumen.index');
+        }
+        else {
+            //
+        }
     }
 
     /**
@@ -58,7 +67,12 @@ class KonsumenController extends Controller
      */
     public function create()
     {
-        return view('konsumen.add');
+        if (in_array(171, session()->get('allowed_menus'))) {
+            return view('konsumen.add');
+        }
+        else {
+            //
+        }
     }
 
     /**
@@ -113,9 +127,14 @@ class KonsumenController extends Controller
      */
     public function edit($id)
     {
-        $data['konsumen'] = Konsumen::find($id);
+        if (in_array(172, session()->get('allowed_menus'))) {
+            $data['konsumen'] = Konsumen::find($id);
         
-        return view('konsumen.edit', $data);
+            return view('konsumen.edit', $data);
+        }
+        else {
+            //
+        }
     }
 
     /**

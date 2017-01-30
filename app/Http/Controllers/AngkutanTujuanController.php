@@ -26,8 +26,12 @@ class AngkutanTujuanController extends Controller
         return Datatables::of($list)
                 ->addColumn('action', function ($list) {
                     $html  = '<div class="text-center btn-group btn-group-justified">';
-                    $html .= '<a href="/angkutan-tujuan/' . $list->id . '/edit" title="Edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a> '; 
-                    $html .= '<a href="/angkutan-tujuan/' . $list->id . '/destroy" title="Delete" onclick="confirmDelete(event, \'' . $list->id . '\', \'' . $list->nama_angkutan . '\', \'' . $list->nama_tujuan . '\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
+                    if (in_array(152, session()->get('allowed_menus'))) {
+                        $html .= '<a href="/angkutan-tujuan/' . $list->id . '/edit" title="Edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a> ';
+                    }
+                    if (in_array(153, session()->get('allowed_menus'))) {
+                        $html .= '<a href="/angkutan-tujuan/' . $list->id . '/destroy" title="Delete" onclick="confirmDelete(event, \'' . $list->id . '\', \'' . $list->nama_angkutan . '\', \'' . $list->nama_tujuan . '\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
+                    }
                     $html .= '</div>';
                     
                     return $html;
@@ -43,7 +47,12 @@ class AngkutanTujuanController extends Controller
      */
     public function index()
     {
-        return view('angkutan_tujuan.index');
+        if (in_array(150, session()->get('allowed_menus'))) {
+            return view('angkutan_tujuan.index');
+        }
+        else {
+            //
+        }
     }
 
     /**
@@ -53,10 +62,15 @@ class AngkutanTujuanController extends Controller
      */
     public function create()
     {
-        $data['angkutan'] = Angkutan::select('id', 'nama')->orderBy('nama')->get();
-        $data['tujuan'] = Tujuan::select('id', 'kota as nama')->orderBy('nama')->get();
-        
-        return view('angkutan_tujuan.add', $data);
+        if (in_array(151, session()->get('allowed_menus'))) {
+            $data['angkutan'] = Angkutan::select('id', 'nama')->orderBy('nama')->get();
+            $data['tujuan'] = Tujuan::select('id', 'kota as nama')->orderBy('nama')->get();
+            
+            return view('angkutan_tujuan.add', $data);
+        }
+        else {
+            //
+        }
     }
 
     /**
@@ -115,11 +129,16 @@ class AngkutanTujuanController extends Controller
      */
     public function edit($id)
     {
-        $data['angkutan'] = Angkutan::select('id', 'nama')->orderBy('nama')->get();
-        $data['tujuan'] = Tujuan::select('id', 'kota as nama')->orderBy('nama')->get();
-        $data['angkutan_tujuan'] = AngkutanTujuan::find($id);
-        
-        return view('angkutan_tujuan.edit', $data);
+        if (in_array(152, session()->get('allowed_menus'))) {
+            $data['angkutan'] = Angkutan::select('id', 'nama')->orderBy('nama')->get();
+            $data['tujuan'] = Tujuan::select('id', 'kota as nama')->orderBy('nama')->get();
+            $data['angkutan_tujuan'] = AngkutanTujuan::find($id);
+            
+            return view('angkutan_tujuan.edit', $data);
+        }
+        else {
+            //
+        }
     }
 
     /**

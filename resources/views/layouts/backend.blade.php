@@ -171,7 +171,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         1.0.0
       </div>
       <!-- Default to the left -->
-      <strong>Copyright &copy; 2015</strong>
+      <strong>Copyright &copy; 2016</strong>
     </footer>
 
 

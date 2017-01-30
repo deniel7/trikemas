@@ -20,8 +20,12 @@ class BarangController extends Controller
         return Datatables::of($list)
                 ->addColumn('action', function ($list) {
                     $html  = '<div class="text-center btn-group btn-group-justified">';
-                    $html .= '<a href="/barang/' . $list->id . '/edit" title="Edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a> '; 
-                    $html .= '<a href="/barang/' . $list->id . '/destroy" title="Delete" onclick="confirmDelete(event, \'' . $list->id . '\', \'' . $list->nama . '\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
+                    if (in_array(162, session()->get('allowed_menus'))) {
+                        $html .= '<a href="/barang/' . $list->id . '/edit" title="Edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a> ';
+                    }
+                    if (in_array(163, session()->get('allowed_menus'))) {
+                        $html .= '<a href="/barang/' . $list->id . '/destroy" title="Delete" onclick="confirmDelete(event, \'' . $list->id . '\', \'' . $list->nama . '\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
+                    }
                     $html .= '</div>';
                     
                     return $html;
@@ -53,7 +57,12 @@ class BarangController extends Controller
      */
     public function index()
     {
-        return view('barang.index');
+        if (in_array(160, session()->get('allowed_menus'))) {
+            return view('barang.index');
+        }
+        else {
+            //
+        }
     }
 
     /**
@@ -63,7 +72,12 @@ class BarangController extends Controller
      */
     public function create()
     {
-        return view('barang.add');
+        if (in_array(161, session()->get('allowed_menus'))) {
+            return view('barang.add');
+        }
+        else {
+            //
+        }
     }
 
     /**
@@ -119,9 +133,14 @@ class BarangController extends Controller
      */
     public function edit($id)
     {
-        $data['barang'] = Barang::find($id);
-        
-        return view('barang.edit', $data);
+        if (in_array(162, session()->get('allowed_menus'))) {
+            $data['barang'] = Barang::find($id);
+            
+            return view('barang.edit', $data);
+        }
+        else {
+            //
+        }
     }
 
     /**

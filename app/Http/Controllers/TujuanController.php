@@ -20,8 +20,12 @@ class TujuanController extends Controller
         return Datatables::of($list)
                 ->addColumn('action', function ($list) {
                     $html  = '<div class="text-center btn-group btn-group-justified">';
-                    $html .= '<a href="/tujuan/' . $list->id . '/edit" title="Edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a> '; 
-                    $html .= '<a href="/tujuan/' . $list->id . '/destroy" title="Delete" onclick="confirmDelete(event, \'' . $list->id . '\', \'' . $list->kota . '\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
+                    if (in_array(132, session()->get('allowed_menus'))) {
+                        $html .= '<a href="/tujuan/' . $list->id . '/edit" title="Edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a> ';
+                    }
+                    if (in_array(133, session()->get('allowed_menus'))) {
+                        $html .= '<a href="/tujuan/' . $list->id . '/destroy" title="Delete" onclick="confirmDelete(event, \'' . $list->id . '\', \'' . $list->kota . '\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
+                    }
                     $html .= '</div>';
                     
                     return $html;
@@ -36,7 +40,12 @@ class TujuanController extends Controller
      */
     public function index()
     {
-        return view('tujuan.index');
+        if (in_array(130, session()->get('allowed_menus'))) {
+            return view('tujuan.index');
+        }
+        else {
+            //
+        }
     }
 
     /**
@@ -46,7 +55,12 @@ class TujuanController extends Controller
      */
     public function create()
     {
-        return view('tujuan.add');
+        if (in_array(131, session()->get('allowed_menus'))) {
+            return view('tujuan.add');
+        }
+        else {
+            //
+        }
     }
 
     /**
@@ -99,9 +113,14 @@ class TujuanController extends Controller
      */
     public function edit($id)
     {
-        $data['tujuan'] = Tujuan::find($id);
+        if (in_array(132, session()->get('allowed_menus'))) {
+            $data['tujuan'] = Tujuan::find($id);
             
-        return view('tujuan.edit', $data);
+            return view('tujuan.edit', $data);
+        }
+        else {
+            //
+        }
     }
 
     /**

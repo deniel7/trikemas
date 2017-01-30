@@ -20,8 +20,12 @@ class AngkutanController extends Controller
         return Datatables::of($list)
                 ->addColumn('action', function ($list) {
                     $html  = '<div class="text-center btn-group btn-group-justified">';
-                    $html .= '<a href="/angkutan/' . $list->id . '/edit" title="Edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a> '; 
-                    $html .= '<a href="/angkutan/' . $list->id . '/destroy" title="Delete" onclick="confirmDelete(event, \'' . $list->id . '\', \'' . $list->nama . '\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
+                    if (in_array(142, session()->get('allowed_menus'))) {
+                        $html .= '<a href="/angkutan/' . $list->id . '/edit" title="Edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a> ';
+                    }
+                    if (in_array(143, session()->get('allowed_menus'))) {
+                        $html .= '<a href="/angkutan/' . $list->id . '/destroy" title="Delete" onclick="confirmDelete(event, \'' . $list->id . '\', \'' . $list->nama . '\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
+                    }
                     $html .= '</div>';
                     
                     return $html;
@@ -36,7 +40,12 @@ class AngkutanController extends Controller
      */
     public function index()
     {
-        return view('angkutan.index');
+        if (in_array(140, session()->get('allowed_menus'))) {
+            return view('angkutan.index');
+        }
+        else {
+            //
+        }
     }
 
     /**
@@ -46,7 +55,12 @@ class AngkutanController extends Controller
      */
     public function create()
     {
-        return view('angkutan.add');
+        if (in_array(141, session()->get('allowed_menus'))) {
+            return view('angkutan.add');
+        }
+        else {
+            //
+        }
     }
 
     /**
@@ -99,9 +113,14 @@ class AngkutanController extends Controller
      */
     public function edit($id)
     {
-        $data['angkutan'] = Angkutan::find($id);
+        if (in_array(142, session()->get('allowed_menus'))) {
+            $data['angkutan'] = Angkutan::find($id);
         
-        return view('angkutan.edit', $data);
+            return view('angkutan.edit', $data);
+        }
+        else {
+            //
+        }
     }
 
     /**

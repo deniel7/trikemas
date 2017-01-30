@@ -33,7 +33,9 @@
             <div class="box-body">
               
               <div class="btn-group">
-                <a href="{{ url('/barang/create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Add</a>
+                @if (in_array(161, session()->get('allowed_menus')))
+                  <a href="{{ url('/barang/create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Add</a>
+                @endif
               </div>
               <br><br>
               

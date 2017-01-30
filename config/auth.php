@@ -28,8 +28,9 @@ return [
     |
     */
 
-    'model' => App\User::class,
-
+    //'model' => App\User::class,
+    'model' => App\SysUser::class,
+    
     /*
     |--------------------------------------------------------------------------
     | Authentication Table
@@ -41,8 +42,9 @@ return [
     |
     */
 
-    'table' => 'users',
-
+    //'table' => 'users',
+    'table' => 'sys_user',
+    
     /*
     |--------------------------------------------------------------------------
     | Password Reset Settings

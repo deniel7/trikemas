@@ -26,8 +26,12 @@ class KonsumenBarangController extends Controller
         return Datatables::of($list)
                 ->addColumn('action', function ($list) {
                     $html  = '<div class="text-center btn-group btn-group-justified">';
-                    $html .= '<a href="/konsumen-barang/' . $list->id . '/edit" title="Edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a> '; 
-                    $html .= '<a href="/konsumen-barang/' . $list->id . '/destroy" title="Delete" onclick="confirmDelete(event, \'' . $list->id . '\', \'' . $list->nama_konsumen . '\', \'' . $list->nama_barang . '\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
+                    if (in_array(192, session()->get('allowed_menus'))) {
+                        $html .= '<a href="/konsumen-barang/' . $list->id . '/edit" title="Edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a> ';
+                    }
+                    if (in_array(193, session()->get('allowed_menus'))) {
+                        $html .= '<a href="/konsumen-barang/' . $list->id . '/destroy" title="Delete" onclick="confirmDelete(event, \'' . $list->id . '\', \'' . $list->nama_konsumen . '\', \'' . $list->nama_barang . '\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
+                    }
                     $html .= '</div>';
                     
                     return $html;
@@ -108,7 +112,12 @@ class KonsumenBarangController extends Controller
      */
     public function index()
     {
-        return view('konsumen_barang.index');
+        if (in_array(190, session()->get('allowed_menus'))) {
+            return view('konsumen_barang.index');
+        }
+        else {
+            //
+        }
     }
 
     /**
@@ -118,10 +127,15 @@ class KonsumenBarangController extends Controller
      */
     public function create()
     {
-        $data['konsumen'] = Konsumen::select('id', 'nama')->orderBy('nama')->get();
-        $data['barang'] = Barang::select('id', 'nama', 'jenis')->orderBy('nama')->get();
-        
-        return view('konsumen_barang.add', $data);
+        if (in_array(191, session()->get('allowed_menus'))) {
+            $data['konsumen'] = Konsumen::select('id', 'nama')->orderBy('nama')->get();
+            $data['barang'] = Barang::select('id', 'nama', 'jenis')->orderBy('nama')->get();
+            
+            return view('konsumen_barang.add', $data);
+        }
+        else {
+            //
+        }
     }
 
     /**
@@ -181,11 +195,16 @@ class KonsumenBarangController extends Controller
      */
     public function edit($id)
     {
-        $data['konsumen'] = Konsumen::select('id', 'nama')->orderBy('nama')->get();
-        $data['barang'] = Barang::select('id', 'nama', 'jenis')->orderBy('nama')->get();
-        $data['konsumen_barang'] = KonsumenBarang::find($id);
-        
-        return view('konsumen_barang.edit', $data);
+        if (in_array(192, session()->get('allowed_menus'))) {
+            $data['konsumen'] = Konsumen::select('id', 'nama')->orderBy('nama')->get();
+            $data['barang'] = Barang::select('id', 'nama', 'jenis')->orderBy('nama')->get();
+            $data['konsumen_barang'] = KonsumenBarang::find($id);
+            
+            return view('konsumen_barang.edit', $data);
+        }
+        else {
+            //
+        }
     }
 
     /**
