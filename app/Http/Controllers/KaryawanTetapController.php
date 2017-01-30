@@ -15,7 +15,11 @@ class KaryawanTetapController extends Controller
 {
     public function index()
     {
-        return view('karyawan.index');
+        if (in_array(110, session()->get('allowed_menus'))) {
+            return view('karyawan.index');
+        } else {
+            //
+        }
     }
 
     public function datatable()
@@ -49,11 +53,15 @@ class KaryawanTetapController extends Controller
 
             $html = '<div class="text-center btn-group btn-group-justified">';
 
-            $html .= '<a href="karyawan-tetap/'.$karyawan->id.'/edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a>';
-            $html .= '<a href="javascript:;" onClick="karyawanModule.showPrint('.$karyawan->id.');"><button type="button" class="btn btn-sm"><i class="fa fa-print"></i></button></a>';
-
-            $html .= '<a href="javascript:;" onclick="karyawanModule.confirmDelete(event, \''.$karyawan->id.'\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
-
+            if (in_array(112, session()->get('allowed_menus'))) {
+                $html .= '<a href="karyawan-tetap/'.$karyawan->id.'/edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a>';
+            }
+            if (in_array(115, session()->get('allowed_menus'))) {
+                $html .= '<a href="javascript:;" onClick="karyawanModule.showPrint('.$karyawan->id.');"><button type="button" class="btn btn-sm"><i class="fa fa-print"></i></button></a>';
+            }
+            if (in_array(113, session()->get('allowed_menus'))) {
+                $html .= '<a href="javascript:;" onclick="karyawanModule.confirmDelete(event, \''.$karyawan->id.'\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
+            }
             $html .= '</div>';
 
             return $html;
@@ -63,9 +71,12 @@ class KaryawanTetapController extends Controller
 
     public function create()
     {
-        $data['status_karyawans'] = StatusKaryawan::select('id', 'keterangan')->orderBy('id')->get();
+        if (in_array(111, session()->get('allowed_menus'))) {
+            $data['status_karyawans'] = StatusKaryawan::select('id', 'keterangan')->orderBy('id')->get();
 
-        return view('karyawan/create', $data);
+            return view('karyawan/create', $data);
+        } else {
+        }
     }
 
     public function store(Request $request)
@@ -112,9 +123,12 @@ class KaryawanTetapController extends Controller
 
     public function edit(Karyawan $karyawan)
     {
-        $data['status_karyawans'] = StatusKaryawan::select('id', 'keterangan')->orderBy('id')->get();
+        if (in_array(112, session()->get('allowed_menus'))) {
+            $data['status_karyawans'] = StatusKaryawan::select('id', 'keterangan')->orderBy('id')->get();
 
-        return view('karyawan/edit', compact('karyawan'), $data);
+            return view('karyawan/edit', compact('karyawan'), $data);
+        } else {
+        }
     }
 
     public function update(Karyawan $karyawan, Request $request)

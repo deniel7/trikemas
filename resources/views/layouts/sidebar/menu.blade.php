@@ -22,16 +22,6 @@
           <li class="treeview {{ in_array(\Request::segment(1), ['tujuan', 'barang', 'angkutan', 'konsumen', 'angkutan-tujuan', 'konsumen-barang', 'konsumen-branch', 'upah-jenis-barang']) ? 'active' : '' }}">
             <a href="#"><i class="fa fa-table"></i> <span>Master Data</span> <i class="fa fa-angle-left pull-right"></i></a>
             <ul class="treeview-menu">
-<<<<<<< Updated upstream
-              <li {{ \Request::segment(1) == 'tujuan' ? 'class=active' : '' }}><a href="{{ url('/tujuan') }}">Tujuan Pengiriman</a></li>
-              <li {{ \Request::segment(1) == 'angkutan' ? 'class=active' : '' }}><a href="{{ url('/angkutan') }}">Angkutan</a></li>
-              <li {{ \Request::segment(1) == 'angkutan-tujuan' ? 'class=active' : '' }}><a href="{{ url('/angkutan-tujuan') }}">Biaya Angkutan</a></li>
-              <li {{ \Request::segment(1) == 'barang' ? 'class=active' : '' }}><a href="{{ url('/barang') }}">Jenis Barang</a></li>
-              <li {{ \Request::segment(1) == 'konsumen' ? 'class=active' : '' }}><a href="{{ url('/konsumen') }}">Distributor</a></li>
-              <li {{ \Request::segment(1) == 'konsumen-branch' ? 'class=active' : '' }}><a href="{{ url('/konsumen-branch') }}">Toko</a></li>
-              <li {{ \Request::segment(1) == 'konsumen-barang' ? 'class=active' : '' }}><a href="{{ url('/konsumen-barang') }}">Harga Barang</a></li>
-              <li {{ \Request::segment(1) == 'upah-jenis-barang' ? 'class=active' : '' }}><a href="{{ url('/upah-jenis-barang') }}">Upah Jenis Barang</a></li>
-=======
               @if (in_array(130, session()->get('allowed_menus')))
                 <li {{ \Request::segment(1) == 'tujuan' ? 'class=active' : '' }}><a href="{{ url('/tujuan') }}">Tujuan Pengiriman</a></li>
               @endif
@@ -53,7 +43,9 @@
               @if (in_array(190, session()->get('allowed_menus')))
                 <li {{ \Request::segment(1) == 'konsumen-barang' ? 'class=active' : '' }}><a href="{{ url('/konsumen-barang') }}">Harga Barang</a></li>
               @endif
->>>>>>> Stashed changes
+              @if (in_array(200, session()->get('allowed_menus')))
+                <li {{ \Request::segment(1) == 'upah-jenis-barang' ? 'class=active' : '' }}><a href="{{ url('/upah-jenis-barang') }}">Upah Jenis Barang</a></li>
+              @endif
             </ul>
           </li>
 

@@ -28,10 +28,10 @@ Route::get('logout', 'Auth\AuthController@getLogout');
 // Route::post('register', 'Auth\AuthController@postRegister');
 
 Route::group(['middleware' => 'auth'], function () {
-    
+
     /* Dashboard sebagai halaman pertama setelah login */
     Route::get('home', 'DashboardController@getIndex');
-    
+
      // laporan
     Route::get('/report', 'ReportController@index');
     Route::get('/report/penjualan', 'ReportController@penjualan');
@@ -140,20 +140,17 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('upload-absen', 'UploadAbsenController');
     Route::controller('upload-absen', 'UploadAbsenController');
 
-<<<<<<< Updated upstream
     /* upah jenis barang */
     Route::resource('upah-jenis-barang', 'UpahJenisBarangController');
     Route::controller('upah-jenis-barang', 'UpahJenisBarangController');
 
-});
-=======
     // my account
     Route::get('/account', 'AccountController@index');
     Route::post('/account/update-profile', 'AccountController@updateProfile');
     Route::post('/account/update-password', 'AccountController@updatePassword');
-    
+
     Route::get('/system', 'SystemController@index');
-    
+
     // system - role
     Route::get('/system/role', 'SystemController@indexRole');
     Route::get('/system/role/list', 'SystemController@datatablesRole');
@@ -163,7 +160,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/system/role/update/{id}', 'SystemController@updateRole');
     Route::post('/system/role/delete/{id}', 'SystemController@deleteRole');
     Route::get('/system/role/detail/{id}', 'SystemController@detailRole');
-    
+
     // system - user
     Route::get('/system/user', 'SystemController@indexUser');
     Route::get('/system/user/list', 'SystemController@datatablesUser');
@@ -172,6 +169,5 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/system/user/save', 'SystemController@saveUser');
     Route::post('/system/user/update/{id}', 'SystemController@updateUser');
     Route::post('/system/user/delete/{id}', 'SystemController@deleteUser');
-    
+
 });
->>>>>>> Stashed changes

@@ -17,7 +17,11 @@ class UpahJenisBarangController extends Controller
      */
     public function index()
     {
-        return view('upah-jenis-barang.index');
+        if (in_array(200, session()->get('allowed_menus'))) {
+            return view('upah-jenis-barang.index');
+        } else {
+            //
+        }
     }
 
     public function datatable()
@@ -33,11 +37,12 @@ class UpahJenisBarangController extends Controller
         ->addColumn('action', function ($upah_jenis_barang) {
 
             $html = '<div class="text-center btn-group btn-group-justified">';
-
-            $html .= '<a href="upah-jenis-barang/'.$upah_jenis_barang->id.'/edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a>';
-
-            $html .= '<a href="javascript:;" onclick="upahJenisBarangModule.confirmDelete(event, \''.$upah_jenis_barang->id.'\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
-
+            if (in_array(202, session()->get('allowed_menus'))) {
+                $html .= '<a href="upah-jenis-barang/'.$upah_jenis_barang->id.'/edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a>';
+            }
+            if (in_array(203, session()->get('allowed_menus'))) {
+                $html .= '<a href="javascript:;" onclick="upahJenisBarangModule.confirmDelete(event, \''.$upah_jenis_barang->id.'\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
+            }
             $html .= '</div>';
 
             return $html;
@@ -123,9 +128,13 @@ class UpahJenisBarangController extends Controller
      */
     public function edit($karyawan)
     {
-        $data['status_karyawans'] = StatusKaryawan::select('id', 'keterangan')->orderBy('id')->get();
+        if (in_array(202, session()->get('allowed_menus'))) {
+            $data['status_karyawans'] = StatusKaryawan::select('id', 'keterangan')->orderBy('id')->get();
 
-        return view('karyawan_staff/edit', compact('karyawan'), $data);
+            return view('karyawan_staff/edit', compact('karyawan'), $data);
+        } else {
+            //
+        }
     }
 
     /**

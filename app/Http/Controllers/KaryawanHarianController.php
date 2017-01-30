@@ -15,7 +15,10 @@ class KaryawanHarianController extends Controller
 {
     public function index()
     {
-        return view('karyawan_harian.index');
+        if (in_array(120, session()->get('allowed_menus'))) {
+            return view('karyawan_harian.index');
+        } else {
+        }
     }
 
     public function datatable()
@@ -48,12 +51,15 @@ class KaryawanHarianController extends Controller
 
             $html = '<div class="text-center btn-group btn-group-justified">';
 
-            $html .= '<a href="javascript:;" onClick="karyawanHarianModule.showPrint('.$karyawan_harian->id.');"><button type="button" class="btn btn-sm"><i class="fa fa-print"></i></button></a>';
-
-            $html .= '<a href="karyawan-tetap/'.$karyawan_harian->id.'/edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a>';
-
-            $html .= '<a href="javascript:;" onclick="karyawanHarianModule.confirmDelete(event, \''.$karyawan_harian->id.'\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
-
+            if (in_array(125, session()->get('allowed_menus'))) {
+                $html .= '<a href="javascript:;" onClick="karyawanHarianModule.showPrint('.$karyawan_harian->id.');"><button type="button" class="btn btn-sm"><i class="fa fa-print"></i></button></a>';
+            }
+            if (in_array(122, session()->get('allowed_menus'))) {
+                $html .= '<a href="karyawan-tetap/'.$karyawan_harian->id.'/edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a>';
+            }
+            if (in_array(123, session()->get('allowed_menus'))) {
+                $html .= '<a href="javascript:;" onclick="karyawanHarianModule.confirmDelete(event, \''.$karyawan_harian->id.'\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
+            }
             $html .= '</div>';
 
             return $html;

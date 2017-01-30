@@ -25,7 +25,9 @@
         <!-- /.box-header -->
         <div class="box-body">
           <div class="btn-group">
+                @if (in_array(101, session()->get('allowed_menus')))
                 <a href="{{ url('/karyawan-staff/create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Add</a>
+                endif;
               </div>
               <br><br>
           <div class="table-responsive">

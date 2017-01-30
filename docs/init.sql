@@ -1,22 +1,25 @@
 insert into sys_user (username, password, name, email, rolename, active, created_at, created_by)
 values ('admin', '$2y$10$8bmb//lX4U3vaaIuZiA8puV8M6ikBG15FQZK2Gdd8N3m2wL1WvPM2', 'Admin', 'admin@localhost', 'Administrator', 1, current_timestamp, 'system');
 
- ADM_MENU => 0: List, 1: Add, 2: Edit, 3: Delete, 4: Detail, 5: Print, 6: Extend, 7: Upload
+ -- ADM_MENU => 0: List, 1: Add, 2: Edit, 3: Delete, 4: Detail, 5: Print, 6: Extend, 7: Upload
 -- MASTER, leads by 1, 2
 insert into sys_menu (id_menu, title, created_at, created_by) values (100, 'Karyawan Staff - List', current_timestamp, 'system');
 insert into sys_menu (id_menu, title, created_at, created_by) values (101, 'Karyawan Staff - Add', current_timestamp, 'system');
 insert into sys_menu (id_menu, title, created_at, created_by) values (102, 'Karyawan Staff - Edit', current_timestamp, 'system');
 insert into sys_menu (id_menu, title, created_at, created_by) values (103, 'Karyawan Staff - Delete', current_timestamp, 'system');
+insert into sys_menu (id_menu, title, created_at, created_by) values (105, 'Karyawan Staff - Print', current_timestamp, 'system');
 
 insert into sys_menu (id_menu, title, created_at, created_by) values (110, 'Karyawan Kontrak - List', current_timestamp, 'system');
 insert into sys_menu (id_menu, title, created_at, created_by) values (111, 'Karyawan Kontrak - Add', current_timestamp, 'system');
 insert into sys_menu (id_menu, title, created_at, created_by) values (112, 'Karyawan Kontrak - Edit', current_timestamp, 'system');
 insert into sys_menu (id_menu, title, created_at, created_by) values (113, 'Karyawan Kontrak - Delete', current_timestamp, 'system');
+insert into sys_menu (id_menu, title, created_at, created_by) values (115, 'Karyawan Kontrak - Print', current_timestamp, 'system');
 
 insert into sys_menu (id_menu, title, created_at, created_by) values (120, 'Karyawan Lepas / Harian - List', current_timestamp, 'system');
 insert into sys_menu (id_menu, title, created_at, created_by) values (121, 'Karyawan Lepas / Harian - Add', current_timestamp, 'system');
 insert into sys_menu (id_menu, title, created_at, created_by) values (122, 'Karyawan Lepas / Harian - Edit', current_timestamp, 'system');
 insert into sys_menu (id_menu, title, created_at, created_by) values (123, 'Karyawan Lepas / Harian - Delete', current_timestamp, 'system');
+insert into sys_menu (id_menu, title, created_at, created_by) values (125, 'Karyawan Lepas / Harian - Print', current_timestamp, 'system');
 
 insert into sys_menu (id_menu, title, created_at, created_by) values (130, 'Tujuan Pengiriman - List', current_timestamp, 'system');
 insert into sys_menu (id_menu, title, created_at, created_by) values (131, 'Tujuan Pengiriman - Add', current_timestamp, 'system');
@@ -52,6 +55,12 @@ insert into sys_menu (id_menu, title, created_at, created_by) values (190, 'Harg
 insert into sys_menu (id_menu, title, created_at, created_by) values (191, 'Harga Barang - Add', current_timestamp, 'system');
 insert into sys_menu (id_menu, title, created_at, created_by) values (192, 'Harga Barang - Edit', current_timestamp, 'system');
 insert into sys_menu (id_menu, title, created_at, created_by) values (193, 'Harga Barang - Delete', current_timestamp, 'system');
+
+insert into sys_menu (id_menu, title, created_at, created_by) values (200, 'Upah Jenis Barang - List', current_timestamp, 'system');
+insert into sys_menu (id_menu, title, created_at, created_by) values (201, 'Upah Jenis Barang - Add', current_timestamp, 'system');
+insert into sys_menu (id_menu, title, created_at, created_by) values (202, 'Upah Jenis Barang - Edit', current_timestamp, 'system');
+insert into sys_menu (id_menu, title, created_at, created_by) values (203, 'Upah Jenis Barang - Delete', current_timestamp, 'system');    
+insert into sys_menu (id_menu, title, created_at, created_by) values (205, 'Upah Jenis Barang - Print', current_timestamp, 'system');
 
 -- TRANSACTION, leads by 3, 4
 insert into sys_menu (id_menu, title, created_at, created_by) values (300, 'Absensi Harian / Kontrak - List', current_timestamp, 'system');
@@ -93,16 +102,19 @@ insert into sys_role_dtl (id_hdr, id_menu) values (1, 100);
 insert into sys_role_dtl (id_hdr, id_menu) values (1, 101);
 insert into sys_role_dtl (id_hdr, id_menu) values (1, 102);
 insert into sys_role_dtl (id_hdr, id_menu) values (1, 103);
+insert into sys_role_dtl (id_hdr, id_menu) values (1, 105);
 
 insert into sys_role_dtl (id_hdr, id_menu) values (1, 110);
 insert into sys_role_dtl (id_hdr, id_menu) values (1, 111);
 insert into sys_role_dtl (id_hdr, id_menu) values (1, 112);
 insert into sys_role_dtl (id_hdr, id_menu) values (1, 113);
+insert into sys_role_dtl (id_hdr, id_menu) values (1, 115);
 
 insert into sys_role_dtl (id_hdr, id_menu) values (1, 120);
 insert into sys_role_dtl (id_hdr, id_menu) values (1, 121);
 insert into sys_role_dtl (id_hdr, id_menu) values (1, 122);
 insert into sys_role_dtl (id_hdr, id_menu) values (1, 123);
+insert into sys_role_dtl (id_hdr, id_menu) values (1, 125);
 
 insert into sys_role_dtl (id_hdr, id_menu) values (1, 130);
 insert into sys_role_dtl (id_hdr, id_menu) values (1, 131);
@@ -138,6 +150,12 @@ insert into sys_role_dtl (id_hdr, id_menu) values (1, 190);
 insert into sys_role_dtl (id_hdr, id_menu) values (1, 191);
 insert into sys_role_dtl (id_hdr, id_menu) values (1, 192);
 insert into sys_role_dtl (id_hdr, id_menu) values (1, 193);
+
+insert into sys_role_dtl (id_hdr, id_menu) values (1, 200);
+insert into sys_role_dtl (id_hdr, id_menu) values (1, 201);
+insert into sys_role_dtl (id_hdr, id_menu) values (1, 202);
+insert into sys_role_dtl (id_hdr, id_menu) values (1, 203);
+insert into sys_role_dtl (id_hdr, id_menu) values (1, 205
 
 insert into sys_role_dtl (id_hdr, id_menu) values (1, 300);
 insert into sys_role_dtl (id_hdr, id_menu) values (1, 301);

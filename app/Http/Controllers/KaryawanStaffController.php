@@ -20,7 +20,11 @@ class KaryawanStaffController extends Controller
      */
     public function index()
     {
-        return view('karyawan_staff.index');
+        if (in_array(100, session()->get('allowed_menus'))) {
+            return view('karyawan_staff.index');
+        } else {
+            //
+        }
     }
 
     public function datatable()
@@ -54,12 +58,15 @@ class KaryawanStaffController extends Controller
 
             $html = '<div class="text-center btn-group btn-group-justified">';
 
-            $html .= '<a href="karyawan-staff/'.$karyawan->id.'/edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a>';
-
-            $html .= '<a href="javascript:;" onClick="karyawanStaffModule.showPrint('.$karyawan->id.');"><button type="button" class="btn btn-sm"><i class="fa fa-print"></i></button></a>';
-
-            $html .= '<a href="javascript:;" onclick="karyawanStaffModule.confirmDelete(event, \''.$karyawan->id.'\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
-
+            if (in_array(102, session()->get('allowed_menus'))) {
+                $html .= '<a href="karyawan-staff/'.$karyawan->id.'/edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a>';
+            }
+            if (in_array(105, session()->get('allowed_menus'))) {
+                $html .= '<a href="javascript:;" onClick="karyawanStaffModule.showPrint('.$karyawan->id.');"><button type="button" class="btn btn-sm"><i class="fa fa-print"></i></button></a>';
+            }
+            if (in_array(103, session()->get('allowed_menus'))) {
+                $html .= '<a href="javascript:;" onclick="karyawanStaffModule.confirmDelete(event, \''.$karyawan->id.'\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
+            }
             $html .= '</div>';
 
             return $html;
@@ -74,9 +81,11 @@ class KaryawanStaffController extends Controller
      */
     public function create()
     {
-        $data['status_karyawans'] = StatusKaryawan::select('id', 'keterangan')->orderBy('id')->get();
+        if (in_array(101, session()->get('allowed_menus'))) {
+            $data['status_karyawans'] = StatusKaryawan::select('id', 'keterangan')->orderBy('id')->get();
 
-        return view('karyawan_staff/create', $data);
+            return view('karyawan_staff/create', $data);
+        }
     }
 
     /**
@@ -162,9 +171,12 @@ class KaryawanStaffController extends Controller
      */
     public function edit($karyawan)
     {
-        $data['status_karyawans'] = StatusKaryawan::select('id', 'keterangan')->orderBy('id')->get();
+        if (in_array(102, session()->get('allowed_menus'))) {
+            $data['status_karyawans'] = StatusKaryawan::select('id', 'keterangan')->orderBy('id')->get();
 
-        return view('karyawan_staff/edit', compact('karyawan'), $data);
+            return view('karyawan_staff/edit', compact('karyawan'), $data);
+        } else {
+        }
     }
 
     /**
