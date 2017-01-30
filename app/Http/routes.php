@@ -56,6 +56,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::model('karyawan-tetap', 'App\Karyawan');
     Route::model('karyawan-harian', 'App\Karyawan');
     Route::model('karyawan-staff', 'App\Karyawan');
+    Route::model('upah-jenis-barang', 'App\UpahJenisBarang');
 
     /* Tujuan */
     Route::get('/tujuan/list', 'TujuanController@datatables');
@@ -108,6 +109,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('datatable/absensi-harians', 'AbsensiHarianController@datatable');
     Route::post('datatable/absensi-approvals', 'AbsensiApprovalController@datatable');
     Route::post('datatable/absensi-packings', 'AbsensiPackingController@datatable');
+    Route::post('datatable/upah-jenis-barangs', 'UpahJenisBarangController@datatable');
 
     /* karyawan */
     Route::post('karyawan-staff/print/', 'KaryawanStaffController@doPrint');
@@ -135,5 +137,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('upload-absen/lembur/{id}', 'UploadAbsenController@postUpdate');
     Route::resource('upload-absen', 'UploadAbsenController');
     Route::controller('upload-absen', 'UploadAbsenController');
+
+    /* upah jenis barang */
+    Route::resource('upah-jenis-barang', 'UpahJenisBarangController');
+    Route::controller('upah-jenis-barang', 'UpahJenisBarangController');
 
 });

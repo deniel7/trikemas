@@ -29,5 +29,6 @@ elixir(function(mix) {
         'reportAbsensiKaryawanHarian.js',
         'reportAbsensiKaryawanPacking.js',
         'reportAbsensiKaryawanStaff.js',
+        'upahJenisBarang.js',
     ]);
 });
