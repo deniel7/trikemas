@@ -155,7 +155,7 @@ insert into sys_role_dtl (id_hdr, id_menu) values (1, 200);
 insert into sys_role_dtl (id_hdr, id_menu) values (1, 201);
 insert into sys_role_dtl (id_hdr, id_menu) values (1, 202);
 insert into sys_role_dtl (id_hdr, id_menu) values (1, 203);
-insert into sys_role_dtl (id_hdr, id_menu) values (1, 205
+insert into sys_role_dtl (id_hdr, id_menu) values (1, 205);
 
 insert into sys_role_dtl (id_hdr, id_menu) values (1, 300);
 insert into sys_role_dtl (id_hdr, id_menu) values (1, 301);

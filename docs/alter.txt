@@ -1,3 +1,61 @@
+CREATE TABLE `sys_menu` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id_menu` int(11) NOT NULL,
+  `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `created_by` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `updated_by` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `sys_role` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `rolename` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `description` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `created_by` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `updated_by` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB ;
+
+CREATE TABLE `sys_role_dtl` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id_hdr` int(11) NOT NULL,
+  `id_menu` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `sys_user` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `username` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `password` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `email` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `remember_token` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `rolename` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `active` int(11) NOT NULL DEFAULT '0',
+  `created_by` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `updated_by` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `sys_user_username_unique` (`username`),
+  KEY `sys_user_rolename_index` (`rolename`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `sys_user_attribute` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id_user` int(11) NOT NULL,
+  `attribute_name` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `attribute_value` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `sys_user_attribute_id_user_index` (`id_user`),
+  KEY `sys_user_attribute_attribute_name_index` (`attribute_name`)
+) ENGINE=InnoDB;
+
+
 CREATE TABLE `invoice_sequences` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `tahun` int(11) NOT NULL,

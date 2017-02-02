@@ -24,7 +24,7 @@
           <div class="btn-group">
                 @if (in_array(121, session()->get('allowed_menus')))
                 <a href="{{ url('/karyawan-tetap/create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Add</a>
-                endif;
+                @endif
               </div>
               <br><br>
           <div class="table-responsive">
