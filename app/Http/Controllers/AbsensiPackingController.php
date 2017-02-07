@@ -12,6 +12,7 @@ use App\AbsensiPacking;
 use App\NaturalAccount;
 use App\CostCenter;
 use App\Product;
+use App\Report_Jenis;
 
 class AbsensiPackingController extends Controller
 {
@@ -34,8 +35,8 @@ class AbsensiPackingController extends Controller
      */
     public function create(Request $request)
     {
-        $data = [];
-        // $data['natural_accounts'] = NaturalAccount::all();
+        //$data = [];
+         $data['upah_jenises'] = Report_Jenis::all();
         // $data['cost_centers'] = CostCenter::all();
         // $data['products'] = Product::all();
 

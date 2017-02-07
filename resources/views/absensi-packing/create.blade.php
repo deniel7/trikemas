@@ -42,7 +42,17 @@
             <div class="row">
               <div class="form-group required col-md-4">
                 <label class="control-label">Jenis</label>
-                <br><select class="form-control" name="jenis">
+                <br>
+
+                <select name="jenis" id="jenis" class="form-control selectpicker" title="-- Pilih Jenis --">
+                      @foreach($upah_jenises as $upah_jenis)
+                        <option value="{{ $upah_jenis->nama }}" {{ $upah_jenis->id == old('jenis') ? 'selected' : '' }} >{{ $upah_jenis->nama }}</option>
+                      @endforeach
+                </select>
+
+
+
+                <!-- <select class="form-control" name="jenis">
                    
                       <option value="01">01</option>
                       <option value="03p">03p</option>
@@ -58,7 +68,7 @@
                       <option value="TR6">TR6</option>
                       <option value="TR7">TR7</option>
                       <option value="TR11">TR11</option>
-                </select>
+                </select> -->
               </div>
             </div>
             <div class="row">

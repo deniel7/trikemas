@@ -13,13 +13,19 @@ class StatusKaryawanSeeder extends Seeder
 
         $records = [
         [
-            'keterangan' => 'Karyawan Tetap',
+            'keterangan' => 'Karyawan Kontrak',
             'created_at' => Date('Y-m-d H:i:s'),
             'updated_at' => Date('Y-m-d H:i:s'),
         ],
 
         [
             'keterangan' => 'Karyawan Harian',
+            'created_at' => Date('Y-m-d H:i:s'),
+            'updated_at' => Date('Y-m-d H:i:s'),
+        ],
+
+        [
+            'keterangan' => 'Karyawan Staff',
             'created_at' => Date('Y-m-d H:i:s'),
             'updated_at' => Date('Y-m-d H:i:s'),
         ],

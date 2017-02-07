@@ -1,6 +1,6 @@
 var commonModule = (function() {
 
-    var datatableBaseURL = 'http://adm.trimitrakemasindo.com/datatable/';
+    var datatableBaseURL = 'http://trikemas.app/datatable/';
 
     var select2BaseURL = '/select2/';
 
