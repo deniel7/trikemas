@@ -113,25 +113,25 @@ var karyawanStaffModule = (function(commonModule) {
                 name: 'status_karyawans.keterangan'
             }, {
                 data: 'nik',
-                name: 'karyawan_harians.nik'
+                name: 'karyawans.nik'
             }, {
                 data: 'nama',
-                name: 'karyawan_harians.nama'
+                name: 'karyawans.nama'
             }, {
                 data: 'alamat',
-                name: 'karyawan_harians.alamat'
+                name: 'karyawans.alamat'
             }, {
                 data: 'phone',
-                name: 'karyawan_harians.phone'
+                name: 'karyawans.phone'
             }, {
                 data: 'lulusan',
-                name: 'karyawan_harians.lulusan'
+                name: 'karyawans.lulusan'
             }, {
                 data: 'tgl_masuk',
-                name: 'karyawan_harians.tgl_masuk'
+                name: 'karyawans.tgl_masuk'
             }, {
                 data: 'nilai_upah',
-                name: 'karyawan_harians.nilai_upah'
+                name: 'karyawans.nilai_upah'
             }, {
                 data: 'uang_makan',
                 name: 'karyawans.uang_makan'

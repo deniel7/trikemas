@@ -18,7 +18,7 @@ var upahJenisBarangModule = (function(commonModule) {
 
         swal({
                 title: "Apakah anda yakin?",
-                text: "Data Karyawan akan dihapus!",
+                text: "Data Upah akan dihapus!",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#DD6B55",
@@ -33,10 +33,8 @@ var upahJenisBarangModule = (function(commonModule) {
                             xhr.setRequestHeader("X-CSRF-Token", $("meta[name='csrf-token']").attr("content"));
                         },
                         type: "POST",
-                        data: {
-                            _method: 'DELETE'
-                        },
-                        url: "/karyawan-harian/" + id
+
+                        url: "/upah-jenis-barang/delete/" + id
                     })
                     .done(function(data) {
                         if (data === "success") {

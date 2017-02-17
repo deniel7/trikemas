@@ -141,6 +141,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::controller('upload-absen', 'UploadAbsenController');
 
     /* upah jenis barang */
+    Route::get('/upah-jenis-barang/edit/{id}', 'UpahJenisBarangController@editUpah');
+    Route::post('/upah-jenis-barang/update/{id}', 'UpahJenisBarangController@updateUpah');
+    Route::post('/upah-jenis-barang/delete/{id}', 'UpahJenisBarangController@deleteUpah');
     Route::resource('upah-jenis-barang', 'UpahJenisBarangController');
     Route::controller('upah-jenis-barang', 'UpahJenisBarangController');
 

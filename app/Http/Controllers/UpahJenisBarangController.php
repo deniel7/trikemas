@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use DB;
 use Datatables;
 use App\Report_Jenis;
+use Flash;
 
 class UpahJenisBarangController extends Controller
 {
@@ -38,7 +39,7 @@ class UpahJenisBarangController extends Controller
 
             $html = '<div class="text-center btn-group btn-group-justified">';
             if (in_array(202, session()->get('allowed_menus'))) {
-                $html .= '<a href="upah-jenis-barang/'.$upah_jenis_barang->id.'/edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a>';
+                $html .= '<a href="upah-jenis-barang/edit/'.$upah_jenis_barang->id.'"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a>';
             }
             if (in_array(203, session()->get('allowed_menus'))) {
                 $html .= '<a href="javascript:;" onclick="upahJenisBarangModule.confirmDelete(event, \''.$upah_jenis_barang->id.'\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
@@ -126,12 +127,26 @@ class UpahJenisBarangController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function edit($karyawan)
+    // public function edit($karyawan)
+    // {
+    //     if (in_array(202, session()->get('allowed_menus'))) {
+    //         $data['status_karyawans'] = Report_Jenis::select('id', 'keterangan')->orderBy('id')->get();
+
+    //         return view('upah-jenis-barang/edit', compact('karyawan'), $data);
+    //     } else {
+    //         //
+    //     }
+    // }
+
+    public function editUpah($id)
     {
         if (in_array(202, session()->get('allowed_menus'))) {
-            $data['status_karyawans'] = StatusKaryawan::select('id', 'keterangan')->orderBy('id')->get();
+            //$data['jenis_upah'] = Report_Jenis::select('id', 'nama', 'upah')->orderBy('id')->get();
 
-            return view('karyawan_staff/edit', compact('karyawan'), $data);
+            $jenis_upah = Report_Jenis::find($id);
+            $data['jenis_upah'] = $jenis_upah;
+
+            return view('upah-jenis-barang/edit', $data);
         } else {
             //
         }
@@ -145,30 +160,18 @@ class UpahJenisBarangController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Karyawan $karyawan, Request $request)
+    public function updateUpah($id, Request $request)
     {
-        $nilai_upah = str_replace(',', '', $request->input('nilai_upah'));
-        $uang_makan = str_replace(',', '', $request->input('uang_makan'));
-        $tunjangan_jabatan = str_replace(',', '', $request->input('tunjangan_jabatan'));
-        $pot_koperasi = str_replace(',', '', $request->input('pot_koperasi'));
-        $pot_bpjs = str_replace(',', '', $request->input('pot_bpjs'));
+        $nama = str_replace(',', '', $request->input('nama'));
+        $upah = str_replace(',', '', $request->input('upah'));
 
-        $karyawan->nilai_upah = $nilai_upah;
-        $karyawan->uang_makan = $uang_makan;
-        $karyawan->tunjangan = $tunjangan_jabatan;
-        $karyawan->pot_koperasi = $pot_koperasi;
-        $karyawan->status_karyawan_id = $request->input('status_karyawan_id');
-        $karyawan->nama = $request->input('nama');
-        $karyawan->alamat = $request->input('alamat');
-        $karyawan->phone = $request->input('phone');
-        $karyawan->lulusan = $request->input('lulusan');
-        $karyawan->tgl_masuk = $request->input('tgl_masuk');
-        $karyawan->nik = $request->input('nik');
-        $karyawan->norek = $request->input('norek');
-        $karyawan->save();
+        $jenis_upah = Report_Jenis::find($id);
+        $jenis_upah->nama = $nama;
+        $jenis_upah->upah = $upah;
+        $jenis_upah->save();
         DB::commit();
 
-        return redirect('karyawan-staff');
+        return redirect('upah-jenis-barang');
     }
 
     /**
@@ -178,17 +181,36 @@ class UpahJenisBarangController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy($karyawan)
+    public function destroy($report_jenis)
     {
         DB::beginTransaction();
 
         try {
-            $karyawan->delete();
+            $report_jenis->delete();
 
             DB::commit();
             echo 'success';
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
+            echo 'Error ('.$e->errorInfo[1].'): '.$e->errorInfo[2].'.';
+        }
+    }
+
+    public function deleteUpah($id)
+    {
+        $upah = Report_Jenis::find($id);
+
+        DB::beginTransaction();
+        try {
+            // delete detail
+            Report_Jenis::where('id', $id)->delete();
+
+            // delete header
+            $upah->delete();
+            DB::commit();
+            echo 'success';
+        } catch (\Illuminate\Database\QueryException $e) {
+            DB::rollback();
             echo 'Error ('.$e->errorInfo[1].'): '.$e->errorInfo[2].'.';
         }
     }
