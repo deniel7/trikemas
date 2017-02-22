@@ -13,8 +13,8 @@ class UploadAbsenController extends Controller
 {
     public function show($id)
     {
-        $details = AbsensiHarian::select(['absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.id', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.jenis_lembur', 'karyawans.nik', 'karyawans.nama', 'karyawans.bagian', 'karyawans.nilai_upah', 'karyawans.uang_makan', 'karyawans.pot_koperasi', 'karyawans.pot_bpjs', 'karyawans.tunjangan', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.status'])
-        ->join('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+        $details = AbsensiHarian::select(['absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'absensi_harians.karyawan_id', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.jenis_lembur', 'karyawans.nik', 'karyawans.nama', 'karyawans.bagian', 'karyawans.nilai_upah', 'karyawans.uang_makan', 'karyawans.pot_koperasi', 'karyawans.pot_bpjs', 'karyawans.tunjangan', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.status', 'karyawans.nama'])
+        ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
         ->where('absensi_harians.id', '=', $id)
         ->get();
 
@@ -37,11 +37,11 @@ class UploadAbsenController extends Controller
         $tanggal = $request->input('tanggal');
         $jenis_lembur = $request->input('jenis_lembur');
 
-        $absensies = AbsensiHarian::where('karyawan_id', '=', $id)->where('tanggal', '=', $tanggal)->get();
+        $absensies = AbsensiHarian::where('id', '=', $id)->where('tanggal', '=', $tanggal)->get();
+        //dd($absensies);
+        // $karyawan = Karyawan::find($id);
 
-        $karyawan = Karyawan::find($id);
-
-        $gaji = $karyawan->nilai_upah;
+        // $gaji = $karyawan->nilai_upah;
 
         if ($absensies->count() == 1) {
             $absensies = $absensies->first();
