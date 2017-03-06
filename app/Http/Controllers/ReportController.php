@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use PDF;
 use App\AbsensiHarian;
 use App\AbsensiPacking;
+use DateTime;
 
 class ReportController extends Controller
 {
@@ -76,10 +77,12 @@ class ReportController extends Controller
     // preview
     public function previewPenjualan($ppn, $tanggal, $hingga = '')
     {
-        $tanggal_en = Carbon::createFromFormat('d-m-Y', $tanggal)->format('Y-m-d');
+        //$tanggal_en = Carbon::createFromFormat('d-m-Y', $tanggal)->format('Y-m-d');
+        $tanggal_en = DateTime::createFromFormat('d-m-Y', $tanggal)->format('Y-m-d');
 
         if ($hingga !== '') {
-            $hingga_en = Carbon::createFromFormat('d-m-Y', $hingga)->format('Y-m-d');
+            //$hingga_en = Carbon::createFromFormat('d-m-Y', $hingga)->format('Y-m-d');
+            $hingga_en = DateTime::createFromFormat('d-m-Y', $hingga)->format('Y-m-d');
             
             if ($ppn == "Y") {
                 $data = DB::table('invoice_penjualans')
