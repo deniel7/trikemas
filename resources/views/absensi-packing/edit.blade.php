@@ -9,10 +9,13 @@
 @section('content')
     
 <section class="content">
-  <form id="main_form">
+    <form id="main_form">
     <input type="hidden" name="_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="packing_id" value="{{ $absensi_packing->id }}">
+    
     <div class="row">
       <div class="col-xs-12">
+
         <div class="box">
           <!-- /.box-header -->
           <div class="box-header">
@@ -30,31 +33,33 @@
             <div class="row">
               <div class="form-group required col-md-4">
                 <label class="control-label">Bagian</label>
-                <br><select class="form-control" name="bagian">
-                   
-                      <option value="A">A</option>
-                      <option value="B">B</option>
-                      <option value="C">C</option>
-                    
-                </select>
+                <br>
+                <select name="bagian" class="form-control selectpicker" title="-- Pilih Bagian --">
+                      @foreach($bagians as $bagian)
+                        <option value="{{ $bagian->bagian }}" {{ $bagian->bagian == (old('bagian') !== null ? old('bagian') : $absensi_packing->bagian) ? 'selected' : '' }} >{{ $bagian->bagian }}</option>
+                      @endforeach
+                    </select>
               </div>
             </div>
             <div class="row">
               <div class="form-group required col-md-4">
                 <label class="control-label">Jenis</label>
                 <br>
-
                 <select name="jenis" id="jenis" class="form-control selectpicker" title="-- Pilih Jenis --">
                       @foreach($upah_jenises as $upah_jenis)
-                        <option value="{{ $upah_jenis->id }}" {{ $upah_jenis->id == old('jenis') ? 'selected' : '' }} >{{ $upah_jenis->nama }}</option>
+                        <option value="{{ $upah_jenis->id }}" {{ $upah_jenis->id == (old('jenis') !== null ? old('jenis') : $absensi_packing->jenis) ? 'selected' : '' }} >{{ $upah_jenis->nama }}</option>
                       @endforeach
-                </select>
+                    </select>
+
               </div>
             </div>
             <div class="row">
               <div class="form-group required col-md-4">
                 <label class="control-label">Jumlah</label>
-                <input type="text" required name="quantity" class="form-control" placeholder="" value="{{ old('quantity') }}">
+
+                <input type="text" class="form-control" name="quantity" id="quantity" value="{{ old('quantity') !== null ? old('quantity') : $absensi_packing->jumlah }}" placeholder="Jumlah">
+
+                
               </div>
             </div>
             
@@ -64,7 +69,7 @@
               </div>
               <div class="col-md-6 text-right">
                 <div class="btn-group">
-                  <button type="button" class="btn btn-success" onclick="absensiPackingModule.createAbsensi();"><i class="fa fa-send fa-fw"></i> Save</button>
+                  <button type="button" class="btn btn-success" onclick="absensiPackingModule.updateAbsensiPacking();"><i class="fa fa-send fa-fw"></i> Update</button>
                 </div>
               </div>
             </div>

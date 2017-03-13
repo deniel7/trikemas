@@ -132,25 +132,19 @@ class AbsensiPackingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(AbsensiPacking $absensi_packing, $id)
     {
-        /* RBAC */
-        if (!\App\User::authorize('reduction_item.edit')) {
-            flash('Insufficient permission', 'warning');
+        if (in_array(312, session()->get('allowed_menus'))) {
+            $data['upah_jenises'] = Report_Jenis::select('id', 'nama')->orderBy('id')->get();
+            $data['absensi_packing'] = AbsensiPacking::find($id);
 
-            return redirect('home');
-        }
+            $data['bagians'] = DB::table('absensi_packings')
+            ->groupBy('bagian')
+            ->get();
 
-        try {
-            $data = [];
-            $data['natural_accounts'] = NaturalAccount::all();
-            $data['cost_centers'] = CostCenter::all();
-            $data['products'] = Product::all();
-
-            $data['reduction_item'] = ReductionItem::findOrFail($id);
-
-            return view('reduction_item.edit', $data);
-        } catch (Exception $e) {
+            return view('absensi-packing.edit', $data);
+        } else {
+            //
         }
     }
 
@@ -165,41 +159,35 @@ class AbsensiPackingController extends Controller
     public function update(Request $request, $id)
     {
         /* RBAC */
-        if (!\App\User::authorize('reduction_item.edit')) {
-            return response()->json(array('status' => 0, 'message' => 'Insufficient permission.'));
-        }
-
+        // if (!\App\User::authorize('reduction_item.edit')) {
+        //     return response()->json(array('status' => 0, 'message' => 'Insufficient permission.'));
+        // }
+        //return response()->json(array('status' => 1, 'message' => 'Successfully updated Absensi Packing.'));
         DB::beginTransaction();
 
         try {
             $validator = Validator::make($request->all(), [
-                'name' => 'required',
-                'natural_account_id' => 'required',
-                'cost_center_id' => 'required',
-                'product_id' => 'required',
-                'flag' => 'required',
+                'quantity' => 'required',
             ]);
 
             if ($validator->fails()) {
                 return response()->json(array('status' => 0, 'message' => 'Please fill all the required fields.'));
             } else {
-                $name = $request->input('name');
-                $natural_account_id = $request->input('natural_account_id');
-                $cost_center_id = $request->input('cost_center_id');
-                $product_id = $request->input('product_id');
-                $flag = $request->input('flag');
+                $tgl = $request->input('tgl');
+                $bagian = $request->input('bagian');
+                $jenis = $request->input('jenis');
+                $quantity = $request->input('quantity');
 
-                ReductionItem::findOrFail($id)->update([
-                    'name' => $name,
-                    'natural_account_id' => $natural_account_id,
-                    'cost_center_id' => $cost_center_id,
-                    'product_id' => $product_id,
-                    'flag' => $flag,
+                AbsensiPacking::findOrFail($id)->update([
+                    'tanggal' => $tgl,
+                    'bagian' => $bagian,
+                    'jenis' => $jenis,
+                    'jumlah' => $quantity,
                 ]);
 
                 DB::commit();
 
-                return response()->json(array('status' => 1, 'message' => 'Successfully updated ReductionItem.'));
+                return response()->json(array('status' => 1, 'message' => 'Successfully updated Absensi Packing.'));
             }
         } catch (Exception $e) {
             DB::rollBack();
@@ -218,14 +206,14 @@ class AbsensiPackingController extends Controller
     public function destroy($id)
     {
         /* RBAC */
-        if (!\App\User::authorize('reduction_item.destroy')) {
-            return response()->json(array('status' => 0, 'message' => 'Insufficient permission.'));
-        }
+        // if (!\App\User::authorize('reduction_item.destroy')) {
+        //     return response()->json(array('status' => 0, 'message' => 'Insufficient permission.'));
+        // }
 
         DB::beginTransaction();
 
         try {
-            $post = ReductionItem::findOrFail($id);
+            $post = AbsensiPacking::findOrFail($id);
             $post->delete();
 
             DB::commit();
@@ -252,12 +240,11 @@ class AbsensiPackingController extends Controller
                 $buttons = '<div class="text-center"><div class="dropdown"><button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><i class="fa fa-bars"></i></button><ul class="dropdown-menu">';
 
                 /* Tambah Action */
-                $url = 'reduction-item/'.$absensi_packing->id;
-                $buttons .= '<li><a href="/'.$url.'">View</a></li>';
+                $url = 'absensi-packing/'.$absensi_packing->id;
                 $buttons .= '<li><a href="/'.$url.'/edit">Edit</a></li>';
 
                 $buttons .= '<li class="divider"></li>';
-                $buttons .= '<li><a href="javascript:;" data-record-id="'.$absensi_packing->id.'" onclick="ReductionItemModule.deleteReductionItem($(this));">Delete</a></li>';
+                $buttons .= '<li><a href="javascript:;" data-record-id="'.$absensi_packing->id.'" onclick="absensiPackingModule.deleteAbsensiPacking($(this));">Delete</a></li>';
                 /* Selesai Action */
 
                 $buttons .= '</ul></div></div>';

@@ -356,11 +356,167 @@ var absensiPackingModule = (function(commonModule) {
         });
     };
 
+    var updateAbsensiPacking = function() {
+        /* Show Overlay */
+        $("#overlayForm").show();
+
+        /* Send Data */
+        _updateAbsensiPacking(commonModule.maxRetries, commonModule.retryInterval);
+    };
+
+    var _updateAbsensiPacking = function(maxRetries, retryInterval) {
+        var recordID = $("input[name=packing_id]").val();
+
+        axios.put("/absensi-packing/" + recordID, $('#main_form').serialize())
+            .then(function(response) {
+                if (response.data.status == 1) {
+                    swal({
+                        title: "Good!",
+                        text: response.data.message,
+                        type: "success",
+                        timer: 500
+                    }, function() {
+                        /* Focus */
+                        $("form#main_form:not(.filter) :input:visible:enabled:first").focus();
+                    });
+                } else {
+                    swal({
+                        title: "Oops!",
+                        text: response.data.message,
+                        type: "error",
+                        timer: 500
+                    });
+                }
+                /* Hide Overlay */
+                $("#overlayForm").hide();
+            })
+            .catch(function(error) {
+                switch (error.response.status) {
+                    case 422:
+                        swal({
+                            title: "Oops!",
+                            text: 'Failed form validation. Please check your input.',
+                            type: "error"
+                        });
+                        break;
+                    case 500:
+                        swal({
+                            title: "Oops!",
+                            text: 'Something went wrong.',
+                            type: "error"
+                        });
+                        break;
+                }
+
+                // Try again if we haven't reached maxRetries yet
+                retryInterval = Math.min(commonModule.maxRetryInterval, retryInterval * commonModule.exponentMultiplication);
+                if (maxRetries > 0) {
+                    setTimeout(function() {
+                        _updateAbsensiPacking(maxRetries - 1, retryInterval);
+                    }, retryInterval);
+                } else {
+                    swal({
+                        title: "Oops!",
+                        text: "Please check your network connection.",
+                        timer: 500,
+                        type: "error"
+                    });
+                    /* Hide Overlay */
+                    $("#overlayForm").hide();
+                }
+            });
+    };
+
+    var deleteAbsensiPacking = function(me) {
+        swal({
+                title: "Are you sure?",
+                text: "You will not be able to recover this record!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true
+            },
+            function(isConfirm) {
+                if (isConfirm) {
+                    _deleteAbsensiPacking(me, commonModule.maxRetries, commonModule.retryInterval);
+                }
+            });
+    };
+
+    var _deleteAbsensiPacking = function(me, maxRetries, retryInterval) {
+        var recordID = me.data('record-id');
+
+        axios.delete("/absensi-packing/" + recordID)
+            .then(function(response) {
+                if (response.data.status == 1) {
+                    swal({
+                        title: "Good!",
+                        text: response.data.message,
+                        type: "success",
+                        timer: 500
+                    }, function() {
+                        /* Remove Row */
+                        me.closest('tr').remove();
+                        $('#datatable').DataTable().ajax.reload(null, false);
+                    });
+                } else {
+                    swal({
+                        title: "Oops!",
+                        text: response.data.message,
+                        type: "error",
+                        timer: 500
+                    });
+                }
+                /* Hide Overlay */
+                $("#overlayForm").hide();
+            })
+            .catch(function(error) {
+                switch (error.response.status) {
+                    case 422:
+                        swal({
+                            title: "Oops!",
+                            text: 'Failed form validation. Please check your input.',
+                            type: "error"
+                        });
+                        break;
+                    case 500:
+                        swal({
+                            title: "Oops!",
+                            text: 'Something went wrong.',
+                            type: "error"
+                        });
+                        break;
+                }
+
+                // Try again if we haven't reached maxRetries yet
+                retryInterval = Math.min(commonModule.maxRetryInterval, retryInterval * commonModule.exponentMultiplication);
+                if (maxRetries > 0) {
+                    setTimeout(function() {
+                        _deleteAbsensiPacking(maxRetries - 1, retryInterval);
+                    }, retryInterval);
+                } else {
+                    swal({
+                        title: "Oops!",
+                        text: "Please check your network connection.",
+                        timer: 500,
+                        type: "error"
+                    });
+                    /* Hide Overlay */
+                    $("#overlayForm").hide();
+                }
+            });
+    };
+
     return {
         init: init,
         showDetail: showDetail,
         showPrint: showPrint,
-        createAbsensi: createAbsensi
+        createAbsensi: createAbsensi,
+        updateAbsensiPacking: updateAbsensiPacking,
+        deleteAbsensiPacking: deleteAbsensiPacking,
+
     };
 
 })(commonModule);
