@@ -1604,8 +1604,8 @@ var absensiPackingModule = (function(commonModule) {
                 data: 'bagian',
                 name: 'absensi_packings.bagian'
             }, {
-                data: 'jenis',
-                name: 'absensi_packings.jenis'
+                data: 'nama',
+                name: 'absensi_packings.nama'
             }, {
                 data: 'jumlah',
                 name: 'absensi_packings.jumlah'

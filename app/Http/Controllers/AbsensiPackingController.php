@@ -233,7 +233,11 @@ class AbsensiPackingController extends Controller
      */
     public function datatable($header_id = null)
     {
-        $absensi_packings = AbsensiPacking::select(['id', 'tanggal', 'bagian', 'jenis', 'jumlah']);
+        // $absensi_packings = AbsensiPacking::select(['id', 'tanggal', 'bagian', 'jenis', 'jumlah']);
+
+        $absensi_packings = DB::table('absensi_packings')
+            ->join('report_jenis', 'report_jenis.id', '=', 'absensi_packings.jenis')
+            ->select('absensi_packings.id', 'tanggal', 'bagian', 'nama', 'jumlah');
 
         return Datatables::of($absensi_packings)
         ->addColumn('action', function ($absensi_packing) {
