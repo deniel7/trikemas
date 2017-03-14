@@ -83,8 +83,8 @@ class ReportController extends Controller
         if ($hingga !== '') {
             //$hingga_en = Carbon::createFromFormat('d-m-Y', $hingga)->format('Y-m-d');
             $hingga_en = DateTime::createFromFormat('d-m-Y', $hingga)->format('Y-m-d');
-            
-            if ($ppn == "Y") {
+
+            if ($ppn == 'Y') {
                 $data = DB::table('invoice_penjualans')
                     ->join('detail_penjualans', 'detail_penjualans.invoice_penjualan_id', '=', 'invoice_penjualans.id')
                     ->join('barangs', 'barangs.id', '=', 'detail_penjualans.barang_id')
@@ -123,8 +123,7 @@ class ReportController extends Controller
                     ->where('invoice_penjualans.ppn', '>', 0)
                     ->orderBy('invoice_penjualans.tanggal')->orderBy('invoice_penjualans.no_invoice')->orderBy('barangs.nama')
                     ->get();
-            }
-            else if ($ppn == "N") {
+            } elseif ($ppn == 'N') {
                 $data = DB::table('invoice_penjualans')
                     ->join('detail_penjualans', 'detail_penjualans.invoice_penjualan_id', '=', 'invoice_penjualans.id')
                     ->join('barangs', 'barangs.id', '=', 'detail_penjualans.barang_id')
@@ -163,8 +162,7 @@ class ReportController extends Controller
                     ->where('invoice_penjualans.ppn', '=', 0)
                     ->orderBy('invoice_penjualans.tanggal')->orderBy('invoice_penjualans.no_invoice')->orderBy('barangs.nama')
                     ->get();
-            }
-            else {
+            } else {
                 $data = DB::table('invoice_penjualans')
                     ->join('detail_penjualans', 'detail_penjualans.invoice_penjualan_id', '=', 'invoice_penjualans.id')
                     ->join('barangs', 'barangs.id', '=', 'detail_penjualans.barang_id')
@@ -201,12 +199,10 @@ class ReportController extends Controller
                     )
                     ->whereBetween('invoice_penjualans.tanggal', [$tanggal_en, $hingga_en])
                     ->orderBy('invoice_penjualans.tanggal')->orderBy('invoice_penjualans.no_invoice')->orderBy('barangs.nama')
-                    ->get();    
+                    ->get();
             }
-            
-        }
-        else {
-            if ($ppn == "Y") {
+        } else {
+            if ($ppn == 'Y') {
                 $data = DB::table('invoice_penjualans')
                     ->join('detail_penjualans', 'detail_penjualans.invoice_penjualan_id', '=', 'invoice_penjualans.id')
                     ->join('barangs', 'barangs.id', '=', 'detail_penjualans.barang_id')
@@ -245,8 +241,7 @@ class ReportController extends Controller
                     ->where('invoice_penjualans.ppn', '>', 0)
                     ->orderBy('invoice_penjualans.tanggal')->orderBy('invoice_penjualans.no_invoice')->orderBy('barangs.nama')
                     ->get();
-            }
-            else if ($ppn == "N") {
+            } elseif ($ppn == 'N') {
                 $data = DB::table('invoice_penjualans')
                     ->join('detail_penjualans', 'detail_penjualans.invoice_penjualan_id', '=', 'invoice_penjualans.id')
                     ->join('barangs', 'barangs.id', '=', 'detail_penjualans.barang_id')
@@ -285,8 +280,7 @@ class ReportController extends Controller
                     ->where('invoice_penjualans.ppn', '=', 0)
                     ->orderBy('invoice_penjualans.tanggal')->orderBy('invoice_penjualans.no_invoice')->orderBy('barangs.nama')
                     ->get();
-            }
-            else {
+            } else {
                 $data = DB::table('invoice_penjualans')
                     ->join('detail_penjualans', 'detail_penjualans.invoice_penjualan_id', '=', 'invoice_penjualans.id')
                     ->join('barangs', 'barangs.id', '=', 'detail_penjualans.barang_id')
@@ -554,12 +548,12 @@ class ReportController extends Controller
                 break;
         }
 
-        $data = AbsensiHarian::select('absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.id', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.jenis_lembur', 'absensi_harians.status', 'absensi_harians.pot_absensi', 'karyawans.nik', 'karyawans.nama', 'karyawans.norek', 'karyawans.nilai_upah', 'karyawans.pot_koperasi', 'karyawans.tgl_masuk')
-        ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+        $data = AbsensiHarian::select('absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.nik', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.jenis_lembur', 'absensi_harians.status', 'absensi_harians.pot_absensi', 'karyawans.nik', 'karyawans.nama', 'karyawans.norek', 'karyawans.nilai_upah', 'karyawans.pot_koperasi', 'karyawans.tgl_masuk')
+        ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
         ->whereMonth('absensi_harians.tanggal', '=', $bulan)
         ->where('absensi_harians.status', '=', 2)
         ->where('karyawans.status_karyawan_id', '=', 1)
-        ->groupBy('karyawans.id')
+        ->groupBy('karyawans.nik')
         ->get();
 
         // set document information
@@ -644,72 +638,72 @@ class ReportController extends Controller
             $checkInvoice = '';
             $grandTotal = 0;
             foreach ($data as $item) {
-                $total_absensi = AbsensiHarian::select('absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.id', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.jenis_lembur', 'absensi_harians.status', 'absensi_harians.pot_absensi', 'absensi_harians.upah_harian', 'karyawans.nik', 'karyawans.nama', 'karyawans.norek', 'karyawans.nilai_upah', 'karyawans.pot_koperasi', 'karyawans.tgl_masuk')
-                ->join('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+                $total_absensi = AbsensiHarian::select('absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.nik', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.jenis_lembur', 'absensi_harians.status', 'absensi_harians.pot_absensi', 'absensi_harians.upah_harian', 'karyawans.nik', 'karyawans.nama', 'karyawans.norek', 'karyawans.nilai_upah', 'karyawans.pot_koperasi', 'karyawans.tgl_masuk')
+                ->join('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                 ->whereMonth('absensi_harians.tanggal', '=', $bulan)
-                ->where('karyawans.id', '=', $item->id)
+                ->where('karyawans.nik', '=', $item->nik)
                 ->where('absensi_harians.status', '=', 2)
                 ->where('karyawans.status_karyawan_id', '=', 1)
-                ->count('karyawans.id');
+                ->count('karyawans.nik');
 
                 //  1=rutin 2= biasa 3= off
 
                 $data_lembur_rutin = DB::table('absensi_harians')
                     ->select('*')
-                    ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+                    ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                     ->whereMonth('absensi_harians.tanggal', '=', $bulan)
                     ->where('absensi_harians.jenis_lembur', '=', 1)
-                    ->where('karyawans.id', '=', $item->id)
+                    ->where('karyawans.nik', '=', $item->nik)
                     ->where('absensi_harians.status', '=', 2)
                     ->where('karyawans.status_karyawan_id', '=', 1)
-                    ->count('karyawans.id');
+                    ->count('karyawans.nik');
 
                 $data_lembur_biasa = DB::table('absensi_harians')
                     ->select('*')
-                    ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+                    ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                     ->whereMonth('absensi_harians.tanggal', '=', $bulan)
                     ->where('absensi_harians.jenis_lembur', '=', 2)
-                    ->where('karyawans.id', '=', $item->id)
+                    ->where('karyawans.nik', '=', $item->nik)
                     ->where('absensi_harians.status', '=', 2)
                     ->where('karyawans.status_karyawan_id', '=', 1)
-                    ->count('karyawans.id');
+                    ->count('karyawans.nik');
 
                 $data_lembur_off = DB::table('absensi_harians')
                     ->select('*')
-                    ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+                    ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                     ->whereMonth('absensi_harians.tanggal', '=', $bulan)
                     ->where('absensi_harians.jenis_lembur', '=', 3)
-                    ->where('karyawans.id', '=', $item->id)
+                    ->where('karyawans.nik', '=', $item->nik)
                     ->where('absensi_harians.status', '=', 2)
                     ->where('karyawans.status_karyawan_id', '=', 1)
-                    ->count('karyawans.id');
+                    ->count('karyawans.nik');
 
                 $pot_absensi = DB::table('absensi_harians')
                     ->select('absensi_harians.pot_absensi')
-                    ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+                    ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                     ->whereMonth('absensi_harians.tanggal', '=', $bulan)
-                    ->where('karyawans.id', '=', $item->id)
+                    ->where('karyawans.nik', '=', $item->nik)
                     ->where('absensi_harians.status', '=', 2)
                     ->where('karyawans.status_karyawan_id', '=', 1)
                     ->sum('absensi_harians.pot_absensi');
 
                 $total_upah_harian = DB::table('absensi_harians')
                     ->select('absensi_harians.pot_absensi')
-                    ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+                    ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                     ->whereMonth('absensi_harians.tanggal', '=', $bulan)
                     ->where('absensi_harians.status', '=', 2)
                     ->where('karyawans.status_karyawan_id', '=', 1)
-                    ->where('karyawans.id', '=', $item->id)
+                    ->where('karyawans.nik', '=', $item->nik)
                     ->sum('absensi_harians.upah_harian');
 
                 //HITUNG JUMLAH TIDAK MASUK KERJA
                 $hari_off = DB::table('absensi_harians')
-                ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+                ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                 ->where('jml_kehadiran', '=', '00:00:00')
                 ->whereMonth('absensi_harians.tanggal', '=', $bulan)
                 ->where('absensi_harians.status', '=', 2)
                 ->where('karyawans.status_karyawan_id', '=', 1)
-                ->where('karyawans.id', '=', $item->id)
+                ->where('karyawans.nik', '=', $item->nik)
                 ->count('jml_kehadiran');
 
                 // PERHITUNGAN POTONGAN UMK
@@ -722,7 +716,7 @@ class ReportController extends Controller
 
                 $totals = DB::table('absensi_harians')
                     ->select('absensi_harians.pot_absensi')
-                    ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+                    ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                     ->whereMonth('absensi_harians.tanggal', '=', $bulan)
                     ->where('absensi_harians.status', '=', 2)
                     ->where('karyawans.status_karyawan_id', '=', 1)
@@ -794,12 +788,12 @@ class ReportController extends Controller
         $tgl_awal = Carbon::createFromFormat('d-m-Y', $tanggal_awal)->format('Y-m-d');
         $tgl_akhir = Carbon::createFromFormat('d-m-Y', $tanggal_akhir)->format('Y-m-d');
 
-        $data = AbsensiHarian::select('absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.id', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.jenis_lembur', 'absensi_harians.status', 'absensi_harians.pot_absensi', 'absensi_harians.upah_harian', 'karyawans.nik', 'karyawans.nama', 'karyawans.norek', 'karyawans.nilai_upah', 'karyawans.pot_koperasi', 'karyawans.tgl_masuk')
-        ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+        $data = AbsensiHarian::select('absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.nik', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.jenis_lembur', 'absensi_harians.status', 'absensi_harians.pot_absensi', 'absensi_harians.upah_harian', 'karyawans.nik', 'karyawans.nama', 'karyawans.norek', 'karyawans.nilai_upah', 'karyawans.pot_koperasi', 'karyawans.tgl_masuk')
+        ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
         ->whereBetween('absensi_harians.tanggal', [$tgl_awal, $tgl_akhir])
         ->where('absensi_harians.status', '=', 2)
         ->where('karyawans.status_karyawan_id', '=', 2)
-        ->groupBy('karyawans.id')
+        ->groupBy('karyawans.nik')
         ->get();
 
         // set document information
@@ -870,17 +864,17 @@ class ReportController extends Controller
             foreach ($data as $item) {
                 $total = DB::table('absensi_harians')
                     ->select('absensi_harians.pot_absensi')
-                    ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+                    ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                     ->whereBetween('absensi_harians.tanggal', [$tgl_awal, $tgl_akhir])
                     ->where('absensi_harians.status', '=', 2)
                     ->where('karyawans.status_karyawan_id', '=', 2)
-                    ->where('karyawans.id', '=', $item->id)
+                    ->where('karyawans.nik', '=', $item->nik)
                     ->sum('absensi_harians.upah_harian');
 
                 $totals = 0;
                 $totals = DB::table('absensi_harians')
                     ->select('absensi_harians.pot_absensi')
-                    ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+                    ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                     ->whereBetween('absensi_harians.tanggal', [$tgl_awal, $tgl_akhir])
                     ->where('absensi_harians.status', '=', 2)
                     ->where('karyawans.status_karyawan_id', '=', 2)
@@ -939,7 +933,7 @@ class ReportController extends Controller
         $report_jenises = DB::select("
                 select rb.nama, ap.tanggal, ifnull(sum(jumlah), 0) as jumlah
                 from report_jenis rb
-                left join absensi_packings ap on ap.jenis = rb.nama and ap.bagian = 'A'
+                left join absensi_packings ap on ap.jenis = rb.id and ap.bagian = 'A'
                 where ap.tanggal >= :awal and ap.tanggal <= :akhir
                 group by rb.nama, ap.tanggal
             ", ['awal' => $tgl_awal, 'akhir' => $tgl_akhir]);
@@ -947,7 +941,7 @@ class ReportController extends Controller
         $report_jenises_B = DB::select("
                 select rb.nama, ap.tanggal, ifnull(sum(jumlah), 0) as jumlah
                 from report_jenis rb
-                left join absensi_packings ap on ap.jenis = rb.nama and ap.bagian = 'B'
+                left join absensi_packings ap on ap.jenis = rb.id and ap.bagian = 'B'
                 where ap.tanggal >= :awal and ap.tanggal <= :akhir
                 group by rb.nama, ap.tanggal
             ", ['awal' => $tgl_awal, 'akhir' => $tgl_akhir]);
@@ -955,7 +949,7 @@ class ReportController extends Controller
         $report_jenises_C = DB::select("
                 select rb.nama, ap.tanggal, ifnull(sum(jumlah), 0) as jumlah
                 from report_jenis rb
-                left join absensi_packings ap on ap.jenis = rb.nama and ap.bagian = 'C'
+                left join absensi_packings ap on ap.jenis = rb.id and ap.bagian = 'C'
                 where ap.tanggal >= :awal and ap.tanggal <= :akhir
                 group by rb.nama, ap.tanggal
             ", ['awal' => $tgl_awal, 'akhir' => $tgl_akhir]);
@@ -963,7 +957,7 @@ class ReportController extends Controller
         $report_jenises_total = DB::select('
                 select ap.bagian, ap.jenis, sum(jumlah) jumlah, upah, sum(jumlah)*upah as hasil
                 from absensi_packings ap
-                join report_jenis rj on ap.jenis = rj.nama 
+                join report_jenis rj on ap.jenis = rj.id 
                 where ap.tanggal >= :awal and ap.tanggal <= :akhir
                 group by ap.bagian, ap.jenis
             ', ['awal' => $tgl_awal, 'akhir' => $tgl_akhir]);
@@ -1234,13 +1228,13 @@ class ReportController extends Controller
                 break;
         }
 
-        $data = AbsensiHarian::select('absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.id', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.jenis_lembur', 'absensi_harians.status', 'absensi_harians.pot_absensi', 'karyawans.nik', 'karyawans.nama', 'karyawans.norek', 'karyawans.nilai_upah', 'karyawans.pot_koperasi', 'karyawans.tgl_masuk')
-        ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+        $data = AbsensiHarian::select('absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.nik', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.jenis_lembur', 'absensi_harians.status', 'absensi_harians.pot_absensi', 'karyawans.nik', 'karyawans.nama', 'karyawans.norek', 'karyawans.nilai_upah', 'karyawans.pot_koperasi', 'karyawans.tgl_masuk')
+        ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
         ->whereMonth('absensi_harians.tanggal', '=', $bulan)
         ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
         ->where('absensi_harians.status', '=', 2)
         ->where('karyawans.status_karyawan_id', '=', 3)
-        ->groupBy('karyawans.id')
+        ->groupBy('karyawans.nik')
         ->get();
 
         // set document information
@@ -1325,79 +1319,79 @@ class ReportController extends Controller
             $checkInvoice = '';
             $grandTotal = 0;
             foreach ($data as $item) {
-                $total_absensi = AbsensiHarian::select('absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.id', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.jenis_lembur', 'absensi_harians.status', 'absensi_harians.pot_absensi', 'absensi_harians.upah_harian', 'karyawans.nik', 'karyawans.nama', 'karyawans.norek', 'karyawans.nilai_upah', 'karyawans.pot_koperasi', 'karyawans.tgl_masuk')
-                ->join('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+                $total_absensi = AbsensiHarian::select('absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.nik', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.jenis_lembur', 'absensi_harians.status', 'absensi_harians.pot_absensi', 'absensi_harians.upah_harian', 'karyawans.nik', 'karyawans.nama', 'karyawans.norek', 'karyawans.nilai_upah', 'karyawans.pot_koperasi', 'karyawans.tgl_masuk')
+                ->join('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                 ->whereMonth('absensi_harians.tanggal', '=', $bulan)
                 ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
-                ->where('karyawans.id', '=', $item->id)
+                ->where('karyawans.nik', '=', $item->nik)
                 ->where('absensi_harians.status', '=', 2)
                 ->where('karyawans.status_karyawan_id', '=', 3)
-                ->count('karyawans.id');
+                ->count('karyawans.nik');
 
                 //  1=rutin 2= biasa 3= off
 
                 $data_lembur_rutin = DB::table('absensi_harians')
                     ->select('*')
-                    ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+                    ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                     ->whereMonth('absensi_harians.tanggal', '=', $bulan)
                     ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
                     ->where('absensi_harians.jenis_lembur', '=', 1)
-                    ->where('karyawans.id', '=', $item->id)
+                    ->where('karyawans.nik', '=', $item->nik)
                     ->where('absensi_harians.status', '=', 2)
                     ->where('karyawans.status_karyawan_id', '=', 3)
                     ->count('karyawans.id');
 
                 $data_lembur_biasa = DB::table('absensi_harians')
                     ->select('*')
-                    ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+                    ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                     ->whereMonth('absensi_harians.tanggal', '=', $bulan)
                     ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
                     ->where('absensi_harians.jenis_lembur', '=', 2)
-                    ->where('karyawans.id', '=', $item->id)
+                    ->where('karyawans.nik', '=', $item->nik)
                     ->where('absensi_harians.status', '=', 2)
                     ->where('karyawans.status_karyawan_id', '=', 3)
-                    ->count('karyawans.id');
+                    ->count('karyawans.nik');
 
                 $data_lembur_off = DB::table('absensi_harians')
                     ->select('*')
-                    ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+                    ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                     ->whereMonth('absensi_harians.tanggal', '=', $bulan)
                     ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
                     ->where('absensi_harians.jenis_lembur', '=', 3)
-                    ->where('karyawans.id', '=', $item->id)
+                    ->where('karyawans.nik', '=', $item->nik)
                     ->where('absensi_harians.status', '=', 2)
                     ->where('karyawans.status_karyawan_id', '=', 3)
-                    ->count('karyawans.id');
+                    ->count('karyawans.nik');
 
                 $pot_absensi = DB::table('absensi_harians')
                     ->select('absensi_harians.pot_absensi')
-                    ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+                    ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                     ->whereMonth('absensi_harians.tanggal', '=', $bulan)
                     ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
-                    ->where('karyawans.id', '=', $item->id)
+                    ->where('karyawans.nik', '=', $item->nik)
                     ->where('absensi_harians.status', '=', 2)
                     ->where('karyawans.status_karyawan_id', '=', 3)
                     ->sum('absensi_harians.pot_absensi');
 
                 $total_upah_harian = DB::table('absensi_harians')
                     ->select('absensi_harians.pot_absensi')
-                    ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+                    ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                     ->whereMonth('absensi_harians.tanggal', '=', $bulan)
                     ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
                     ->where('absensi_harians.status', '=', 2)
                     ->where('karyawans.status_karyawan_id', '=', 3)
-                    ->where('karyawans.id', '=', $item->id)
+                    ->where('karyawans.nik', '=', $item->nik)
                     ->sum('absensi_harians.upah_harian');
 
                 //HITUNG JUMLAH TIDAK MASUK KERJA
                 $hari_off = DB::table('absensi_harians')
-                ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+                ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                 ->where('jml_kehadiran', '=', '00:00:00')
                 ->whereMonth('absensi_harians.tanggal', '=', $bulan)
                 ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
                 ->where('absensi_harians.status', '=', 2)
                 ->where('karyawans.status_karyawan_id', '=', 3)
-                ->where('karyawans.id', '=', $item->id)
+                ->where('karyawans.nik', '=', $item->nik)
                 ->count('jml_kehadiran');
 
                 // PERHITUNGAN POTONGAN UMK
@@ -1410,7 +1404,7 @@ class ReportController extends Controller
 
                 $totals = DB::table('absensi_harians')
                     ->select('absensi_harians.pot_absensi')
-                    ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
+                    ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                     ->whereMonth('absensi_harians.tanggal', '=', $bulan)
                     ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
                     ->where('absensi_harians.status', '=', 2)

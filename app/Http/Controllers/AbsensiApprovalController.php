@@ -20,11 +20,11 @@ class AbsensiApprovalController extends Controller
 
     public function datatable()
     {
-        $absensi_harians = AbsensiHarian::select(['absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.id', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'karyawans.nik', 'karyawans.nama', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jenis_lembur', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.status', 'absensi_harians.pot_absensi'])
-        ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id');
+        $absensi_harians = AbsensiHarian::select(['absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'absensi_harians.karyawan_id', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'karyawans.nik', 'karyawans.nama', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.jenis_lembur', 'absensi_harians.status', 'absensi_harians.pot_absensi'])
+        ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id');
 
         return Datatables::of($absensi_harians)
-        ->addColumn('check', '<input type="checkbox" name="selected_karyawans[]" value="{{ $id_absen }}">')
+        ->addColumn('check', '<input type="checkbox" name="selected_karyawans[]" value="{{ $id_absen }}-{{ $nik }}" >')
 
         ->editColumn('jenis_lembur', function ($absensi_harian) {
 
@@ -65,6 +65,14 @@ class AbsensiApprovalController extends Controller
     public function show(Request $request)
     {
         $absensi_ids = $request->input('selected_karyawans');
+        //$c = explode('-', $absensi_ids);
+
+        foreach ($absensi_ids as $id) {
+            $a = explode('-', $id);
+
+            //dd($a[0]);
+            // dd($a[0].'dan '.$a[1]);
+        }
 
         //$absensi_karyawans = AbsensiHarian::where('id', '=', $absensi_ids)->get();
 
@@ -74,8 +82,13 @@ class AbsensiApprovalController extends Controller
 
         if ($absensi_karyawans->count() > 0) {
             foreach ($absensi_karyawans as $absensi_karyawan) {
-                $absensi_karyawan->status = 2;
-                $absensi_karyawan->save();
+                $karyawan = Karyawan::where('nik', '=', $absensi_karyawan->karyawan_id)->get();
+                $karyawan = $karyawan->first();
+
+                //dd($karyawan->nilai_upah);
+
+                // $absensi_karyawan->status = 2;
+                // $absensi_karyawan->save();
                 Flash::success('Absensi Karyawan Confirmed');
             }
         }
@@ -85,30 +98,29 @@ class AbsensiApprovalController extends Controller
         return view('absensi-approval.index');
     }
 
-    public function update(Request $request)
+    public function update($id, Request $request)
     {
-        $id = $request->input('id');
-        $tanggal = $request->input('tanggal');
-        $potongan = $request->input('potongan');
-
         $lembur_rutin = 0;
         $lembur_biasa = 0;
         $lembur_off = 0;
 
-        $id = $request->input('id');
+        $id_absen = $request->input('id_absen');
+        $nik = $request->input('nik');
         $tanggal = $request->input('tanggal');
+        $potongan = $request->input('potongan');
         $jenis_lembur = $request->input('jenis_lembur');
         $uang_makan = $request->input('uang_makan');
         $konfirmasi_lembur = $request->input('konfirmasi_lembur');
 
-        $karyawan = Karyawan::find($id);
+        $karyawan = Karyawan::where('nik', '=', $nik)->get();
+        $karyawan = $karyawan->first();
 
         $gaji = $karyawan->nilai_upah;
 
-        // HITUNG UANG MAKAN
+        // // HITUNG UANG MAKAN
         $uang_makan = $karyawan->uang_makan;
 
-        $absensies = AbsensiHarian::where('karyawan_id', '=', $id)->where('tanggal', '=', $tanggal)->get();
+        $absensies = AbsensiHarian::where('karyawan_id', '=', $nik)->where('tanggal', '=', $tanggal)->get();
 
         if ($absensies->count() == 1) {
             $absensies = $absensies->first();

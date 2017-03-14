@@ -17,7 +17,7 @@
         <div id="detail_modal2">
           <h4>Detail Karyawan</h4>
           <div class="modal-body2">
-
+<!--           Diisi di absensiApproval.js -- show detail() -->
           </div>
         </div>
          <p style="text-align:right">Potongan Absensi : <input type="text" name="potongan" /></p>

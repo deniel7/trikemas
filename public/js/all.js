@@ -1280,6 +1280,8 @@ var absensiApprovalModule = (function(commonModule) {
             dataType: "json",
         }).done(function(response) {
 
+
+
             if (response.status == 1) {
 
 
@@ -1304,7 +1306,7 @@ var absensiApprovalModule = (function(commonModule) {
                         jenis_lembur = 'lembur biasa';
                     }
 
-                    $('#detail_modal').find("tbody").append("<tr><td><input name ='id' type='hidden' value='" + record.id + "' /><input name ='tanggal' type='hidden' value='" + record.tanggal + "' /><input name ='jenis_lembur' type='hidden' value='" + record.jenis_lembur + "' /><input name ='konfirmasi_lembur' type='hidden' value='" + record.konfirmasi_lembur + "' />" + record.nik + "</td><td>" + record.nama + "</td><td>" + record.departemen + "</td><td>" + record.scan_masuk + "</td><td>" + record.scan_pulang + "</td><td>" + record.jam_lembur + "</td><td>" + record.konfirmasi_lembur + "</td><td>" + jenis_lembur + "</td></tr>");
+                    $('#detail_modal').find("tbody").append("<tr><td><input name ='id_absen' type='hidden' value='" + id + "' /><input name ='nik' type='hidden' value='" + record.nik + "' /><input name ='tanggal' type='hidden' value='" + record.tanggal + "' /><input name ='jenis_lembur' type='hidden' value='" + record.jenis_lembur + "' /><input name ='konfirmasi_lembur' type='hidden' value='" + record.konfirmasi_lembur + "' />" + record.nik + "</td><td>" + record.nama + "</td><td>" + record.departemen + "</td><td>" + record.scan_masuk + "</td><td>" + record.scan_pulang + "</td><td>" + record.jam_lembur + "</td><td>" + record.konfirmasi_lembur + "</td><td>" + jenis_lembur + "</td></tr>");
 
                 });
 
@@ -1344,7 +1346,8 @@ var absensiApprovalModule = (function(commonModule) {
 
     var confirmLembur = function() {
         var query = $('form#approve input[name="selected_karyawans[]"]').serialize();
-        window.location = '/absensi-approval/confirmAbsen?' + query;
+        var nik = $('form#approve input[name="karyawan_niks[]"]').serialize();
+        window.location = '/absensi-approval/confirmAbsen?' + query + nik;
 
 
 
