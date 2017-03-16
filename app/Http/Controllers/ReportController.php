@@ -955,7 +955,7 @@ class ReportController extends Controller
             ", ['awal' => $tgl_awal, 'akhir' => $tgl_akhir]);
 
         $report_jenises_total = DB::select('
-                select ap.bagian, ap.jenis, sum(jumlah) jumlah, upah, sum(jumlah)*upah as hasil
+                select ap.bagian, rj.nama as jenis, sum(jumlah) jumlah, upah, sum(jumlah)*upah as hasil
                 from absensi_packings ap
                 join report_jenis rj on ap.jenis = rj.id 
                 where ap.tanggal >= :awal and ap.tanggal <= :akhir
@@ -1106,6 +1106,7 @@ class ReportController extends Controller
                 foreach ($report_jenises_total as $r) {
                     if ($jenis->nama == $r->jenis && $r->bagian == 'A') {
                         $total_upah_a += $r->hasil;
+
                         PDF::Cell(12, 0, $r->jumlah, 1, 0, 'C', 0, '', 0);
                         $found = true;
                         break;
@@ -1124,6 +1125,7 @@ class ReportController extends Controller
                 foreach ($report_jenises_total as $r) {
                     if ($jenis->nama == $r->jenis && $r->bagian == 'B') {
                         $total_upah_b += $r->hasil;
+
                         PDF::Cell(12, 0, $r->jumlah, 1, 0, 'C', 0, '', 0);
                         $found = true;
                         break;
