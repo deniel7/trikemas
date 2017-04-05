@@ -187,7 +187,7 @@ class ReportController extends Controller
                 PDF::Cell(40, 0, number_format($item->harga_angkutan, 0, '.', ','), 1, 0, 'R', 0, '', 1);
                 PDF::Cell(30, 0, number_format($item->diskon_bayar_angkutan, 0, '.', ','), 1, 0, 'R', 0, '', 1);
                 PDF::Cell(30, 0, number_format($item->jumlah_bayar_angkutan, 0, '.', ','), 1, 0, 'R', 0, '', 1);
-                PDF::Cell(24, 0, ($item->status_bayar_angkutan = 1 ? 'Sudah Bayar' : 'Belum Bayar'), 1, 0, 'L', 0, '', 1);
+                PDF::Cell(24, 0, ($item->status_bayar_angkutan == 1 ? 'Sudah Bayar' : 'Belum Bayar'), 1, 0, 'L', 0, '', 1);
                 PDF::Cell(26, 0, ($item->tanggal_bayar_angkutan ? Carbon::createFromFormat('Y-m-d', $item->tanggal_bayar_angkutan)->format('d-m-Y') : ''), 1, 0, 'L', 0, '', 1);
                 PDF::Cell(60, 0, $item->keterangan_bayar_angkutan, 1, 0, 'L', 0, '', 1);
                 PDF::Ln();
