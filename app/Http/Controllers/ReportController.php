@@ -67,6 +67,162 @@ class ReportController extends Controller
     }
 
     // prompt
+    
+    public function penerimaanPembayaranAngkutan()
+    {
+        $data['default_year'] = date('Y');
+
+        return view('report.penerimaan_pembayaran_params', $data);
+    }
+    
+    // preview
+    public function previewPenerimaanPembayaranAngkutan($bulan, $tahun)
+    {
+        $period = $tahun . $bulan;
+        
+        $data = DB::table('invoice_penjualans')
+            ->join('angkutans', 'angkutans.id', '=', 'invoice_penjualans.angkutan_id')
+            ->join('tujuans', 'tujuans.id', '=', 'invoice_penjualans.tujuan_id')
+            ->select(
+                'invoice_penjualans.id',
+                'invoice_penjualans.tanggal',
+                'invoice_penjualans.no_surat_jalan',
+                'angkutans.nama as nama_angkutan',
+                'invoice_penjualans.no_mobil',
+                'tujuans.kota as nama_tujuan',
+                'invoice_penjualans.harga_angkutan',
+                'invoice_penjualans.diskon_bayar_angkutan',
+                'invoice_penjualans.jumlah_bayar_angkutan',
+                'invoice_penjualans.status_bayar_angkutan',
+                'invoice_penjualans.tanggal_bayar_angkutan',
+                'invoice_penjualans.keterangan_bayar_angkutan'
+            )
+            ->where(DB::raw("date_format(invoice_penjualans.tanggal, '%Y%m')"), $period)
+            ->orderBy('invoice_penjualans.tanggal')->orderBy('invoice_penjualans.no_surat_jalan')
+            ->get();
+
+        // set document information
+        PDF::SetAuthor('PT. TRIMITRA KEMASINDO');
+        PDF::SetTitle('Laporan Penerimaan Pembayaran - Trimitra Kemasindo');
+        PDF::SetSubject('Laporan Penerimaan Pembayaran');
+        PDF::SetKeywords('Laporan Penerimaan Pembayaran Trimitra Kemasindo');
+
+        PDF::setFooterCallback(function ($pdf) {
+            $pdf->SetMargins(15, 10, 15);
+
+            // Position at 15 mm from bottom
+            $pdf->SetY(-15);
+            // Set font
+            $pdf->SetFont('helvetica', 'I', 8);
+            // Page number
+            $pdf->Cell(0, 4, 'Page '.$pdf->getAliasNumPage().'/'.$pdf->getAliasNbPages(), 0, 0, 'R', 0, '', 0);
+        });
+
+        // AddPage ($orientation='', $format='', $keepmargins=false, $tocpage=false)
+        PDF::AddPage('L', 'A3');
+
+        // SetMargins ($left, $top, $right=-1, $keepmargins=false)
+        PDF::SetMargins(15, 10, 15);
+
+        // Image ($file, $x='', $y='', $w=0, $h=0, $type='', $link='', $align='', $resize=false, $dpi=300, $palign='', $ismask=false, $imgmask=false, $border=0, $fitbox=false, $hidden=false, $fitonpage=false, $alt=false, $altimgs=array())
+        //PDF::Image(asset('/image/bmt.png'), 15, 5, 35, 15, '', '', 'T', true);
+
+        // SetFont ($family, $style='', $size=null, $fontfile='', $subset='default', $out=true)
+        PDF::SetFont('times', 'B', 12);
+
+        //PDF::setXY(54, 10);
+        PDF::setX(15);
+        PDF::Cell(0, 0, 'PT. Trimitra Kemasindo', 0, 0, 'L', 0, '', 0);
+        PDF::Ln();
+        //PDF::setXY(54, 16);
+        PDF::setX(15);
+        PDF::SetFont('', '', 10);
+        PDF::Cell(0, 0, 'Jalan Raya Sapan KM 1 No. 15 Bandung, Telp. (022) 87304121, Fax. (022) 87304123', 0, 0, 'L', 0, '', 0);
+
+         // Line ($x1, $y1, $x2, $y2, $style=array())
+        $style = array('width' => 0.7, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0));
+        PDF::Line(15, 21, 400, 21); // $y2 = 282 for A4
+        PDF::Line(15, 22, 400, 22, $style); // $y2 = 402 for A3
+        PDF::setLineStyle(array('width' => 0, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0)));
+
+        PDF::Ln(12);
+
+        PDF::SetFont('', 'B', 12);
+
+        // Cell ($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='', $stretch=0, $ignore_min_height=false, $calign='T', $valign='M')
+        PDF::Cell(0, 0, 'LAPORAN PEMBAYARAN ANGKUTAN', 0, 0, 'C', 0, '', 0);
+        PDF::Ln(8);
+
+        PDF::SetFont('', '', 10);
+
+        PDF::Cell(30, 0, 'BULAN', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(30, 0, 'TAHUN', 1, 0, 'C', 0, '', 0);
+        PDF::Ln();
+        PDF::Cell(30, 0, $this->readMonth(intval($bulan)), 1, 0, 'C', 0, '', 0);
+        PDF::Cell(30, 0, $tahun, 1, 0, 'C', 0, '', 0);
+        PDF::Ln(8);
+
+        PDF::Cell(25, 0, 'TANGGAL', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(40, 0, 'NO. SURAT JALAN', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(40, 0, 'NAMA ANGKUTAN', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(30, 0, 'NO. MOBIL', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(40, 0, 'TUJUAN', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(40, 0, 'BIAYA ANGKUTAN', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(30, 0, 'POTONGAN', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(30, 0, 'JUMLAH', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(24, 0, 'STATUS', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(26, 0, 'TGL. BAYAR', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(60, 0, 'KETERANGAN', 1, 0, 'C', 0, '', 0);
+        PDF::Ln();
+
+        $count = sizeof($data);
+        if ($count > 0) {
+            $grandTotal = 0;
+            foreach ($data as $item) {
+                PDF::Cell(25, 0, Carbon::createFromFormat('Y-m-d', $item->tanggal)->format('d-m-Y'), 1, 0, 'L', 0, '', 1);
+                PDF::Cell(40, 0, $item->no_surat_jalan, 1, 0, 'L', 0, '', 1);
+                PDF::Cell(40, 0, $item->nama_angkutan, 1, 0, 'L', 0, '', 1);
+                PDF::Cell(30, 0, $item->no_mobil, 1, 0, 'L', 0, '', 1);
+                PDF::Cell(40, 0, $item->nama_tujuan, 1, 0, 'L', 0, '', 1);
+                PDF::Cell(40, 0, number_format($item->harga_angkutan, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+                PDF::Cell(30, 0, number_format($item->diskon_bayar_angkutan, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+                PDF::Cell(30, 0, number_format($item->jumlah_bayar_angkutan, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+                PDF::Cell(24, 0, ($item->status_bayar_angkutan = 1 ? 'Sudah Bayar' : 'Belum Bayar'), 1, 0, 'L', 0, '', 1);
+                PDF::Cell(26, 0, ($item->tanggal_bayar_angkutan ? Carbon::createFromFormat('Y-m-d', $item->tanggal_bayar_angkutan)->format('d-m-Y') : ''), 1, 0, 'L', 0, '', 1);
+                PDF::Cell(60, 0, $item->keterangan_bayar_angkutan, 1, 0, 'L', 0, '', 1);
+                PDF::Ln();
+                
+                $grandTotal += $item->jumlah_bayar_angkutan;
+            }
+            PDF::SetFont('', 'B', 10);
+            // grand total
+            PDF::Cell(245, 0, 'TOTAL ', 1, 0, 'R', 0, '', 1);
+            PDF::Cell(30, 0, number_format($grandTotal, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+            PDF::Cell(110, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Ln();
+            PDF::SetFont('', '', 10);
+        } else {
+            PDF::Cell(25, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(40, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(40, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(30, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(40, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(40, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(30, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(30, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(20, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(30, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(60, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Ln();
+        }
+
+        // Output ($name='doc.pdf', $dest='I'), I=inline, D=Download
+        PDF::Output('laporan_pembayaran_angkutan.pdf');
+
+        // need to call exit, i don't know why
+        exit;
+    }
+    
     public function penjualan()
     {
         $data['default_date'] = date('d-m-Y');
@@ -492,7 +648,7 @@ class ReportController extends Controller
         }
 
         // Output ($name='doc.pdf', $dest='I'), I=inline, D=Download
-        PDF::Output('laporan_absensi_pegawai.pdf');
+        PDF::Output('laporan_penjualan.pdf');
 
         // need to call exit, i don't know why
         exit;

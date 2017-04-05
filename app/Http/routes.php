@@ -34,8 +34,12 @@ Route::group(['middleware' => 'auth'], function () {
 
      // laporan
     Route::get('/report', 'ReportController@index');
+   
     Route::get('/report/penjualan', 'ReportController@penjualan');
     Route::get('/report/penjualan/preview/{ppn}/{dari}/{hingga?}', 'ReportController@previewPenjualan');
+    
+    Route::get('/report/penerimaan-pembayaran-angkutan', 'ReportController@penerimaanPembayaranAngkutan');
+    Route::get('/report/penerimaan-pembayaran-angkutan/preview/{bulan}/{tahun}', 'ReportController@previewPenerimaanPembayaranAngkutan');
 
     Route::get('/report/absensi-karyawan-staff', 'ReportController@absensiKaryawanStaff');
     Route::get('/report/absensi-karyawan-staff/preview/{bulan}', 'ReportController@previewAbsensiKaryawanStaff');

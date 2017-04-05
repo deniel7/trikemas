@@ -13,13 +13,13 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Laporan Penjualan
+        Laporan Pembayaran Angkutan
         <small>&nbsp;</small>
       </h1>
         
       <ol class="breadcrumb">
         <li><a href="{{ url('/') }}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active"> Laporan Penjualan</li>
+        <li class="active"> Laporan Pembayaran Angkutan</li>
       </ol>
     </section>
 
@@ -40,42 +40,39 @@
             <!-- /.box-header -->
             
             <!-- form start -->
-            <form class="form-horizontal" id="frmData" method="post" action="{{ url('/report/penjualan/preview') }}" autocomplete="off">
+            <form class="form-horizontal" id="frmData" method="post" action="{{ url('/report/penerimaan-pembayaran-angkutan/preview') }}" autocomplete="off">
               
               {{ csrf_field() }}
               
               <div class="box-body">
                 
                 <div class="form-group">
-                  <label for="ppn" class="col-sm-2 control-label">PPN *</label>
+                  <label for="bulan" class="col-sm-2 control-label">Bulan *</label>
                   <div class="col-sm-10">
-                    <select name="ppn" id="ppn" class="form-control selectpicker" title="-- Pilih PPN --">
-                        <option value="A">All</option>
-                        <option value="Y">PPN</option>
-                        <option value="N">Non PPN</option>
+                    <select name="bulan" id="bulan" class="form-control selectpicker" title="-- Pilih Bulan --">
+                        <option value="01">Januari</option>
+                        <option value="02">Februari</option>
+                        <option value="03">Maret</option>
+                        <option value="04">April</option>
+                        <option value="05">Mei</option>
+                        <option value="06">Juni</option>
+                        <option value="07">Juli</option>
+                        <option value="08">Agustus</option>
+                        <option value="09">September</option>
+                        <option value="10">Oktober</option>
+                        <option value="11">November</option>
+                        <option value="12">Desember</option>
                     </select>
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="tanggal" class="col-sm-2 control-label">Tanggal *</label>
+                  <label for="tahun" class="col-sm-2 control-label">Tahun *</label>
                   <div class="col-sm-10">
-                    <div class="input-group date">
-                      <div class="input-group-addon">
-                        <i class="fa fa-calendar"></i>
-                      </div>
-                      <input type="text" class="form-control" name="tanggal" id="tanggal" placeholder="Tanggal" value="{{ $default_date }}">
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="hingga" class="col-sm-2 control-label">Hingga </label>
-                  <div class="col-sm-10">
-                    <div class="input-group date">
-                      <div class="input-group-addon">
-                        <i class="fa fa-calendar"></i>
-                      </div>
-                      <input type="text" class="form-control" name="hingga" id="hingga" placeholder="Hingga">
-                    </div>
+                    <select name="tahun" id="tahun" class="form-control selectpicker" title="-- Pilih Tahun --">
+                        @for ($i = $default_year; $i >= $default_year-9; $i--)
+                        <option value="{{ $i }}">{{ $i }}</option>
+                        @endfor
+                    </select>
                   </div>
                 </div>
                 
@@ -118,7 +115,7 @@
     <script type="text/javascript">
     $(document).ready(function() {
         advanceElements.init();
-        validation.init();
+        validationPenerimaanPembayaran.init();
     });
     </script>
 @endsection

@@ -1,3 +1,9 @@
+insert into sys_menu (id_menu, title, created_at, created_by) values (505, 'Laporan Pembayaran Angkutan', current_timestamp, 'system');
+insert into sys_role_dtl (id_hdr, id_menu) values (1, 505);
+
+
+-- DONE
+
 CREATE TABLE `sys_menu` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `id_menu` int(11) NOT NULL,
