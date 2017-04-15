@@ -46,7 +46,16 @@
               {{ method_field('PUT') }}
               
               <div class="box-body">
-                
+                <div class="form-group">
+                  <label for="chk_ppn" class="col-sm-2 control-label">PPN</label>
+                  <div class="col-sm-1">
+                    <input type="checkbox" {{ $invoice_penjualan->ppn > 0 ? "checked" : "" }}  name="chk_ppn" id="chk_ppn" disabled>
+                  </div>
+                  <label for="ppn_flag" class="col-sm-3 control-label">Harga Termasuk PPN</label>
+                  <div class="col-sm-6">
+                    <input type="checkbox" {{ $invoice_penjualan->ppn > 0 ? "checked" : "" }}  name="ppn_flag" id="ppn_flag" value="1" disabled>
+                  </div>
+                </div>
                 <div class="form-group">
                   <label for="no_invoice" class="col-sm-2 control-label">No. Invoice </label>
                   <div class="col-sm-10">

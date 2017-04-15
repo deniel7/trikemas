@@ -1,3 +1,7 @@
+alter table invoice_penjualans add column ppn_flag integer;
+
+-- DONE
+
 insert into sys_menu (id_menu, title, created_at, created_by) values (505, 'Laporan Pembayaran Angkutan', current_timestamp, 'system');
 insert into sys_role_dtl (id_hdr, id_menu) values (1, 505);
 

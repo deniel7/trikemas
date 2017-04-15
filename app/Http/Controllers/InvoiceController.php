@@ -228,6 +228,7 @@ class InvoiceController extends Controller
                 $invoice->diskon = str_replace(',', '', $request->discount);
                 $invoice->total = str_replace(',', '', $request->total);
                 $invoice->ppn = str_replace(',', '', $request->ppn);
+                $invoice->ppn_flag = isset($request->ppn_flag) ? $request->ppn_flag : 0;
                 $invoice->grand_total = str_replace(',', '', $request->grand_total);
                 $invoice->created_by = Auth::check() ? Auth::user()->username : '';
                 $invoice->save();
@@ -406,6 +407,7 @@ class InvoiceController extends Controller
                     $invoice->diskon = str_replace(',', '', $request->discount);
                     $invoice->total = str_replace(',', '', $request->total);
                     $invoice->ppn = str_replace(',', '', $request->ppn);
+                    $invoice->ppn_flag = isset($request->ppn_flag) ? $request->ppn_flag : 0;
                     $invoice->grand_total = str_replace(',', '', $request->grand_total);
                     $invoice->updated_by = Auth::check() ? Auth::user()->username : '';
                     $invoice->save();
@@ -524,6 +526,9 @@ class InvoiceController extends Controller
             PDF::SetTitle('Invoice Penjualan - Trimitra Kemasindo');
             PDF::SetSubject('Invoice Penjualan');
             PDF::SetKeywords('Invoice Penjualan Trimitra Kemasindo');
+            
+            
+            // -- main page --
             
             // AddPage ($orientation='', $format='', $keepmargins=false, $tocpage=false)
             PDF::AddPage('P', 'A4');
@@ -672,6 +677,191 @@ class InvoiceController extends Controller
             PDF::Cell(90, 0, 'a/n: Ety Juniati Buntaran', 0, 0, 'L', 0, '', 0);
             PDF::Ln();
             
+            
+            // -- copy page --
+            
+            // AddPage ($orientation='', $format='', $keepmargins=false, $tocpage=false)
+            PDF::AddPage('P', 'A4');
+            
+            // SetMargins ($left, $top, $right=-1, $keepmargins=false)
+            PDF::SetMargins(15, 10);
+            
+            // Image ($file, $x='', $y='', $w=0, $h=0, $type='', $link='', $align='', $resize=false, $dpi=300, $palign='', $ismask=false, $imgmask=false, $border=0, $fitbox=false, $hidden=false, $fitonpage=false, $alt=false, $altimgs=array())
+            //PDF::Image(asset('/image/logo-ponpes-darussalam.png'), 15, 5, 15, 15, '', '', 'T', true);
+            //PDF::Image(asset('/image/bmt.png'), 15, 5, 35, 15, '', '', 'T', true);
+            
+            PDF::setX(15);
+            
+            // SetFont ($family, $style='', $size=null, $fontfile='', $subset='default', $out=true)
+            PDF::SetFont('times', 'B', 11);
+            // Cell ($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='', $stretch=0, $ignore_min_height=false, $calign='T', $valign='M')
+            PDF::Cell(0, 0, 'PT. Trimitra Kemasindo', 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            PDF::SetFont('', '', 9);
+            PDF::Cell(0, 0, 'Jalan Raya Sapan KM 1 No. 15', 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            PDF::Cell(0, 0, 'Tlp. (022) 87304121', 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            PDF::Cell(0, 0, 'Fax. (022) 87304123', 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            PDF::Cell(0, 0, 'Bandung', 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            
+            PDF::SetFont('times', 'B', 16);
+            PDF::setXY(151, 10);
+            PDF::Cell(0, 0, 'I  N  V  O  I  C  E', 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            
+            PDF::setX(130);
+            PDF::SetFont('', '', 10);
+            PDF::Cell(30, 0, 'No. :', 0, 0, 'R', 0, '', 0);
+            PDF::Cell(0, 0, ' ' . $invoice->no_invoice, 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            PDF::setX(130);
+            PDF::Cell(30, 0, 'Tanggal :', 0, 0, 'R', 0, '', 0);
+            PDF::Cell(0, 0, ' ' . $invoice->tanggal->format('d-m-Y'), 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            PDF::setX(130);
+            PDF::Cell(30, 0, 'Konsumen :', 0, 0, 'R', 0, '', 0);
+            $konsumen_branch = KonsumenBranch::find($invoice->konsumen_branch_id);
+            $konsumen_nama = $konsumen_branch ? $konsumen_branch->nama : Konsumen::find($invoice->konsumen_id)->nama;
+            PDF::Cell(0, 0, ' ' . $konsumen_nama, 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            PDF::setX(130);
+            PDF::Cell(30, 0, 'No. PO :', 0, 0, 'R', 0, '', 0);
+            PDF::Cell(0, 0, ' ' . $invoice->no_po, 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            PDF::setX(130);
+            PDF::Cell(30, 0, 'Tgl. Jatuh Tempo :', 0, 0, 'R', 0, '', 0);
+            PDF::Cell(0, 0, ' ' . $invoice->tgl_jatuh_tempo->format('d-m-Y'), 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            
+            PDF::Ln(10); 
+            
+            PDF::Cell(8, 10, 'No', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(25, 10, 'Jenis', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(60, 10, 'Barang', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(30, 5, 'Qty', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(25, 10, 'Harga / Pcs', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(30, 10, 'Jumlah', 1, 0, 'C', 0, '', 0);
+            PDF::Ln();
+            
+            $curY = PDF::getY();
+            PDF::setXY(108, $curY-5);
+            PDF::Cell(15, 5, 'Ball', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(15, 5, 'Pcs', 1, 0, 'C', 0, '', 0);
+            PDF::Ln();
+            
+            
+            $no = 1;
+            foreach($invoice_detail as $item) {
+                $barang = Barang::find($item->barang_id);
+                
+                PDF::Cell(8, 6, $no, 1, 0, 'R', 0, '', 1);
+                PDF::Cell(25, 6, $barang->jenis, 1, 0, 'L', 0, '', 1);
+                PDF::Cell(60, 6, $barang->nama, 1, 0, 'L', 0, '', 1);
+                PDF::Cell(15, 6, number_format($item->jumlah_ball, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+                PDF::Cell(15, 6, number_format($item->jumlah, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+                PDF::Cell(25, 6, number_format($item->harga_barang, 2, '.', ','), 1, 0, 'R', 0, '', 1);
+                PDF::Cell(30, 6, number_format($item->subtotal, 2, '.', ','), 1, 0, 'R', 0, '', 1);
+                PDF::Ln();
+                
+                $no++;
+            }
+            
+            PDF::Cell(8, 6, '', 1, 0, 'R', 0, '', 1);
+            PDF::Cell(25, 6, '', 1, 0, 'L', 0, '', 1);
+            PDF::Cell(60, 6, '', 1, 0, 'L', 0, '', 1);
+            PDF::Cell(15, 6, '', 1, 0, 'R', 0, '', 1);
+            PDF::Cell(15, 6, '', 1, 0, 'R', 0, '', 1);
+            PDF::Cell(25, 6, '', 1, 0, 'R', 0, '', 1);
+            PDF::Cell(30, 6, '', 1, 0, 'R', 0, '', 1);
+            PDF::Ln();
+            
+            PDF::setX(138);
+            PDF::Cell(25, 6, 'Sub Total', 1, 0, 'R', 0, '', 0);
+            PDF::Cell(30, 6, number_format($invoice->sub_total, 0, '.', ','), 1, 0, 'R', 0, '', 0);
+            PDF::Ln();
+            
+            // get this y position
+            $curY = PDF::getY();
+            
+            PDF::setX(138);
+            PDF::Cell(25, 6, 'Discount', 1, 0, 'R', 0, '', 0);
+            PDF::Cell(30, 6, number_format($invoice->diskon, 0, '.', ','), 1, 0, 'R', 0, '', 0);
+            PDF::Ln();
+            
+            PDF::setX(138);
+            PDF::Cell(25, 6, 'Total', 1, 0, 'R', 0, '', 0);
+            PDF::Cell(30, 6, number_format($invoice->total, 0, '.', ','), 1, 0, 'R', 0, '', 0);
+            PDF::Ln();
+            
+            PDF::setX(138);
+            PDF::Cell(25, 6, 'PPN', 1, 0, 'R', 0, '', 0);
+            PDF::Cell(30, 6, number_format($invoice->ppn, 0, '.', ','), 1, 0, 'R', 0, '', 0);
+            PDF::Ln();
+            
+            PDF::SetFont('', 'b', 10);
+            PDF::setX(138);
+            PDF::Cell(25, 6, 'Grand Total', 1, 0, 'R', 0, '', 0);
+            PDF::Cell(30, 6, number_format($invoice->grand_total, 0, '.', ','), 1, 0, 'R', 0, '', 0);
+            PDF::Ln();
+            
+            PDF::SetFont('', '', 10);
+            
+            //MultiCell ($w, $h, $txt, $border=0, $align=‘J’, $fill=false, $ln=1, $x=“, $y=”, $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0, $valign=’T’, $fitcell=false)
+            
+            PDF::setY($curY);
+            PDF::MultiCell(120, 0, 'Pembayaran untuk invoice ini mohon ditransfer ke rekening di bawah ini:', 0, 'L', false, 0);
+            PDF::Ln(7);
+            PDF::Cell(90, 0, 'BRI', 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            PDF::Cell(90, 0, 'No. Rek: 0286.01.000829.30.7', 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            PDF::Cell(90, 0, 'a/n: PT. Trimitra Kemasindo', 0, 0, 'L', 0, '', 0);
+            PDF::Ln(7);
+            PDF::Cell(90, 0, 'BCA', 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            PDF::Cell(90, 0, 'No. Rek: 775.036.0850', 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            PDF::Cell(90, 0, 'a/n: Ety Juniati Buntaran', 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            
+             # -- TEXT watermark section -- #
+            
+            $fontName = 'Helvetica';
+            $fontSize = 72;
+            $fontWeight = 'B';
+            $wm_text = 'c o p y';
+            
+            // calculate text width
+            $textWidth = PDF::GetStringWidth(trim($wm_text), $fontName, $fontWeight, $fontSize, false);
+            $centerFactor = round(($textWidth * sin(deg2rad(45))) / 2, 0);
+            
+            // Get the page width/height
+            $myPageWidth = PDF::getPageWidth();
+            $myPageHeight = PDF::getPageHeight();
+            
+            // Find the middle of the page and adjust.
+            //$myX = ($myPageWidth / 2) - $centerFactor;
+            //$myY = ($myPageHeight / 2) + $centerFactor;
+            $myX = ($myPageWidth / 2) - $centerFactor - 12;
+            $myY = ($myPageHeight / 4);
+            
+            // Set the transparency of the text to really light
+            PDF::SetAlpha(0.09);
+            
+            // Rotate 45 degrees and write the watermarking text
+            PDF::StartTransform();
+            PDF::Rotate(45, $myX, $myY);
+            PDF::SetFont($fontName, $fontWeight, $fontSize);
+            PDF::Text($myX, $myY, trim($wm_text));
+            PDF::StopTransform();
+            
+            // Reset the transparency to default
+            PDF::SetAlpha(1); 
+            
+            # -- end watermark section -- #
             
             // Output ($name='doc.pdf', $dest='I'), I=inline, D=Download
             PDF::Output('invoice_penjualan.pdf');

@@ -1,4 +1,5 @@
 var ppn_pc = 0.1;
+var ppn_flag_pc = 1.1;
 var table;
 
 var detail = (function() {
@@ -391,6 +392,7 @@ var advanceElements = (function() {
         
         _applyDiscountOnKeyUp();
         _applyPpnOnChange();
+        _applyPpnFlagOnChange();
     };
     
     var _applyKonsumenOnChange = function() {
@@ -439,11 +441,24 @@ var advanceElements = (function() {
             }
             
             var total = sub_total - discount;
+            
             var ppn = 0;
-            if ($("#chk_ppn").prop("checked")) {
-                ppn = ppn_pc * total;    
+            var hpp = 0;
+            var grand_total = 0;
+            
+            if ($("#ppn_flag").prop("checked")) {
+                if (ppn_flag_pc !== 0) {
+                    hpp = sub_total / ppn_flag_pc;        
+                }
+                ppn = hpp * ppn_pc;
+                grand_total = total;
             }
-            var grand_total = total + ppn;
+            else {
+                if ($("#chk_ppn").prop("checked")) {
+                    ppn = ppn_pc * total;    
+                }
+                grand_total = total 
+            }
             
             $("#total").val(addCommas(total.toFixed(2)));
             $("#ppn").val(addCommas(ppn.toFixed(2)));
@@ -689,6 +704,13 @@ var advanceElements = (function() {
     
     var _applyPpnOnChange = function() {
         $("#chk_ppn").on("change", function() {
+            
+            if (!$("#ppn_flag").prop("disabled")) {
+                if (!$(this).prop("checked")) {
+                    $("#ppn_flag").prop("checked", false);
+                }
+            }
+            
             var total = $("#total").val();
             if (total !== "") {
                 total = parseFloat(total.replace(/,/g, ""));
@@ -698,10 +720,76 @@ var advanceElements = (function() {
             }
             
             var ppn = 0;
-            if ($("#chk_ppn").prop("checked")) {
-                ppn = ppn_pc * total;    
+            var hpp = 0;
+            var grand_total = 0;
+            
+            if ($("#ppn_flag").prop("checked")) {
+                var sub_total = $("#sub_total").val();
+                if (sub_total !== "") {
+                    sub_total = parseFloat(sub_total.replace(/,/g, ""));
+                }
+                else {
+                    sub_total = 0;
+                }
+                if (ppn_flag_pc !== 0) {
+                    hpp = sub_total / ppn_flag_pc;        
+                }
+                ppn = hpp * ppn_pc;
+                grand_total = total;
             }
-            var grand_total = total + ppn;
+            else {
+                if ($("#chk_ppn").prop("checked")) {
+                    ppn = ppn_pc * total;    
+                }
+                grand_total = total + ppn;
+            }
+            
+            $("#ppn").val(addCommas(ppn.toFixed(2)));
+            $("#grand_total").val(addCommas(grand_total.toFixed(2)));
+        });
+    };
+    
+    var _applyPpnFlagOnChange = function() {
+        $("#ppn_flag").on("change", function() {
+            
+            if (!$("#chk_ppn").prop("disabled")) {
+                if ($(this).prop("checked")) {
+                    $("#chk_ppn").prop("checked", true);
+                }
+            }
+            
+            var total = $("#total").val();
+            if (total !== "") {
+                total = parseFloat(total.replace(/,/g, ""));
+            }
+            else {
+                total = 0;
+            }
+            
+            var ppn = 0;
+            var hpp = 0;
+            var grand_total = 0;
+            
+            if ($("#ppn_flag").prop("checked")) {
+                var sub_total = $("#sub_total").val();
+                if (sub_total !== "") {
+                    sub_total = parseFloat(sub_total.replace(/,/g, ""));
+                }
+                else {
+                    sub_total = 0;
+                }
+                if (ppn_flag_pc !== 0) {
+                    hpp = sub_total / ppn_flag_pc;        
+                }
+                ppn = hpp * ppn_pc;
+                grand_total = total;
+            }
+            else {
+                if ($("#chk_ppn").prop("checked")) {
+                    ppn = ppn_pc * total;    
+                }
+                grand_total = total + ppn;
+            }
             
             $("#ppn").val(addCommas(ppn.toFixed(2)));
             $("#grand_total").val(addCommas(grand_total.toFixed(2)));
@@ -747,11 +835,24 @@ function calcInvoice() {
     }
     
     var total = sub_total - discount;
+    
     var ppn = 0;
-    if ($("#chk_ppn").prop("checked")) {
-        ppn = ppn_pc * total;    
+    var hpp = 0;
+    var grand_total = 0;
+    
+    if ($("#ppn_flag").prop("checked")) {
+        if (ppn_flag_pc !== 0) {
+            hpp = sub_total / ppn_flag_pc;        
+        }
+        ppn = hpp * ppn_pc;
+        grand_total = total;
     }
-    var grand_total = total + ppn;
+    else {
+        if ($("#chk_ppn").prop("checked")) {
+            ppn = ppn_pc * total;    
+        }
+        grand_total = total + ppn;
+    }
     
     $("#sub_total").val(addCommas(sub_total.toFixed(2)));
     $("#total").val(addCommas(total.toFixed(2)));
