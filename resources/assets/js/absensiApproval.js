@@ -1,5 +1,5 @@
 var absensiApprovalModule = (function(commonModule) {
-
+    var table;
     var datatableBaseURL = commonModule.datatableBaseURL + 'absensi-approvals';
 
     var existing_model = null;
@@ -154,7 +154,17 @@ var absensiApprovalModule = (function(commonModule) {
             }
         });
 
-        var table = $('#datatable').DataTable({
+        table = $('#datatable').DataTable({
+
+            stateSave: true,
+
+            fnStateSave: function(oSettings, oData) {
+                localStorage.setItem('DataTables_' + window.location.pathname, JSON.stringify(oData));
+            },
+            fnStateLoad: function(oSettings) {
+                var data = localStorage.getItem('DataTables_' + window.location.pathname);
+                return JSON.parse(data);
+            },
             processing: true,
             serverSide: true,
             ajax: {
@@ -292,7 +302,7 @@ var absensiApprovalModule = (function(commonModule) {
 
 
                 /* Insert Data to Modal Body */
-                $('#detail_modal2').find(".modal-body2").append('<table class="table table-bordered table-striped"><thead><tr><th>Upah</th><th>Uang Makan</th><th>Pot. Koperasi</th><th>Pot. BPJS</th><th>Tunjangan</th></tr></thead><tbody>');
+                $('#detail_modal2').find(".modal-body2").append('<table class="table table-bordered table-striped"><thead><tr><th>Upah</th><th>Uang Makans</th><th>Pot. Koperasi</th><th>Pot. BPJS</th><th>Tunjangan</th></tr></thead><tbody>');
 
                 $.each(response.records, function(i, record) {
                     $('#detail_modal2').find("tbody").append("<tr><td><input name ='id' type='hidden' value='" + record.id + "' /><input name ='tanggal' type='hidden' value='" + record.tanggal + "' /><input name ='uang_makan' type='hidden' value='" + record.uang_makan + "' />" + record.nilai_upah + "</td><td>" + record.uang_makan + "</td><td>" + record.pot_koperasi + "</td><td>" + record.pot_bpjs + "</td><td>" + record.tunjangan + "</td></tr>");
@@ -326,10 +336,12 @@ var absensiApprovalModule = (function(commonModule) {
 
     };
 
+
     return {
         init: init,
         showDetail: showDetail,
         confirmLembur: confirmLembur,
+        confirmApprove: confirmApprove,
     };
 
 })(commonModule);

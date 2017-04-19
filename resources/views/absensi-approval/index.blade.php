@@ -24,7 +24,7 @@
       <div class="box">
         <!-- /.box-header -->
         <div class="box-body">
-          <!-- <button type="button" onclick="absensiApprovalModule.confirmLembur();" class="btn btn-warning" name="confirm" value="Confirm"><i class="fa fa-check fa-fw"></i> Confirm</button> -->
+          <button type="button" onclick="absensiApprovalModule.confirmLembur();" class="btn btn-warning" name="confirm" value="Confirm"><i class="fa fa-check fa-fw"></i> Confirm</button>
 
 
           <div class="table-responsive">
