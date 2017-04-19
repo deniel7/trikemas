@@ -155,6 +155,16 @@ var absensiHarianModule = (function(commonModule) {
         });
 
         var table = $('#datatable').DataTable({
+            stateSave: true,
+
+            fnStateSave: function(oSettings, oData) {
+                localStorage.setItem('DataTables_' + window.location.pathname, JSON.stringify(oData));
+            },
+            fnStateLoad: function(oSettings) {
+                var data = localStorage.getItem('DataTables_' + window.location.pathname);
+                return JSON.parse(data);
+            },
+
             processing: true,
             serverSide: true,
             ajax: {

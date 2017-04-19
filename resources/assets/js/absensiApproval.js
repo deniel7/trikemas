@@ -165,6 +165,7 @@ var absensiApprovalModule = (function(commonModule) {
                 var data = localStorage.getItem('DataTables_' + window.location.pathname);
                 return JSON.parse(data);
             },
+
             processing: true,
             serverSide: true,
             ajax: {
@@ -336,6 +337,34 @@ var absensiApprovalModule = (function(commonModule) {
 
     };
 
+    var confirmApprove = function(event, id, nama) {
+        event.preventDefault();
+
+
+
+        $.ajax({
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader("X-CSRF-Token", $("meta[name='csrf-token']").attr("content"));
+                },
+                type: "POST",
+                data: {
+                    _method: 'PUT'
+                },
+                url: "/absensi-approval/potongan"
+            })
+            .done(function(data) {
+                if (data === "success") {
+                    // Redraw table
+                    table.draw();
+                    //swal("", "Data berhasil diupdate.", "success");
+                    $('#detail_modal').modal('hide');
+                } else {
+                    swal("", data, "error");
+                }
+            });
+
+
+    };
 
     return {
         init: init,
