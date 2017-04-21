@@ -274,6 +274,28 @@ var datatables = (function() {
     var _applyDatatable = function() {
 
         table = $('#list').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    title: 'Invoice Penjualan',
+                    exportOptions: {
+                        columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ]
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    title: 'Invoice Penjualan',
+                    orientation: 'landscape',
+                    pageSize: 'A3',
+                    exportOptions: {
+                        columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ]
+                    }
+                }
+            ],
+            //buttons: [
+            //    'excel', 'pdf', 'print'
+            //],
             'processing': true,
             'serverSide': true,
             'paging': true,
