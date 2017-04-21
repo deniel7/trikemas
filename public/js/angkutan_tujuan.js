@@ -102,6 +102,25 @@ var datatables = (function() {
     var _applyDatatable = function() {
 
         table = $('#list').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    title: 'Biaya Angkutan',
+                    exportOptions: {
+                        columns: [ 0, 1, 2 ]
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    title: 'Biaya Angkutan',
+                    orientation: 'portrait',
+                    pageSize: 'A4',
+                    exportOptions: {
+                        columns: [ 0, 1, 2 ]
+                    }
+                }
+            ],
             'processing': true,
             'serverSide': true,
             'paging': true,

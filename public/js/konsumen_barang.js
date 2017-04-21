@@ -102,6 +102,25 @@ var datatables = (function() {
     var _applyDatatable = function() {
 
         table = $('#list').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    title: 'Harga Barang',
+                    exportOptions: {
+                        columns: [ 0, 1, 2, 3, 4 ]
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    title: 'Harga Barang',
+                    orientation: 'portrait',
+                    pageSize: 'A4',
+                    exportOptions: {
+                        columns: [ 0, 1, 2, 3, 4 ]
+                    }
+                }
+            ],
             'processing': true,
             'serverSide': true,
             'paging': true,

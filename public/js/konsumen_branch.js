@@ -91,6 +91,25 @@ var datatables = (function() {
     var _applyDatatable = function() {
 
         table = $('#list').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    title: 'Toko',
+                    exportOptions: {
+                        columns: [ 0, 1, 2, 3 ]
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    title: 'Toko',
+                    orientation: 'portrait',
+                    pageSize: 'A4',
+                    exportOptions: {
+                        columns: [ 0, 1, 2, 3 ]
+                    }
+                }
+            ],
             'processing': true,
             'serverSide': true,
             'paging': true,
