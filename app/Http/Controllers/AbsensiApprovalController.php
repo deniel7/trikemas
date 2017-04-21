@@ -64,6 +64,10 @@ class AbsensiApprovalController extends Controller
 
     public function show(Request $request)
     {
+        $lembur_rutin = 0;
+        $lembur_biasa = 0;
+        $lembur_off = 0;
+
         $absensi_ids = $request->input('selected_karyawans');
         //$c = explode('-', $absensi_ids);
 
@@ -74,21 +78,76 @@ class AbsensiApprovalController extends Controller
             // dd($a[0].'dan '.$a[1]);
         }
 
-        //$absensi_karyawans = AbsensiHarian::where('id', '=', $absensi_ids)->get();
-
         $absensi_karyawans = AbsensiHarian::whereIn('id', $absensi_ids)->get();
-
-        //dd($data);
 
         if ($absensi_karyawans->count() > 0) {
             foreach ($absensi_karyawans as $absensi_karyawan) {
                 $karyawan = Karyawan::where('nik', '=', $absensi_karyawan->karyawan_id)->get();
                 $karyawan = $karyawan->first();
 
-                //dd($karyawan->nilai_upah);
+                //dd($absensi_karyawan->konfirmasi_lembur);
 
-                // $absensi_karyawan->status = 2;
-                // $absensi_karyawan->save();
+                $gaji = $karyawan['nilai_upah'];
+                $uang_makan = $karyawan['uang_makan'];
+
+                //karyawan tetap / bulanan
+                if ($karyawan['status_karyawan_id'] == 1) {
+                    $gaji_harian = $gaji / 31;
+
+                    if ($absensi_karyawan['jenis_lembur'] == 1) {
+                        $lembur_rutin = ($gaji / 173) * $absensi_karyawan['konfirmasi_lembur'];
+                        $lembur_biasa = 0;
+                        $lembur_off = 0;
+                    } elseif ($absensi_karyawan['jenis_lembur'] == 2) {
+                        $lembur_biasa = ($gaji / 173) * $absensi_karyawan['konfirmasi_lembur'] * 1.5;
+                        $lembur_rutin = 0;
+                        $lembur_off = 0;
+                    } else {
+                        $lembur_off = ($gaji / 173) * $absensi_karyawan['konfirmasi_lembur'] * 2;
+                        $lembur_rutin = 0;
+                        $lembur_biasa = 0;
+                    }
+
+                    $upah_harian = ($gaji_harian + $uang_makan + $lembur_rutin + $lembur_biasa + $lembur_off);
+
+                // karyawan harian / lepas
+                } elseif ($karyawan['status_karyawan_id'] == 2) {
+                    // PERHITUNGAN LEMBUR
+                    if ($absensi_karyawan['jenis_lembur'] == 1) {
+                        $lembur_rutin = $absensi_karyawan['konfirmasi_lembur'] * 10500;
+                    } elseif ($absensi_karyawan['jenis_lembur'] == 2) {
+                        $lembur_biasa = $absensi_karyawan['konfirmasi_lembur'] * 15700;
+                    }
+
+                    $upah_harian = ($gaji + $uang_makan + $lembur_rutin + $lembur_biasa);
+
+                //karyawan Staff
+                } elseif ($karyawan['status_karyawan_id'] == 3) {
+                    $gaji_harian = $gaji / 31;
+
+                    if ($absensi_karyawan['jenis_lembur'] == 1) {
+                        $lembur_rutin = ($gaji / 173) * $absensi_karyawan['konfirmasi_lembur'];
+                        $lembur_biasa = 0;
+                        $lembur_off = 0;
+                    } elseif ($absensi_karyawan['jenis_lembur'] == 2) {
+                        $lembur_biasa = ($gaji / 173) * $absensi_karyawan['konfirmasi_lembur'] * 1.5;
+                        $lembur_rutin = 0;
+                        $lembur_off = 0;
+                    } else {
+                        $lembur_off = ($gaji / 173) * $absensi_karyawan['konfirmasi_lembur'] * 2;
+                        $lembur_rutin = 0;
+                        $lembur_biasa = 0;
+                    }
+
+                    $upah_harian = ($gaji_harian + $uang_makan + $lembur_rutin + $lembur_biasa + $lembur_off);
+                }
+
+                $absensi_karyawan->upah_harian = $upah_harian;
+
+                //$absensi_karyawan->save();
+
+                $absensi_karyawan->status = 2;
+                $absensi_karyawan->save();
                 Flash::success('Absensi Karyawan Confirmed');
             }
         }
@@ -106,6 +165,7 @@ class AbsensiApprovalController extends Controller
 
         $id_absen = $request->input('id_absen');
         $nik = $request->input('nik');
+
         $tanggal = $request->input('tanggal');
         $potongan = $request->input('potongan');
         $jenis_lembur = $request->input('jenis_lembur');

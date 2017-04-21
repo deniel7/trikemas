@@ -34,7 +34,7 @@
             <table id="datatable" style="" width="100%" class="table table-bordered table-striped table-condensed">
               <thead>
                 <tr>
-                  <th></th>
+                  <th><input name="select_all" value="1" id="example-select-all" type="checkbox" /></th>
                   <th>Tanggal</th>
                   <th>Nama</th>
                   <th>Shift</th>

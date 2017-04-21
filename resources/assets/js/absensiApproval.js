@@ -143,6 +143,32 @@ var absensiApprovalModule = (function(commonModule) {
 
 
     var _applyDatatable = function() {
+
+        $('#example-select-all').on('click', function() {
+            // Check/uncheck all checkboxes in the table
+            var rows = table.rows({
+                'search': 'applied'
+            }).nodes();
+            $('input[type="checkbox"]', rows).prop('checked', this.checked);
+        });
+
+        // Handle click on checkbox to set state of "Select all" control
+        $('#datatable tbody').on('change', 'input[type="checkbox"]', function() {
+            // If checkbox is not checked
+            if (!this.checked) {
+                var el = $('#example-select-all').get(0);
+                // If "Select all" control is checked and has 'indeterminate' property
+                if (el && el.checked && ('indeterminate' in el)) {
+                    // Set visual state of "Select all" control 
+                    // as 'indeterminate'
+                    el.indeterminate = true;
+                }
+            }
+        });
+
+
+
+
         /* Tambah Input Field di TFOOT */
         $('#datatable tfoot th').each(function() {
             var title = $(this).text();
@@ -155,7 +181,6 @@ var absensiApprovalModule = (function(commonModule) {
         });
 
         table = $('#datatable').DataTable({
-
             stateSave: true,
 
             fnStateSave: function(oSettings, oData) {
