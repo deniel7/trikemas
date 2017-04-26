@@ -97,8 +97,26 @@ var upahJenisBarangModule = (function(commonModule) {
         });
 
         var table = $('#datatable').DataTable({
+
             processing: true,
             serverSide: true,
+            dom: 'lBfrtip',
+            buttons: [{
+                extend: 'excelHtml5',
+                title: 'Upah Jenis Barang',
+                exportOptions: {
+                    columns: [0, 1]
+                }
+            }, {
+                extend: 'pdfHtml5',
+                title: 'Upah Jenis Barang',
+                orientation: 'portrait',
+                pageSize: 'A4',
+                exportOptions: {
+                    columns: [0, 1]
+                }
+            }],
+
             ajax: {
                 "url": datatableBaseURL,
                 "type": "POST"
