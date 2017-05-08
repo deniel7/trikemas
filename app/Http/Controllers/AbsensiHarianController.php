@@ -9,6 +9,7 @@ use App\AbsensiHarian;
 use Excel;
 use Illuminate\Http\Request;
 use Flash;
+use DB;
 
 class AbsensiHarianController extends Controller
 {
@@ -73,7 +74,10 @@ class AbsensiHarianController extends Controller
         $file2 = $request->file('file2');
         $file3 = $request->file('file3');
 
-        if (!empty($file)) {
+    // if (!empty($file)) {
+        DB::beginTransaction();
+
+        try {
             Excel::selectSheetsByIndex(0)->load($file, function ($reader) {
 
                 $reader->skip(2);
@@ -141,153 +145,181 @@ class AbsensiHarianController extends Controller
                         $record->jam = $jam;
                         $record->menit = $menit;
                         $record->save();
-                        Flash::success('success');
+
+                        //Flash::success('success');
+
+                    // } else {
+                    //     Flash::error('Proses import  karyawan STAFF ada kesalahan');
+                    // }
                     } else {
-                        Flash::error('Proses import  karyawan STAFF ada kesalahan');
+                        $karyawan_absens = DB::table('karyawans')
+                        ->leftJoin('absensi_harians', 'absensi_harians.karyawan_id', '=', 'karyawans.nik')
+                        ->whereNull('absensi_harians.karyawan_id')
+                        ->get();
+
+                        //dd($karyawan_absens);
+
+                        foreach ($karyawan_absens as $karyawan_absen) {
+                            $absen_gamasuk = new AbsensiHarian();
+                            $absen_gamasuk->tanggal = $tanggal;
+                            $absen_gamasuk->karyawan_id = $karyawan_absen->nik;
+                            $absen_gamasuk->save();
+                        }
                     }
                 }
+
             })->toObject();
-        } else {
-            Flash::error('File karyawan STAFF belum dipilih');
+
+            DB::commit();
+            Flash::success('success');
+        } catch (\Exception $e) {
+            /* Something went wrong */
+                    Flash::error('Unable to save');
+
+            DB::rollback();
         }
 
-        if (!empty($file2)) {
-            Excel::selectSheetsByIndex(0)->load($file2, function ($reader) {
+// } else {
+//     Flash::error('File karyawan STAFF belum dipilih');
+// }
 
-                $reader->skip(2);
-                $reader->noHeading();
+// if (!empty($file2)) {
+//     Excel::selectSheetsByIndex(0)->load($file2, function ($reader) {
 
-                $rows = $reader->all();
+//         $reader->skip(2);
+//         $reader->noHeading();
 
-                foreach ($rows as $row) {
-                    $tanggal = $row[6];
-                    $karyawan_id = strval($row[2]);
-                    $jam_masuk = strval($row[8]);
-                    $jam_pulang = strval($row[9]);
-                    $jam_kerja = strval($row[7]);
+//         $rows = $reader->all();
 
-                    $scan_masuk = strval($row[10]);
-                    $scan_pulang = strval($row[11]);
-                    $terlambat = strval($row[12]);
-                    $plg_cepat = strval($row[13]);
-                    $lembur = strval($row[14]);
-                    $jml_jam_kerja = strval($row[15]);
-                    $departemen = strval($row[17]);
-                    $jml_kehadiran = strval($row[19]);
+//         foreach ($rows as $row) {
+//             $tanggal = $row[6];
+//             $karyawan_id = strval($row[2]);
+//             $jam_masuk = strval($row[8]);
+//             $jam_pulang = strval($row[9]);
+//             $jam_kerja = strval($row[7]);
 
-                    $ambil_jam_kerja = substr($jml_jam_kerja, -8);
+//             $scan_masuk = strval($row[10]);
+//             $scan_pulang = strval($row[11]);
+//             $terlambat = strval($row[12]);
+//             $plg_cepat = strval($row[13]);
+//             $lembur = strval($row[14]);
+//             $jml_jam_kerja = strval($row[15]);
+//             $departemen = strval($row[17]);
+//             $jml_kehadiran = strval($row[19]);
 
-                    $jam_exp = explode(':', $ambil_jam_kerja);
+//             $ambil_jam_kerja = substr($jml_jam_kerja, -8);
 
-                    $jam = isset($jam_exp[0]) ? $jam_exp[0] : '';
+//             $jam_exp = explode(':', $ambil_jam_kerja);
 
-                    $menit = isset($jam_exp[1]) ? $jam_exp[1] : '';
+//             $jam = isset($jam_exp[0]) ? $jam_exp[0] : '';
 
-                    if (empty($karyawan_id)) {
-                        return;
-                    }
+//             $menit = isset($jam_exp[1]) ? $jam_exp[1] : '';
 
-                    /* Cek Apakah Ada karyawan Tersebut */
-                    $karyawans = AbsensiHarian::where('karyawan_id', '=', $karyawan_id)->where('tanggal', '=', $tanggal)->get();
+//             if (empty($karyawan_id)) {
+//                 return;
+//             }
 
-                    $c = $karyawans->count();
+//             /* Cek Apakah Ada karyawan Tersebut */
+//             $karyawans = AbsensiHarian::where('karyawan_id', '=', $karyawan_id)->where('tanggal', '=', $tanggal)->get();
 
-                    if ($c != 1) {
-                        $record = new AbsensiHarian();
-                        $record->tanggal = $tanggal;
-                        $record->karyawan_id = $karyawan_id;
-                        $record->jam_masuk = $jam_masuk;
-                        $record->jam_pulang = $jam_pulang;
-                        $record->jam_kerja = $jam_kerja;
-                        $record->scan_masuk = $scan_masuk;
-                        $record->scan_pulang = $scan_pulang;
-                        $record->terlambat = $terlambat;
-                        $record->jam_lembur = $lembur;
-                        $record->plg_cepat = $plg_cepat;
-                        $record->jml_jam_kerja = $jml_jam_kerja;
-                        $record->departemen = $departemen;
-                        $record->jml_kehadiran = $jml_kehadiran;
-                        $record->jam = $jam;
-                        $record->menit = $menit;
-                        $record->save();
-                        Flash::success('success');
-                    } else {
-                        Flash::error('Proses import  karyawan STAFF ada kesalahan');
-                    }
-                }
-            })->toObject();
-        } else {
-            Flash::error('File karyawan KONTRAK belum dipilih');
-        }
+//             $c = $karyawans->count();
 
-        if (!empty($file3)) {
-            Excel::selectSheetsByIndex(0)->load($file3, function ($reader) {
+//             if ($c != 1) {
+//                 $record = new AbsensiHarian();
+//                 $record->tanggal = $tanggal;
+//                 $record->karyawan_id = $karyawan_id;
+//                 $record->jam_masuk = $jam_masuk;
+//                 $record->jam_pulang = $jam_pulang;
+//                 $record->jam_kerja = $jam_kerja;
+//                 $record->scan_masuk = $scan_masuk;
+//                 $record->scan_pulang = $scan_pulang;
+//                 $record->terlambat = $terlambat;
+//                 $record->jam_lembur = $lembur;
+//                 $record->plg_cepat = $plg_cepat;
+//                 $record->jml_jam_kerja = $jml_jam_kerja;
+//                 $record->departemen = $departemen;
+//                 $record->jml_kehadiran = $jml_kehadiran;
+//                 $record->jam = $jam;
+//                 $record->menit = $menit;
+//                 $record->save();
+//                 Flash::success('success');
+//             } else {
+//                 Flash::error('Proses import  karyawan STAFF ada kesalahan');
+//             }
+//         }
+//     })->toObject();
+// } else {
+//     Flash::error('File karyawan KONTRAK belum dipilih');
+// }
 
-                $reader->skip(2);
-                $reader->noHeading();
+// if (!empty($file3)) {
+//     Excel::selectSheetsByIndex(0)->load($file3, function ($reader) {
 
-                $rows = $reader->all();
+//         $reader->skip(2);
+//         $reader->noHeading();
 
-                foreach ($rows as $row) {
-                    $tanggal = $row[6];
-                    $karyawan_id = strval($row[2]);
-                    $jam_masuk = strval($row[8]);
-                    $jam_pulang = strval($row[9]);
-                    $jam_kerja = strval($row[7]);
+//         $rows = $reader->all();
 
-                    $scan_masuk = strval($row[10]);
-                    $scan_pulang = strval($row[11]);
-                    $terlambat = strval($row[12]);
-                    $plg_cepat = strval($row[13]);
-                    $lembur = strval($row[14]);
-                    $jml_jam_kerja = strval($row[15]);
-                    $departemen = strval($row[17]);
-                    $jml_kehadiran = strval($row[19]);
+//         foreach ($rows as $row) {
+//             $tanggal = $row[6];
+//             $karyawan_id = strval($row[2]);
+//             $jam_masuk = strval($row[8]);
+//             $jam_pulang = strval($row[9]);
+//             $jam_kerja = strval($row[7]);
 
-                    $ambil_jam_kerja = substr($jml_jam_kerja, -8);
+//             $scan_masuk = strval($row[10]);
+//             $scan_pulang = strval($row[11]);
+//             $terlambat = strval($row[12]);
+//             $plg_cepat = strval($row[13]);
+//             $lembur = strval($row[14]);
+//             $jml_jam_kerja = strval($row[15]);
+//             $departemen = strval($row[17]);
+//             $jml_kehadiran = strval($row[19]);
 
-                    $jam_exp = explode(':', $ambil_jam_kerja);
+//             $ambil_jam_kerja = substr($jml_jam_kerja, -8);
 
-                    $jam = isset($jam_exp[0]) ? $jam_exp[0] : '';
+//             $jam_exp = explode(':', $ambil_jam_kerja);
 
-                    $menit = isset($jam_exp[1]) ? $jam_exp[1] : '';
+//             $jam = isset($jam_exp[0]) ? $jam_exp[0] : '';
 
-                    if (empty($karyawan_id)) {
-                        return;
-                    }
+//             $menit = isset($jam_exp[1]) ? $jam_exp[1] : '';
 
-                    /* Cek Apakah Ada karyawan Tersebut */
-                    $karyawans = AbsensiHarian::where('karyawan_id', '=', $karyawan_id)->where('tanggal', '=', $tanggal)->get();
+//             if (empty($karyawan_id)) {
+//                 return;
+//             }
 
-                    $c = $karyawans->count();
+//             /* Cek Apakah Ada karyawan Tersebut */
+//             $karyawans = AbsensiHarian::where('karyawan_id', '=', $karyawan_id)->where('tanggal', '=', $tanggal)->get();
 
-                    if ($c != 1) {
-                        $record = new AbsensiHarian();
-                        $record->tanggal = $tanggal;
-                        $record->karyawan_id = $karyawan_id;
-                        $record->jam_masuk = $jam_masuk;
-                        $record->jam_pulang = $jam_pulang;
-                        $record->jam_kerja = $jam_kerja;
-                        $record->scan_masuk = $scan_masuk;
-                        $record->scan_pulang = $scan_pulang;
-                        $record->terlambat = $terlambat;
-                        $record->jam_lembur = $lembur;
-                        $record->plg_cepat = $plg_cepat;
-                        $record->jml_jam_kerja = $jml_jam_kerja;
-                        $record->departemen = $departemen;
-                        $record->jml_kehadiran = $jml_kehadiran;
-                        $record->jam = $jam;
-                        $record->menit = $menit;
-                        $record->save();
-                        Flash::success('success');
-                    } else {
-                        Flash::error('Proses import  karyawan STAFF ada kesalahan');
-                    }
-                }
-            })->toObject();
-        } else {
-            Flash::error('File karyawan HARIAN belum dipilih');
-        }
+//             $c = $karyawans->count();
+
+//             if ($c != 1) {
+//                 $record = new AbsensiHarian();
+//                 $record->tanggal = $tanggal;
+//                 $record->karyawan_id = $karyawan_id;
+//                 $record->jam_masuk = $jam_masuk;
+//                 $record->jam_pulang = $jam_pulang;
+//                 $record->jam_kerja = $jam_kerja;
+//                 $record->scan_masuk = $scan_masuk;
+//                 $record->scan_pulang = $scan_pulang;
+//                 $record->terlambat = $terlambat;
+//                 $record->jam_lembur = $lembur;
+//                 $record->plg_cepat = $plg_cepat;
+//                 $record->jml_jam_kerja = $jml_jam_kerja;
+//                 $record->departemen = $departemen;
+//                 $record->jml_kehadiran = $jml_kehadiran;
+//                 $record->jam = $jam;
+//                 $record->menit = $menit;
+//                 $record->save();
+//                 Flash::success('success');
+//             } else {
+//                 Flash::error('Proses import  karyawan STAFF ada kesalahan');
+//             }
+//         }
+//     })->toObject();
+// } else {
+//     Flash::error('File karyawan HARIAN belum dipilih');
+// }
 
         return redirect('absensi-harian');
     }

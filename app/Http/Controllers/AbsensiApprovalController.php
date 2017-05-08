@@ -75,20 +75,24 @@ class AbsensiApprovalController extends Controller
             $a = explode('-', $id);
 
             //dd($a[0]);
-            // dd($a[0].'dan '.$a[1]);
+             //dd($a[0].'dan '.$a[1]);
         }
 
         $absensi_karyawans = AbsensiHarian::whereIn('id', $absensi_ids)->get();
 
         if ($absensi_karyawans->count() > 0) {
             foreach ($absensi_karyawans as $absensi_karyawan) {
+                //dd($absensi_karyawan->karyawan_id);
                 $karyawan = Karyawan::where('nik', '=', $absensi_karyawan->karyawan_id)->get();
                 $karyawan = $karyawan->first();
 
+                //dd($karyawan);
                 //dd($absensi_karyawan->konfirmasi_lembur);
 
                 $gaji = $karyawan['nilai_upah'];
                 $uang_makan = $karyawan['uang_makan'];
+
+                //dd($karyawan['status_karyawan_id']);
 
                 //karyawan tetap / bulanan
                 if ($karyawan['status_karyawan_id'] == 1) {
@@ -99,7 +103,7 @@ class AbsensiApprovalController extends Controller
                         $lembur_biasa = 0;
                         $lembur_off = 0;
                     } elseif ($absensi_karyawan['jenis_lembur'] == 2) {
-                        $lembur_biasa = ($gaji / 173) * $absensi_karyawan['konfirmasi_lembur'] * 1.5;
+                        $lembur_biasa = ($gaji / 173) * 15;
                         $lembur_rutin = 0;
                         $lembur_off = 0;
                     } else {
@@ -114,9 +118,9 @@ class AbsensiApprovalController extends Controller
                 } elseif ($karyawan['status_karyawan_id'] == 2) {
                     // PERHITUNGAN LEMBUR
                     if ($absensi_karyawan['jenis_lembur'] == 1) {
-                        $lembur_rutin = $absensi_karyawan['konfirmasi_lembur'] * 10500;
+                        $lembur_rutin = $absensi_karyawan['konfirmasi_lembur'] * 11700;
                     } elseif ($absensi_karyawan['jenis_lembur'] == 2) {
-                        $lembur_biasa = $absensi_karyawan['konfirmasi_lembur'] * 15700;
+                        $lembur_biasa = $absensi_karyawan['konfirmasi_lembur'] * 17600;
                     }
 
                     $upah_harian = ($gaji + $uang_makan + $lembur_rutin + $lembur_biasa);
@@ -130,7 +134,7 @@ class AbsensiApprovalController extends Controller
                         $lembur_biasa = 0;
                         $lembur_off = 0;
                     } elseif ($absensi_karyawan['jenis_lembur'] == 2) {
-                        $lembur_biasa = ($gaji / 173) * $absensi_karyawan['konfirmasi_lembur'] * 1.5;
+                        $lembur_biasa = ($gaji / 173) * 15;
                         $lembur_rutin = 0;
                         $lembur_off = 0;
                     } else {
@@ -200,7 +204,7 @@ class AbsensiApprovalController extends Controller
                     $lembur_biasa = 0;
                     $lembur_off = 0;
                 } elseif ($jenis_lembur == 2) {
-                    $lembur_biasa = ($gaji / 173) * $konfirmasi_lembur * 1.5;
+                    $lembur_biasa = ($gaji / 173) * 15;
                     $lembur_rutin = 0;
                     $lembur_off = 0;
                 } else {
@@ -215,9 +219,9 @@ class AbsensiApprovalController extends Controller
             } elseif ($karyawan->status_karyawan_id == 2) {
                 // PERHITUNGAN LEMBUR
                 if ($jenis_lembur == 1) {
-                    $lembur_rutin = $konfirmasi_lembur * 10500;
+                    $lembur_rutin = $konfirmasi_lembur * 11700;
                 } elseif ($jenis_lembur == 2) {
-                    $lembur_biasa = $konfirmasi_lembur * 15700;
+                    $lembur_biasa = $konfirmasi_lembur * 17600;
                 }
 
                 $upah_harian = ($gaji + $uang_makan + $lembur_rutin + $lembur_biasa) - $potongan;
@@ -231,7 +235,7 @@ class AbsensiApprovalController extends Controller
                     $lembur_biasa = 0;
                     $lembur_off = 0;
                 } elseif ($jenis_lembur == 2) {
-                    $lembur_biasa = ($gaji / 173) * $konfirmasi_lembur * 1.5;
+                    $lembur_biasa = ($gaji / 173) * 15;
                     $lembur_rutin = 0;
                     $lembur_off = 0;
                 } else {
