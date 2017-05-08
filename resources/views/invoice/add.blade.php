@@ -62,7 +62,9 @@
                 <div class="form-group">
                   <label for="no_invoice" class="col-sm-2 control-label">No. Invoice *</label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" name="no_invoice" id="no_invoice" placeholder="Auto generate.." value="Auto generate.." readonly style="background: #FAFAF2;">
+                    <!-- <input type="text" class="form-control" name="no_invoice" id="no_invoice" placeholder="Auto generate.." value="Auto generate.." readonly style="background: #FAFAF2;"> -->
+
+                    <input type="text" class="form-control" name="no_invoice" id="no_invoice" placeholder="No. Invoice" value="{{ old('no_invoice') }}">
                   </div>
                 </div>
                 <div class="form-group">

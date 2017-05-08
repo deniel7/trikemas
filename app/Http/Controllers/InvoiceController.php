@@ -203,23 +203,23 @@ class InvoiceController extends Controller
                 $tahun = $dt->year;
                 $bulan = $dt->month;
                 $cur_val = 1;
-                $no_invoice = '';
-                if ($request->ppn > 0) {
-                    $tanda = 'TKS'; // ppn
-                } else {
-                    $tanda = ''; // non ppn
-                }
-                $seq = InvoiceSequence::where('tahun', $tahun)->where('tanda', $tanda)->first();
-                if ($seq) {
-                    $cur_val = $seq->nomor + 1;
-                }
-                $no_invoice = str_pad($cur_val, 4, '0', STR_PAD_LEFT).(!empty($tanda) ? '/'.$tanda : '').'/'.str_pad($bulan, 2, '0', STR_PAD_LEFT).'/'.$tahun;
+                // $no_invoice = '';
+                // if ($request->ppn > 0) {
+                //     $tanda = 'TKS'; // ppn
+                // } else {
+                //     $tanda = ''; // non ppn
+                // }
+                // $seq = InvoiceSequence::where('tahun', $tahun)->where('tanda', $tanda)->first();
+                // if ($seq) {
+                //     $cur_val = $seq->nomor + 1;
+                // }
+                // $no_invoice = str_pad($cur_val, 4, '0', STR_PAD_LEFT).(!empty($tanda) ? '/'.$tanda : '').'/'.str_pad($bulan, 2, '0', STR_PAD_LEFT).'/'.$tahun;
                 // end generator
 
                 $invoice->tanggal = Carbon::createFromFormat('d/m/Y', $request->tanggal)->format('Y-m-d');
                 $invoice->konsumen_id = $request->konsumen_id;
                 $invoice->konsumen_branch_id = $request->konsumen_branch_id;
-                $invoice->no_invoice = $no_invoice;
+                $invoice->no_invoice = $request->no_invoice;
                 $invoice->tgl_jatuh_tempo = Carbon::createFromFormat('d/m/Y', $request->tanggal_jatuh_tempo)->format('Y-m-d');
                 $invoice->no_po = $request->no_po;
                 $invoice->angkutan_id = $request->angkutan_id;
@@ -280,16 +280,16 @@ class InvoiceController extends Controller
                 }
 
                 // update sequence
-                if ($seq) {
-                    $seq->nomor = $cur_val;
-                    $seq->save();
-                } else {
-                    $seq = new InvoiceSequence();
-                    $seq->tahun = $tahun;
-                    $seq->tanda = $tanda;
-                    $seq->nomor = $cur_val;
-                    $seq->save();
-                }
+                // if ($seq) {
+                //     $seq->nomor = $cur_val;
+                //     $seq->save();
+                // } else {
+                //     $seq = new InvoiceSequence();
+                //     $seq->tahun = $tahun;
+                //     $seq->tanda = $tanda;
+                //     $seq->nomor = $cur_val;
+                //     $seq->save();
+                // }
 
                 DB::commit();
 
