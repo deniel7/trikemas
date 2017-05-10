@@ -195,20 +195,20 @@ class AbsensiApprovalController extends Controller
 
             // PERHITUNGAN TOTAL
 
-            //karyawan tetap / bulanan
+            //karyawan KONTRAK tetap / bulanan
             if ($karyawan->status_karyawan_id == 1) {
-                $gaji_harian = $gaji / 31;
+                $gaji_harian = $gaji / 30;
 
                 if ($jenis_lembur == 1) {
-                    $lembur_rutin = ($gaji / 173) * $konfirmasi_lembur;
+                    $lembur_rutin = $konfirmasi_lembur * 14200;
                     $lembur_biasa = 0;
                     $lembur_off = 0;
                 } elseif ($jenis_lembur == 2) {
-                    $lembur_biasa = ($gaji / 173) * 15;
+                    $lembur_biasa = $konfirmasi_lembur * 21300;
                     $lembur_rutin = 0;
                     $lembur_off = 0;
                 } else {
-                    $lembur_off = ($gaji / 173) * $konfirmasi_lembur * 2;
+                    $lembur_off = $konfirmasi_lembur * 28400;
                     $lembur_rutin = 0;
                     $lembur_biasa = 0;
                 }
@@ -228,18 +228,18 @@ class AbsensiApprovalController extends Controller
 
             //karyawan Staff
             } elseif ($karyawan->status_karyawan_id == 3) {
-                $gaji_harian = $gaji / 31;
+                $gaji_harian = $gaji / 30;
 
                 if ($jenis_lembur == 1) {
-                    $lembur_rutin = ($gaji / 173) * $konfirmasi_lembur;
+                    $lembur_rutin = $konfirmasi_lembur * 14200;
                     $lembur_biasa = 0;
                     $lembur_off = 0;
                 } elseif ($jenis_lembur == 2) {
-                    $lembur_biasa = ($gaji / 173) * 15;
+                    $lembur_biasa = $konfirmasi_lembur * 21300;
                     $lembur_rutin = 0;
                     $lembur_off = 0;
                 } else {
-                    $lembur_off = ($gaji / 173) * $konfirmasi_lembur * 2;
+                    $lembur_off = $konfirmasi_lembur * 28400;
                     $lembur_rutin = 0;
                     $lembur_biasa = 0;
                 }
