@@ -96,18 +96,18 @@ class AbsensiApprovalController extends Controller
 
                 //karyawan tetap / bulanan
                 if ($karyawan['status_karyawan_id'] == 1) {
-                    $gaji_harian = $gaji / 31;
+                    $gaji_harian = $gaji / 30;
 
                     if ($absensi_karyawan['jenis_lembur'] == 1) {
-                        $lembur_rutin = ($gaji / 173) * $absensi_karyawan['konfirmasi_lembur'];
+                        $lembur_rutin = $absensi_karyawan['konfirmasi_lembur'] * 14200;
                         $lembur_biasa = 0;
                         $lembur_off = 0;
                     } elseif ($absensi_karyawan['jenis_lembur'] == 2) {
-                        $lembur_biasa = ($gaji / 173) * 15;
+                        $lembur_biasa = $absensi_karyawan['konfirmasi_lembur'] * 21300;
                         $lembur_rutin = 0;
                         $lembur_off = 0;
                     } else {
-                        $lembur_off = ($gaji / 173) * $absensi_karyawan['konfirmasi_lembur'] * 2;
+                        $lembur_off = $absensi_karyawan['konfirmasi_lembur'] * 28400;
                         $lembur_rutin = 0;
                         $lembur_biasa = 0;
                     }
@@ -127,23 +127,24 @@ class AbsensiApprovalController extends Controller
 
                 //karyawan Staff
                 } elseif ($karyawan['status_karyawan_id'] == 3) {
-                    $gaji_harian = $gaji / 31;
+                    $gaji_harian = $gaji / 30;
 
                     if ($absensi_karyawan['jenis_lembur'] == 1) {
-                        $lembur_rutin = ($gaji / 173) * $absensi_karyawan['konfirmasi_lembur'];
+                        $lembur_rutin = $absensi_karyawan['konfirmasi_lembur'] * 14200;
                         $lembur_biasa = 0;
                         $lembur_off = 0;
                     } elseif ($absensi_karyawan['jenis_lembur'] == 2) {
-                        $lembur_biasa = ($gaji / 173) * 15;
+                        $lembur_biasa = $absensi_karyawan['konfirmasi_lembur'] * 21300;
                         $lembur_rutin = 0;
                         $lembur_off = 0;
                     } else {
-                        $lembur_off = ($gaji / 173) * $absensi_karyawan['konfirmasi_lembur'] * 2;
+                        $lembur_off = $absensi_karyawan['konfirmasi_lembur'] * 28400;
                         $lembur_rutin = 0;
                         $lembur_biasa = 0;
                     }
 
                     $upah_harian = ($gaji_harian + $uang_makan + $lembur_rutin + $lembur_biasa + $lembur_off);
+                    //$upah harian = 82115 + 15000 + 14200 = 111,315
                 }
 
                 $absensi_karyawan->upah_harian = $upah_harian;
