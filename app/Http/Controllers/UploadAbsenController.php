@@ -13,7 +13,7 @@ class UploadAbsenController extends Controller
 {
     public function show($id)
     {
-        $details = AbsensiHarian::select(['absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'absensi_harians.karyawan_id', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.jenis_lembur', 'karyawans.nik', 'karyawans.nama', 'karyawans.bagian', 'karyawans.nilai_upah', 'karyawans.uang_makan', 'karyawans.pot_koperasi', 'karyawans.pot_bpjs', 'karyawans.tunjangan', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.status', 'karyawans.nama'])
+        $details = AbsensiHarian::select(['absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'absensi_harians.karyawan_id', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.upah_harian', 'absensi_harians.jenis_lembur', 'karyawans.nik', 'karyawans.nama', 'karyawans.bagian', 'karyawans.nilai_upah', 'karyawans.uang_makan', 'karyawans.pot_koperasi', 'karyawans.pot_bpjs', 'karyawans.tunjangan', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.status', 'karyawans.nama'])
         ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
         ->where('absensi_harians.id', '=', $id)
         ->get();
@@ -33,23 +33,93 @@ class UploadAbsenController extends Controller
 
     public function update(Request $request)
     {
+        $lembur_rutin = 0;
+        $lembur_biasa = 0;
+        $lembur_off = 0;
+
         $id = $request->input('id');
+        $nik = $request->input('nik');
+
         $tanggal = $request->input('tanggal');
         $jenis_lembur = $request->input('jenis_lembur');
+        $konfirmasi_lembur = $request->input('lembur');
 
-        $absensies = AbsensiHarian::where('id', '=', $id)->where('tanggal', '=', $tanggal)->get();
-        //dd($absensies);
-        // $karyawan = Karyawan::find($id);
+        $karyawan = Karyawan::where('nik', '=', $nik)->get();
+        $karyawan = $karyawan->first();
 
-        // $gaji = $karyawan->nilai_upah;
+        $gaji = $karyawan['nilai_upah'];
 
+        // // HITUNG UANG MAKAN
+        $uang_makan = $karyawan['uang_makan'];
+
+        $absensies = AbsensiHarian::where('karyawan_id', '=', $nik)->where('tanggal', '=', $tanggal)->get();
+        // dd($absensies);
         if ($absensies->count() == 1) {
             $absensies = $absensies->first();
 
-            $absensies->konfirmasi_lembur = $request->input('lembur');
-            $absensies->jenis_lembur = $jenis_lembur;
             $absensies->status = 1;
 
+            if (is_null($absensies->scan_masuk)) {
+                $upah_harian = 0;
+            } else {
+            // PERHITUNGAN TOTAL
+
+            //karyawan KONTRAK tetap / bulanan
+                if ($karyawan->status_karyawan_id == 1) {
+                    $gaji_harian = $gaji / 30;
+
+                    if ($jenis_lembur == 1) {
+                        $lembur_rutin = $konfirmasi_lembur * 14200;
+                        $lembur_biasa = 0;
+                        $lembur_off = 0;
+                    } elseif ($jenis_lembur == 2) {
+                        $lembur_biasa = $konfirmasi_lembur * 21300;
+                        $lembur_rutin = 0;
+                        $lembur_off = 0;
+                    } else {
+                        $lembur_off = $konfirmasi_lembur * 28400;
+                        $lembur_rutin = 0;
+                        $lembur_biasa = 0;
+                    }
+
+                        $upah_harian = ($gaji_harian + $uang_makan + $lembur_rutin + $lembur_biasa + $lembur_off);
+
+                    // karyawan harian / lepas
+                } elseif ($karyawan->status_karyawan_id == 2) {
+                    // PERHITUNGAN LEMBUR
+                    if ($jenis_lembur == 1) {
+                        $lembur_rutin = $konfirmasi_lembur * 11700;
+                    } elseif ($jenis_lembur == 2) {
+                        $lembur_biasa = $konfirmasi_lembur * 17600;
+                    }
+
+                        $upah_harian = ($gaji + $uang_makan + $lembur_rutin + $lembur_biasa);
+
+                    //karyawan Staff
+                } elseif ($karyawan->status_karyawan_id == 3) {
+                    $gaji_harian = $gaji / 30;
+
+                    if ($jenis_lembur == 1) {
+                        $lembur_rutin = $konfirmasi_lembur * 14200;
+                        $lembur_biasa = 0;
+                        $lembur_off = 0;
+                    } elseif ($jenis_lembur == 2) {
+                        $lembur_biasa = $konfirmasi_lembur * 21300;
+                        $lembur_rutin = 0;
+                        $lembur_off = 0;
+                    } else {
+                        $lembur_off = $konfirmasi_lembur * 28400;
+                        $lembur_rutin = 0;
+                        $lembur_biasa = 0;
+                    }
+
+                        $upah_harian = ($gaji_harian + $uang_makan + $lembur_rutin + $lembur_biasa + $lembur_off);
+                }
+            }
+
+            $absensies->upah_harian = $upah_harian;
+            $absensies->konfirmasi_lembur = $konfirmasi_lembur;
+            $absensies->jenis_lembur = $jenis_lembur;
             $absensies->save();
         }
 

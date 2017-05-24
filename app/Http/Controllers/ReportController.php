@@ -18,7 +18,6 @@ class ReportController extends Controller
      */
     public function index()
     {
-        //
     }
 
     private function readMonth($month)
@@ -67,19 +66,19 @@ class ReportController extends Controller
     }
 
     // prompt
-    
+
     public function penerimaanPembayaranAngkutan()
     {
         $data['default_year'] = date('Y');
 
         return view('report.penerimaan_pembayaran_params', $data);
     }
-    
+
     // preview
     public function previewPenerimaanPembayaranAngkutan($bulan, $tahun)
     {
-        $period = $tahun . $bulan;
-        
+        $period = $tahun.$bulan;
+
         $data = DB::table('invoice_penjualans')
             ->join('angkutans', 'angkutans.id', '=', 'invoice_penjualans.angkutan_id')
             ->join('tujuans', 'tujuans.id', '=', 'invoice_penjualans.tujuan_id')
@@ -191,7 +190,7 @@ class ReportController extends Controller
                 PDF::Cell(26, 0, ($item->tanggal_bayar_angkutan ? Carbon::createFromFormat('Y-m-d', $item->tanggal_bayar_angkutan)->format('d-m-Y') : ''), 1, 0, 'L', 0, '', 1);
                 PDF::Cell(60, 0, $item->keterangan_bayar_angkutan, 1, 0, 'L', 0, '', 1);
                 PDF::Ln();
-                
+
                 $grandTotal += $item->jumlah_bayar_angkutan;
             }
             PDF::SetFont('', 'B', 10);
@@ -222,7 +221,7 @@ class ReportController extends Controller
         // need to call exit, i don't know why
         exit;
     }
-    
+
     public function penjualan()
     {
         $data['default_date'] = date('d-m-Y');
@@ -664,6 +663,10 @@ class ReportController extends Controller
     // preview
     public function previewAbsensiKaryawanTetap($bulan)
     {
+        $tahun_skrg = date('Y');
+
+        //$tahun_skrg = 2016;
+
         $bulanLbl = '';
         switch ($bulan) {
             case 1:
@@ -703,19 +706,23 @@ class ReportController extends Controller
                 $bulanLbl = 'Desember';
                 break;
         }
-
-        $data = AbsensiHarian::select('absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.nik', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.jenis_lembur', 'absensi_harians.status', 'absensi_harians.pot_absensi', 'karyawans.nik', 'karyawans.nama', 'karyawans.norek', 'karyawans.nilai_upah', 'karyawans.pot_koperasi', 'karyawans.tgl_masuk')
+        //DB::connection()->enableQueryLog();
+        $data = AbsensiHarian::select('absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.nik', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.jenis_lembur', 'absensi_harians.status', 'absensi_harians.pot_absensi', 'karyawans.nik', 'karyawans.nama', 'karyawans.norek', 'karyawans.uang_makan', 'karyawans.nilai_upah', 'karyawans.pot_koperasi', 'karyawans.tgl_masuk', 'karyawans.tunjangan')
         ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
         ->whereMonth('absensi_harians.tanggal', '=', $bulan)
+        ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
         ->where('absensi_harians.status', '=', 2)
         ->where('karyawans.status_karyawan_id', '=', 1)
         ->groupBy('karyawans.nik')
         ->get();
+        // $queries = DB::getQueryLog();
+
+         //dd($data);
 
         // set document information
         PDF::SetAuthor('PT. TRIMITRA KEMASINDO');
-        PDF::SetTitle('Laporan Penjualan - Trimitra Kemasindo');
-        PDF::SetSubject('Laporan Penjualan');
+        PDF::SetTitle('Laporan Absensi Karyawan Tetap / Kontrak - Trimitra Kemasindo');
+        PDF::SetSubject('Laporan Absensi Karyawan Tetap / Kontrak');
         PDF::SetKeywords('Laporan Penjualan Trimitra Kemasindo');
 
         PDF::setFooterCallback(function ($pdf) {
@@ -793,10 +800,12 @@ class ReportController extends Controller
         if ($count > 0) {
             $checkInvoice = '';
             $grandTotal = 0;
+            $total_setelah_dipot = 0;
             foreach ($data as $item) {
-                $total_absensi = AbsensiHarian::select('absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.nik', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.jenis_lembur', 'absensi_harians.status', 'absensi_harians.pot_absensi', 'absensi_harians.upah_harian', 'karyawans.nik', 'karyawans.nama', 'karyawans.norek', 'karyawans.nilai_upah', 'karyawans.pot_koperasi', 'karyawans.tgl_masuk')
+                $total_absensi = AbsensiHarian::select('absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.nik', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.jenis_lembur', 'absensi_harians.status', 'absensi_harians.pot_absensi', 'absensi_harians.upah_harian', 'karyawans.nik', 'karyawans.nama', 'karyawans.norek', 'karyawans.nilai_upah', 'karyawans.pot_koperasi', 'karyawans.tunjangan', 'karyawans.tgl_masuk', 'karyawans.uang_makan')
                 ->join('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                 ->whereMonth('absensi_harians.tanggal', '=', $bulan)
+                ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
                 ->where('karyawans.nik', '=', $item->nik)
                 ->where('absensi_harians.status', '=', 2)
                 ->where('karyawans.status_karyawan_id', '=', 1)
@@ -808,6 +817,7 @@ class ReportController extends Controller
                     ->select('*')
                     ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                     ->whereMonth('absensi_harians.tanggal', '=', $bulan)
+                    ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
                     ->where('absensi_harians.jenis_lembur', '=', 1)
                     ->where('karyawans.nik', '=', $item->nik)
                     ->where('absensi_harians.status', '=', 2)
@@ -818,6 +828,7 @@ class ReportController extends Controller
                     ->select('*')
                     ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                     ->whereMonth('absensi_harians.tanggal', '=', $bulan)
+                    ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
                     ->where('absensi_harians.jenis_lembur', '=', 2)
                     ->where('karyawans.nik', '=', $item->nik)
                     ->where('absensi_harians.status', '=', 2)
@@ -828,6 +839,7 @@ class ReportController extends Controller
                     ->select('*')
                     ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                     ->whereMonth('absensi_harians.tanggal', '=', $bulan)
+                    ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
                     ->where('absensi_harians.jenis_lembur', '=', 3)
                     ->where('karyawans.nik', '=', $item->nik)
                     ->where('absensi_harians.status', '=', 2)
@@ -838,6 +850,7 @@ class ReportController extends Controller
                     ->select('absensi_harians.pot_absensi')
                     ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                     ->whereMonth('absensi_harians.tanggal', '=', $bulan)
+                    ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
                     ->where('karyawans.nik', '=', $item->nik)
                     ->where('absensi_harians.status', '=', 2)
                     ->where('karyawans.status_karyawan_id', '=', 1)
@@ -847,6 +860,7 @@ class ReportController extends Controller
                     ->select('absensi_harians.pot_absensi')
                     ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                     ->whereMonth('absensi_harians.tanggal', '=', $bulan)
+                    ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
                     ->where('absensi_harians.status', '=', 2)
                     ->where('karyawans.status_karyawan_id', '=', 1)
                     ->where('karyawans.nik', '=', $item->nik)
@@ -855,22 +869,33 @@ class ReportController extends Controller
                 //HITUNG JUMLAH TIDAK MASUK KERJA
                 $hari_off = DB::table('absensi_harians')
                 ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
-                ->where('jml_kehadiran', '=', '00:00:00')
+                ->whereNull('jml_kehadiran')
                 ->whereMonth('absensi_harians.tanggal', '=', $bulan)
+                ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
                 ->where('absensi_harians.status', '=', 2)
                 ->where('karyawans.status_karyawan_id', '=', 1)
                 ->where('karyawans.nik', '=', $item->nik)
-                ->count('jml_kehadiran');
+                ->count('absensi_harians.id');
 
                 // PERHITUNGAN POTONGAN UMK
-                $pot_umk = ($item->nilai_upah / 31) * $hari_off;
+                if (is_null($item->scan_masuk)) {
+                    if ($item->tunjangan == 0) {
+                        $pot_umk = ($hari_off * 50000) + $item->uang_makan;
+                    } else {
+                        $pot_umk = (0.25 * $item->tunjangan) * $hari_off;
+                    }
+                } else {
+                    $pot_umk = 0;
+                }
+
+                //dd($pot_umk);
 
                 // PERHITUNGAN POTONGAN JABATAN
-                $pot_jabatan = (0.25 * $item->tunjangan) * $hari_off;
+                //$pot_jabatan = (0.25 * $item->tunjangan) * $hari_off;
 
-                $setelah_dipot = ($total_upah_harian + $item->tunjangan) - $pot_jabatan - $pot_umk - $item->pot_koperasi - $item->pot_bpjs;
+                $setelah_dipot = ($total_upah_harian + $item->tunjangan) - $pot_umk - $item->pot_koperasi - $item->pot_bpjs;
 
-                $totals = DB::table('absensi_harians')
+                $total_upah = DB::table('absensi_harians')
                     ->select('absensi_harians.pot_absensi')
                     ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                     ->whereMonth('absensi_harians.tanggal', '=', $bulan)
@@ -878,6 +903,23 @@ class ReportController extends Controller
                     ->where('karyawans.status_karyawan_id', '=', 1)
                     ->sum('absensi_harians.upah_harian');
 
+                $total_pot_koperasi = DB::table('absensi_harians')
+                    ->select('absensi_harians.pot_absensi')
+                    ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
+                    ->whereMonth('absensi_harians.tanggal', '=', $bulan)
+                    ->where('absensi_harians.status', '=', 2)
+                    ->where('karyawans.status_karyawan_id', '=', 1)
+                    ->sum('karyawans.pot_koperasi');
+
+                $total_pot_absensi = DB::table('absensi_harians')
+                    ->select('absensi_harians.pot_absensi')
+                    ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
+                    ->whereMonth('absensi_harians.tanggal', '=', $bulan)
+                    ->where('absensi_harians.status', '=', 2)
+                    ->where('karyawans.status_karyawan_id', '=', 1)
+                    ->sum('absensi_harians.pot_absensi');
+
+                //dd($hari_off);
                 PDF::Cell(40, 0, $item->nama, 1, 0, 'L', 0, '', 1);
                 PDF::Cell(40, 0, $item->tgl_masuk, 1, 0, 'R', 0, '', 1);
                 PDF::Cell(50, 0, $item->norek, 1, 0, 'R', 0, '', 1);
@@ -890,17 +932,21 @@ class ReportController extends Controller
                 PDF::Cell(50, 0, $data_lembur_biasa, 1, 0, 'R', 0, '', 1);
                 PDF::Cell(30, 0, $data_lembur_off, 1, 0, 'R', 0, '', 1);
                 PDF::Cell(30, 0, 0, 1, 0, 'R', 0, '', 1);
-                PDF::Cell(30, 0, 0, 1, 0, 'R', 0, '', 1);
+                PDF::Cell(30, 0, $hari_off, 1, 0, 'R', 0, '', 1);
                 PDF::Cell(30, 0, 0, 1, 0, 'R', 0, '', 1);
                 PDF::Cell(30, 0, 0, 1, 0, 'R', 0, '', 1);
                 PDF::Ln();
 
+                $total_setelah_dipot += $setelah_dipot;
                 //$checkInvoice = $item->no_invoice;
             }
             PDF::SetFont('', 'B', 10);
             // grand total
-            PDF::Cell(245, 0, 'TOTAL ', 1, 0, 'R', 0, '', 1);
-            PDF::Cell(35, 0, number_format($totals, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+            PDF::Cell(130, 0, 'TOTAL ', 1, 0, 'R', 0, '', 1);
+            PDF::Cell(30, 0, number_format($total_upah, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+            PDF::Cell(45, 0, number_format($total_pot_koperasi, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+            PDF::Cell(40, 0, number_format($total_pot_absensi, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+            PDF::Cell(35, 0, number_format($total_setelah_dipot, 0, '.', ','), 1, 0, 'R', 0, '', 1);
             PDF::Cell(260, 0, '', 1, 0, 'C', 0, '', 0);
             PDF::Ln();
             PDF::SetFont('', '', 10);
@@ -1345,6 +1391,7 @@ class ReportController extends Controller
     public function previewAbsensiKaryawanStaff($bulan)
     {
         $tahun_skrg = date('Y');
+        //$tahun_skrg = 2016;
 
         $bulanLbl = '';
         switch ($bulan) {
@@ -1386,7 +1433,7 @@ class ReportController extends Controller
                 break;
         }
 
-        $data = AbsensiHarian::select('absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.nik', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.jenis_lembur', 'absensi_harians.status', 'absensi_harians.pot_absensi', 'karyawans.nik', 'karyawans.nama', 'karyawans.norek', 'karyawans.nilai_upah', 'karyawans.pot_koperasi', 'karyawans.tgl_masuk')
+        $data = AbsensiHarian::select('absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.nik', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.jenis_lembur', 'absensi_harians.status', 'absensi_harians.pot_absensi', 'karyawans.nik', 'karyawans.nama', 'karyawans.norek', 'karyawans.nilai_upah', 'karyawans.pot_koperasi', 'karyawans.tunjangan', 'karyawans.tgl_masuk')
         ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
         ->whereMonth('absensi_harians.tanggal', '=', $bulan)
         ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
@@ -1397,8 +1444,8 @@ class ReportController extends Controller
 
         // set document information
         PDF::SetAuthor('PT. TRIMITRA KEMASINDO');
-        PDF::SetTitle('Laporan Penjualan - Trimitra Kemasindo');
-        PDF::SetSubject('Laporan Penjualan');
+        PDF::SetTitle('Laporan Absensi Pegawai Staff - Trimitra Kemasindo');
+        PDF::SetSubject('Laporan Absensi Pegawai Staff');
         PDF::SetKeywords('Laporan Penjualan Trimitra Kemasindo');
 
         PDF::setFooterCallback(function ($pdf) {
@@ -1476,6 +1523,7 @@ class ReportController extends Controller
         if ($count > 0) {
             $checkInvoice = '';
             $grandTotal = 0;
+            $total_setelah_dipot = 0;
             foreach ($data as $item) {
                 $total_absensi = AbsensiHarian::select('absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.nik', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.jenis_lembur', 'absensi_harians.status', 'absensi_harians.pot_absensi', 'absensi_harians.upah_harian', 'karyawans.nik', 'karyawans.nama', 'karyawans.norek', 'karyawans.nilai_upah', 'karyawans.pot_koperasi', 'karyawans.tgl_masuk')
                 ->join('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
@@ -1484,6 +1532,7 @@ class ReportController extends Controller
                 ->where('karyawans.nik', '=', $item->nik)
                 ->where('absensi_harians.status', '=', 2)
                 ->where('karyawans.status_karyawan_id', '=', 3)
+                ->whereNotNull('absensi_harians.scan_masuk')
                 ->count('karyawans.nik');
 
                 //  1=rutin 2= biasa 3= off
@@ -1530,7 +1579,7 @@ class ReportController extends Controller
                     ->where('absensi_harians.status', '=', 2)
                     ->where('karyawans.status_karyawan_id', '=', 3)
                     ->sum('absensi_harians.pot_absensi');
-
+                //DB::connection()->enableQueryLog();
                 $total_upah_harian = DB::table('absensi_harians')
                     ->select('absensi_harians.pot_absensi')
                     ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
@@ -1540,27 +1589,31 @@ class ReportController extends Controller
                     ->where('karyawans.status_karyawan_id', '=', 3)
                     ->where('karyawans.nik', '=', $item->nik)
                     ->sum('absensi_harians.upah_harian');
+                // $queries = DB::getQueryLog();
+
+                // dd($queries);
 
                 //HITUNG JUMLAH TIDAK MASUK KERJA
                 $hari_off = DB::table('absensi_harians')
                 ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
-                ->where('jml_kehadiran', '=', '00:00:00')
+                ->whereNull('jml_kehadiran')
                 ->whereMonth('absensi_harians.tanggal', '=', $bulan)
                 ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
                 ->where('absensi_harians.status', '=', 2)
                 ->where('karyawans.status_karyawan_id', '=', 3)
                 ->where('karyawans.nik', '=', $item->nik)
-                ->count('jml_kehadiran');
+                ->count('absensi_harians.id');
 
                 // PERHITUNGAN POTONGAN UMK
-                $pot_umk = ($item->nilai_upah / 31) * $hari_off;
+                if (is_null($item->scan_masuk)) {
+                    $pot_umk = ($item->tunjangan * 0.25);
+                } else {
+                    $pot_umk = 0;
+                }
 
-                // PERHITUNGAN POTONGAN JABATAN
-                $pot_jabatan = (0.25 * $item->tunjangan) * $hari_off;
+                $setelah_dipot = ($total_upah_harian + $item->tunjangan) - $pot_umk - $item->pot_koperasi - $item->pot_bpjs;
 
-                $setelah_dipot = ($total_upah_harian + $item->tunjangan) - $pot_jabatan - $pot_umk - $item->pot_koperasi - $item->pot_bpjs;
-
-                $totals = DB::table('absensi_harians')
+                $total_upah = DB::table('absensi_harians')
                     ->select('absensi_harians.pot_absensi')
                     ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                     ->whereMonth('absensi_harians.tanggal', '=', $bulan)
@@ -1568,6 +1621,22 @@ class ReportController extends Controller
                     ->where('absensi_harians.status', '=', 2)
                     ->where('karyawans.status_karyawan_id', '=', 3)
                     ->sum('absensi_harians.upah_harian');
+
+                $total_pot_koperasi = DB::table('absensi_harians')
+                    ->select('absensi_harians.pot_absensi')
+                    ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
+                    ->whereMonth('absensi_harians.tanggal', '=', $bulan)
+                    ->where('absensi_harians.status', '=', 2)
+                    ->where('karyawans.status_karyawan_id', '=', 3)
+                    ->sum('karyawans.pot_koperasi');
+
+                $total_pot_absensi = DB::table('absensi_harians')
+                    ->select('absensi_harians.pot_absensi')
+                    ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
+                    ->whereMonth('absensi_harians.tanggal', '=', $bulan)
+                    ->where('absensi_harians.status', '=', 2)
+                    ->where('karyawans.status_karyawan_id', '=', 3)
+                    ->sum('absensi_harians.pot_absensi');
 
                 PDF::Cell(40, 0, $item->nama, 1, 0, 'L', 0, '', 1);
                 PDF::Cell(40, 0, $item->tgl_masuk, 1, 0, 'R', 0, '', 1);
@@ -1581,17 +1650,22 @@ class ReportController extends Controller
                 PDF::Cell(50, 0, $data_lembur_biasa, 1, 0, 'R', 0, '', 1);
                 PDF::Cell(30, 0, $data_lembur_off, 1, 0, 'R', 0, '', 1);
                 PDF::Cell(30, 0, 0, 1, 0, 'R', 0, '', 1);
-                PDF::Cell(30, 0, 0, 1, 0, 'R', 0, '', 1);
+                PDF::Cell(30, 0, $hari_off, 1, 0, 'R', 0, '', 1);
                 PDF::Cell(30, 0, 0, 1, 0, 'R', 0, '', 1);
                 PDF::Cell(30, 0, 0, 1, 0, 'R', 0, '', 1);
                 PDF::Ln();
-
+                $total_setelah_dipot += $setelah_dipot;
                 //$checkInvoice = $item->no_invoice;
             }
+
+            //dd($setelah_dipot++);
             PDF::SetFont('', 'B', 10);
             // grand total
-            PDF::Cell(245, 0, 'TOTAL ', 1, 0, 'R', 0, '', 1);
-            PDF::Cell(35, 0, number_format($totals, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+            PDF::Cell(130, 0, 'TOTAL ', 1, 0, 'R', 0, '', 1);
+            PDF::Cell(30, 0, number_format($total_upah, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+            PDF::Cell(45, 0, number_format($total_pot_koperasi, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+            PDF::Cell(40, 0, number_format($total_pot_absensi, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+            PDF::Cell(35, 0, number_format($total_setelah_dipot, 0, '.', ','), 1, 0, 'R', 0, '', 1);
             PDF::Cell(260, 0, '', 1, 0, 'C', 0, '', 0);
             PDF::Ln();
             PDF::SetFont('', '', 10);
