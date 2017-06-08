@@ -23,8 +23,13 @@
         <div class="box-body">
           <div class="btn-group">
                 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#absensi_modal">
-                <i class="fa fa-upload fa-fw"></i> Upload Excel
+                <i class="fa fa-upload fa-fw"></i> Upload Excel Absensi
                 </button>
+                 
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#lembur_modal">
+                <i class="fa fa-upload fa-fw"></i> Upload Excel Lembur
+                </button>
+               
           </div>
           <br><br>
           
