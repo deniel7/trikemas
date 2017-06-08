@@ -49,20 +49,40 @@ class UploadAbsenController extends Controller
 
         $gaji = $karyawan['nilai_upah'];
 
-        // // HITUNG UANG MAKAN
+        // HITUNG UANG MAKAN
         $uang_makan = $karyawan['uang_makan'];
 
         $absensies = AbsensiHarian::where('karyawan_id', '=', $nik)->where('tanggal', '=', $tanggal)->get();
-        // dd($absensies);
+
         if ($absensies->count() == 1) {
             $absensies = $absensies->first();
 
-            $absensies->status = 1;
-
+            // PERHITUNGAN GA MASUK
             if (is_null($absensies->scan_masuk)) {
-                $upah_harian = 0;
+                //karyawan KONTRAK tetap / bulanan
+                if ($karyawan->status_karyawan_id == 1) {
+                    $gaji_harian = $gaji / 30;
+
+                    if ($karyawan->tunjangan == 0) {
+                        $upah_harian = ($gaji_harian + $uang_makan) - 50000 - $uang_makan;
+                    } else {
+                        $upah_harian = (($gaji_harian + $uang_makan) - ($karyawan->tunjangan * 0.25));
+                    }
+                // karyawan harian / lepas
+                } elseif ($karyawan->status_karyawan_id == 2) {
+                    $upah_harian = 0;
+
+                //karyawan Staff
+                } elseif ($karyawan->status_karyawan_id == 3) {
+                    $gaji_harian = $gaji / 30;
+                    if ($karyawan->tunjangan == 0) {
+                        $upah_harian = ($gaji_harian + $uang_makan) - 50000 - $uang_makan;
+                    } else {
+                        $upah_harian = (($gaji_harian + $uang_makan) - ($karyawan->tunjangan * 0.25));
+                    }
+                }
             } else {
-            // PERHITUNGAN TOTAL
+                // PERHITUNGAN TOTAL
 
             //karyawan KONTRAK tetap / bulanan
                 if ($karyawan->status_karyawan_id == 1) {
@@ -82,7 +102,7 @@ class UploadAbsenController extends Controller
                         $lembur_biasa = 0;
                     }
 
-                        $upah_harian = ($gaji_harian + $uang_makan + $lembur_rutin + $lembur_biasa + $lembur_off);
+                    $upah_harian = ($gaji_harian + $uang_makan + $lembur_rutin + $lembur_biasa + $lembur_off);
 
                     // karyawan harian / lepas
                 } elseif ($karyawan->status_karyawan_id == 2) {
@@ -93,7 +113,7 @@ class UploadAbsenController extends Controller
                         $lembur_biasa = $konfirmasi_lembur * 17600;
                     }
 
-                        $upah_harian = ($gaji + $uang_makan + $lembur_rutin + $lembur_biasa);
+                    $upah_harian = ($gaji + $uang_makan + $lembur_rutin + $lembur_biasa);
 
                     //karyawan Staff
                 } elseif ($karyawan->status_karyawan_id == 3) {
@@ -113,10 +133,11 @@ class UploadAbsenController extends Controller
                         $lembur_biasa = 0;
                     }
 
-                        $upah_harian = ($gaji_harian + $uang_makan + $lembur_rutin + $lembur_biasa + $lembur_off);
+                    $upah_harian = ($gaji_harian + $uang_makan + $lembur_rutin + $lembur_biasa + $lembur_off);
                 }
             }
 
+            $absensies->status = 1;
             $absensies->upah_harian = $upah_harian;
             $absensies->konfirmasi_lembur = $konfirmasi_lembur;
             $absensies->jenis_lembur = $jenis_lembur;

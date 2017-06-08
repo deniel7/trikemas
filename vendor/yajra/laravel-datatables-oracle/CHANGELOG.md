@@ -8,6 +8,112 @@
 
 ##Change Log
 
+### v6.29.0 - 2017-06-07
+- Add config for setting the default JsonResponse header and options. #1179
+- Fix #1034
+- TODO: Need to update tests.
+
+### v6.28.1 - 2017-05-05
+- Fixed: Formatting the attributes for Editor buttons. #1105, credits to @karmendra.
+
+### v6.28.0 - 2017-04-19
+- Display url and A balise as hyperlink in excel export.
+- PR #1074, credits to @julianfox.
+
+### v6.27.0 - 2017-03-08
+- Add a fluent way to send route variables to DataTable service class. PR  #1071.
+- Fix #1069.
+
+### v6.26.0 - 2017-03-03
+- Remove dompdf dependency and let the developers decide on which version they want to use.
+> Note: This is possible breaking change for some users but needed to move forward. See https://github.com/yajra/laravel-datatables/pull/1026 for details. Thanks!
+
+### v6.25.0 - 2017-02-23
+- Add support ordering when search in nested relations. #850
+- Credits to @ethaizone.
+
+### v6.24.4 - 2017-02-09
+- Fix collection case insensitive ordering.
+- Fix [#945](https://github.com/yajra/laravel-datatables/issues/945).
+
+### v6.24.3 - 2017-02-08
+- Add bindings from relations. #981
+- Implementation from PR #962 to fix #960.
+
+### v6.24.2 - 2017-01-26
+- Lock v6.x to support Laravel 5.0 - 5.3 only.
+- Fix #942.
+
+### v6.24.1 - 2017-01-24
+- Fix regex query for pgsql.
+- PR #934, credits to @alfa6661.
+
+### v6.24.0 - 2017-01-24
+- Datatables Pipeline Plugin support (Basic).
+- PR #938, credits to @OzanKurt.
+
+### v6.23.0 - 2017-01-21
+- Add support for onlyTrashed model scope. Fix #928
+- Move withTrashed method to Eloquent engine.
+
+### v6.22.9 - 2017-01-20
+- Do not append table name if instance is expression. #933
+- Fix #927 and possible fix for #873.
+
+### v6.22.8 - 2017-01-19
+- Support for UTF8 characters when creating wildcard query.
+- PR #926, credits to @Rhincodon.
+
+### v6.22.7 - 2017-01-04
+- Add datatables alias to fix singleton. PR #903, credits to @ElfSundae
+- Use static class name instead FQCN. PR #902, credits to @ElfSundae
+- Update license to 2017.
+
+### v6.22.6 - 2017-01-04
+- Fix print header issue when two row are same value. 
+- PR #913, credits to @dineshrabara.
+
+### v6.22.5 - 2016-12-07
+- Fix double wrapping of column name.
+
+### v6.22.4 - Skipped (Sorry!)
+
+### v6.22.3 - 2016-12-07
+- Fix adding of table prefix before casting the column. PR #876
+- Fix #871, #873
+- Custom soft delete column support. PR #878, credits to @Huracan88
+- Fix #875
+
+### v6.22.2 - 2016-12-01
+- Patch for ambiguous field error for relations issues.
+- PR #849, credits to @ethaizone.
+
+### v6.22.1 - 2016-12-01
+- Patch request class and use input array access to get the values. #868
+- Fix Error 500 Illegal string offset issues: #857, #657, #395.
+
+### v6.22.0 - 2016-11-19
+- Add support for searching of nested relationships.
+- PR #841 & #844. Credits to @ethaizone
+- Fix #696, #789, #771, #509, #441.
+
+### v6.21.2 - 2016-11-16
+- Fix html builder instance, close #830. PR #833, credits to @ElfSundae.
+- Class name resolution updated. PR #812, credits to @shibby.
+
+### v6.21.1 - 2016-10-25
+- Do not convert column to raw statement. Thanks to Nick Howell for pointing the issue.
+
+### v6.21.0 - 2016-10-22
+- Support to morphToMany. PR #804, credits to @pcastrotigre
+- Update fractal to ~0.14. Credits to @tyloo
+- Refactor HasOneOrMany as suggested in #733
+- Fix CS.
+
+### v6.20.0 - 2016-10-13
+- Support of using soft deletes trait in models.
+- PR #786, credits to @DDiimmkkaass.
+
 ### v6.19.0 - 2016-09-24
 - Support regex column searches when using CollectionEngine.
 - PR #765, credits to @cadenzajon.

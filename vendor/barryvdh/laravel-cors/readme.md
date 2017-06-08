@@ -18,7 +18,7 @@ this [image](http://www.html5rocks.com/static/images/cors_server_flowchart.png).
 
 ## Configuration
 
-The defaults are set in `config/cors.php'. Copy this file to your own config directory to modify the values. You can publish the config using this command:
+The defaults are set in `config/cors.php`. Copy this file to your own config directory to modify the values. You can publish the config using this command:
 
     php artisan vendor:publish --provider="Barryvdh\Cors\ServiceProvider"
 
@@ -28,10 +28,20 @@ The defaults are set in `config/cors.php'. Copy this file to your own config dir
 
 ```php
 return [
+     /*
+     |--------------------------------------------------------------------------
+     | Laravel CORS
+     |--------------------------------------------------------------------------
+     |
+
+     | allowedOrigins, allowedHeaders and allowedMethods can be set to array('*')
+     | to accept any value.
+     |
+     */
     'supportsCredentials' => false,
     'allowedOrigins' => ['*'],
-    'allowedHeaders' => ['Content-Type', 'Accept'],
-    'allowedMethods' => ['GET', 'POST', 'PUT',  'DELETE'],
+    'allowedHeaders' => ['*'], // ex : ['Content-Type', 'Accept']
+    'allowedMethods' => ['*'], // ex: ['GET', 'POST', 'PUT',  'DELETE']
     'exposedHeaders' => [],
     'maxAge' => 0,
     'hosts' => [],
@@ -50,8 +60,9 @@ Require the `barryvdh/laravel-cors` package in your composer.json and update you
     $ composer require barryvdh/laravel-cors
 
 Add the Cors\ServiceProvider to your config/app.php providers array:
+
 ```php
-    Barryvdh\Cors\ServiceProvider::class,
+Barryvdh\Cors\ServiceProvider::class,
 ```
 
 ## Usage
@@ -64,22 +75,27 @@ Route::group(['middleware' => 'cors'], function(Router $router){
 });
 ```
 
-If you want CORS to apply for all your routes, add it as global middleware:
+If you want CORS to apply for all your routes, add it as global middleware in `app/http/Kernel.php`:
 
-    'Barryvdh\Cors\HandleCors',
+```php
+protected $middleware = [
+    ....
+    \Barryvdh\Cors\HandleCors::class
+];
+```
 
 ## Lumen
 
 On Laravel Lumen, use LumenServiceProvider:
 
-     'Barryvdh\Cors\LumenServiceProvider',
+    'Barryvdh\Cors\LumenServiceProvider',
 
 And load your configuration file manually:
 
     $app->configure('cors');
 
 ## Common problems and errors
-In order for the package to work, the request has to be a valid CORS requst and needs to include an "Origin" header.
+In order for the package to work, the request has to be a valid CORS request and needs to include an "Origin" header.
 
 When an error occurs, the middleware isn't run completely. So when this happens, you won't see the actual result, but will get a CORS error instead.
 

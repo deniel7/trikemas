@@ -722,7 +722,7 @@ class InvoiceController extends Controller
 
             PDF::SetFont('times', 'B', 16);
             PDF::setXY(151, 10);
-            PDF::Cell(0, 0, 'I  N  V  O  I  C  E', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(0, 0, 'F A K T U R', 0, 0, 'L', 0, '', 0);
             PDF::Ln();
 
             PDF::setX(130);

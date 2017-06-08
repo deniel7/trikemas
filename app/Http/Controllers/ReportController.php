@@ -713,6 +713,7 @@ class ReportController extends Controller
         ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
         ->where('absensi_harians.status', '=', 2)
         ->where('karyawans.status_karyawan_id', '=', 1)
+        //->where('karyawans.nik', '=', 267)
         ->groupBy('karyawans.nik')
         ->get();
         // $queries = DB::getQueryLog();
@@ -878,22 +879,15 @@ class ReportController extends Controller
                 ->count('absensi_harians.id');
 
                 // PERHITUNGAN POTONGAN UMK
-                if (is_null($item->scan_masuk)) {
-                    if ($item->tunjangan == 0) {
-                        $pot_umk = ($hari_off * 50000) + $item->uang_makan;
-                    } else {
-                        $pot_umk = (0.25 * $item->tunjangan) * $hari_off;
-                    }
-                } else {
-                    $pot_umk = 0;
-                }
+                // 0 krn sudah langsung perhitungan ketika confirm di absensi harian
+                $pot_umk = 0;
 
                 //dd($pot_umk);
 
                 // PERHITUNGAN POTONGAN JABATAN
                 //$pot_jabatan = (0.25 * $item->tunjangan) * $hari_off;
 
-                $setelah_dipot = ($total_upah_harian + $item->tunjangan) - $pot_umk - $item->pot_koperasi - $item->pot_bpjs;
+                $setelah_dipot = $total_upah_harian - $pot_umk - $item->pot_koperasi - $item->pot_bpjs;
 
                 $total_upah = DB::table('absensi_harians')
                     ->select('absensi_harians.pot_absensi')
@@ -1016,12 +1010,12 @@ class ReportController extends Controller
         });
 
         // AddPage ($orientation='', $format='', $keepmargins=false, $tocpage=false)
-        PDF::AddPage('L', 'A2');
+        PDF::AddPage('P', 'A2');
 
         // SetMargins ($left, $top, $right=-1, $keepmargins=false)
         PDF::SetMargins(15, 10, 15);
 
-        PDF::SetFont('times', 'B', 12);
+        PDF::SetFont('times', 'B', 14);
 
         //PDF::setXY(54, 10);
         PDF::setX(15);
@@ -1040,22 +1034,22 @@ class ReportController extends Controller
 
         PDF::Ln(12);
 
-        PDF::SetFont('', 'B', 12);
+        PDF::SetFont('', 'B', 14);
 
         // Cell ($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='', $stretch=0, $ignore_min_height=false, $calign='T', $valign='M')
         PDF::Cell(0, 0, 'LAPORAN ABSENSI PEGAWAI HARIAN', 0, 0, 'C', 0, '', 0);
         PDF::Ln(8);
 
-        PDF::SetFont('', '', 10);
+        PDF::SetFont('', '', 14);
 
-        PDF::Cell(160, 0, 'PERIODE', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(360, 0, 'PERIODE', 1, 0, 'C', 0, '', 0);
         PDF::Ln();
-        PDF::Cell(160, 0, $tanggal_awal.' hingga '.$tanggal_akhir, 1, 0, 'C', 0, '', 0);
+        PDF::Cell(360, 0, $tanggal_awal.' hingga '.$tanggal_akhir, 1, 0, 'C', 0, '', 0);
 
         PDF::Ln(8);
 
-        PDF::Cell(80, 0, 'NAMA KARYAWAN', 1, 0, 'C', 0, '', 0);
-        PDF::Cell(80, 0, 'TOTAL UPAH', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(180, 5, 'NAMA KARYAWAN', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(180, 5, 'TOTAL UPAH', 1, 0, 'C', 0, '', 0);
 
         PDF::Ln();
 
@@ -1081,19 +1075,20 @@ class ReportController extends Controller
                     ->where('absensi_harians.status', '=', 2)
                     ->where('karyawans.status_karyawan_id', '=', 2)
                     ->sum('absensi_harians.upah_harian');
+                // Cell ($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='', $stretch=0,
+                PDF::SetFont('', 'B', 14);
+                PDF::Cell(180, 5, $item->nama, 1, 0, 'L', 0, '', 1);
 
-                PDF::Cell(80, 0, $item->nama, 1, 0, 'L', 0, '', 1);
-
-                PDF::Cell(80, 0, number_format($total, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+                PDF::Cell(180, 5, number_format($total, 0, '.', ','), 1, 0, 'R', 0, '', 1);
 
                 PDF::Ln();
 
                 //$checkInvoice = $item->no_invoice;
             }
-            PDF::SetFont('', 'B', 10);
+            PDF::SetFont('', 'B', 14);
             // grand total
-            PDF::Cell(80, 0, 'TOTAL ', 1, 0, 'R', 0, '', 1);
-            PDF::Cell(80, 0, number_format($totals, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+            PDF::Cell(180, 5, 'TOTAL ', 1, 0, 'R', 0, '', 1);
+            PDF::Cell(180, 5, number_format($totals, 0, '.', ','), 1, 0, 'R', 0, '', 1);
             PDF::Ln();
             PDF::SetFont('', '', 10);
         } else {
@@ -1605,13 +1600,15 @@ class ReportController extends Controller
                 ->count('absensi_harians.id');
 
                 // PERHITUNGAN POTONGAN UMK
-                if (is_null($item->scan_masuk)) {
-                    $pot_umk = ($item->tunjangan * 0.25);
-                } else {
-                    $pot_umk = 0;
-                }
+                // if (is_null($item->scan_masuk)) {
+                //     $pot_umk = ($item->tunjangan * 0.25);
+                // } else {
+                //     $pot_umk = 0;
+                // }
 
-                $setelah_dipot = ($total_upah_harian + $item->tunjangan) - $pot_umk - $item->pot_koperasi - $item->pot_bpjs;
+                $pot_umk = 0;
+
+                $setelah_dipot = $total_upah_harian - $pot_umk - $item->pot_koperasi - $item->pot_bpjs;
 
                 $total_upah = DB::table('absensi_harians')
                     ->select('absensi_harians.pot_absensi')

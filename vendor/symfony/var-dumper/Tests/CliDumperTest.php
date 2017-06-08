@@ -45,7 +45,7 @@ class CliDumperTest extends VarDumperTestCase
         $closure54 = '';
         $r = defined('HHVM_VERSION') ? '' : '#%d';
 
-        if (PHP_VERSION_ID >= 50400) {
+        if (\PHP_VERSION_ID >= 50400) {
             $closure54 = <<<EOTXT
 
     class: "Symfony\Component\VarDumper\Tests\CliDumperTest"
@@ -120,7 +120,7 @@ EOTXT
         $var = xml_parser_create();
 
         $this->assertDumpMatchesFormat(
-            <<<EOTXT
+            <<<'EOTXT'
 xml resource {
   current_byte_index: %i
   current_column_number: %i
@@ -142,7 +142,7 @@ EOTXT
         $var[''] = 2;
 
         $this->assertDumpMatchesFormat(
-            <<<EOTXT
+            <<<'EOTXT'
 array:4 [
   "0" => {}
   "1" => &1 null
@@ -161,7 +161,7 @@ EOTXT
         $var->{1} = 2;
 
         $this->assertDumpMatchesFormat(
-            <<<EOTXT
+            <<<'EOTXT'
 {
   +1: 1
   +"1": 2
@@ -296,7 +296,7 @@ EOTXT
         $var = $this->getSpecialVars();
 
         $this->assertDumpEquals(
-            <<<EOTXT
+            <<<'EOTXT'
 array:3 [
   0 => array:1 [
     0 => &1 array:1 [
@@ -342,7 +342,7 @@ EOTXT
         $dumper->dump($data);
 
         $this->assertSame(
-            <<<EOTXT
+            <<<'EOTXT'
 array:2 [
   1 => array:1 [
     "GLOBALS" => &1 array:1 [
@@ -364,7 +364,7 @@ EOTXT
      */
     public function testBuggyRefs()
     {
-        if (PHP_VERSION_ID >= 50600) {
+        if (\PHP_VERSION_ID >= 50600) {
             $this->markTestSkipped('PHP 5.6 fixed refs counting');
         }
 
@@ -384,7 +384,7 @@ EOTXT
         });
 
         $this->assertSame(
-            <<<EOTXT
+            <<<'EOTXT'
 array:1 [
   0 => array:1 [
     0 => array:1 [
