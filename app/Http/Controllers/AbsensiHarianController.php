@@ -97,4 +97,18 @@ class AbsensiHarianController extends Controller
 
         return redirect('absensi-harian');
     }
+
+    public function postLembur(Request $request)
+    {
+        $file = $request->file('file');
+
+        if (!empty($file)) {
+            getLemburExcel($file);
+            Flash::success('Absen Karyawan Lembur berhasil ditambahkan');
+        } else {
+            Flash::error('File karyawan Lembur belum dipilih');
+        }
+
+        return redirect('absensi-harian');
+    }
 }

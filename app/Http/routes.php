@@ -34,10 +34,10 @@ Route::group(['middleware' => 'auth'], function () {
 
      // laporan
     Route::get('/report', 'ReportController@index');
-   
+
     Route::get('/report/penjualan', 'ReportController@penjualan');
     Route::get('/report/penjualan/preview/{ppn}/{dari}/{hingga?}', 'ReportController@previewPenjualan');
-    
+
     Route::get('/report/penerimaan-pembayaran-angkutan', 'ReportController@penerimaanPembayaranAngkutan');
     Route::get('/report/penerimaan-pembayaran-angkutan/preview/{bulan}/{tahun}', 'ReportController@previewPenerimaanPembayaranAngkutan');
 
@@ -131,7 +131,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::controller('karyawan-harian', 'KaryawanHarianController');
 
     /* Absensi */
-
+    //Route::post('absensi-harian', 'AbsensiHarianController@postLembur');
     Route::resource('absensi-harian', 'AbsensiHarianController');
     Route::controller('absensi-harian', 'AbsensiHarianController');
     Route::resource('absensi-packing', 'AbsensiPackingController');
@@ -152,9 +152,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::controller('upah-jenis-barang', 'UpahJenisBarangController');
 
     // my account
-    Route::get('/account', 'AccountController@index');
-    Route::post('/account/update-profile', 'AccountController@updateProfile');
-    Route::post('/account/update-password', 'AccountController@updatePassword');
+    // Route::get('/account', 'AccountController@index');
+    // Route::post('/account/update-profile', 'AccountController@updateProfile');
+    // Route::post('/account/update-password', 'AccountController@updatePassword');
 
     Route::get('/system', 'SystemController@index');
 

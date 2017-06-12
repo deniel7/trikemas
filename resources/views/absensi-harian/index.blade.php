@@ -95,6 +95,7 @@
 <!-- /.content -->
 @include('absensi-harian.partials.add_modal')
 @include('absensi-harian.partials.show_detail_modal')
+@include('absensi-harian.partials.lembur_modal')
 
 <!-- page script -->
 <style>

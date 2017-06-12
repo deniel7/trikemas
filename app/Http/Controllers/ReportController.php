@@ -823,7 +823,7 @@ class ReportController extends Controller
                     ->where('karyawans.nik', '=', $item->nik)
                     ->where('absensi_harians.status', '=', 2)
                     ->where('karyawans.status_karyawan_id', '=', 1)
-                    ->count('karyawans.nik');
+                    ->sum('absensi_harians.konfirmasi_lembur');
 
                 $data_lembur_biasa = DB::table('absensi_harians')
                     ->select('*')
@@ -834,7 +834,7 @@ class ReportController extends Controller
                     ->where('karyawans.nik', '=', $item->nik)
                     ->where('absensi_harians.status', '=', 2)
                     ->where('karyawans.status_karyawan_id', '=', 1)
-                    ->count('karyawans.nik');
+                    ->sum('absensi_harians.konfirmasi_lembur');
 
                 $data_lembur_off = DB::table('absensi_harians')
                     ->select('*')
@@ -845,7 +845,7 @@ class ReportController extends Controller
                     ->where('karyawans.nik', '=', $item->nik)
                     ->where('absensi_harians.status', '=', 2)
                     ->where('karyawans.status_karyawan_id', '=', 1)
-                    ->count('karyawans.nik');
+                    ->sum('absensi_harians.konfirmasi_lembur');
 
                 $pot_absensi = DB::table('absensi_harians')
                     ->select('absensi_harians.pot_absensi')

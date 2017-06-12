@@ -66,7 +66,7 @@ class UploadAbsenController extends Controller
                     if ($karyawan->tunjangan == 0) {
                         $upah_harian = ($gaji_harian + $uang_makan) - 50000 - $uang_makan;
                     } else {
-                        $upah_harian = (($gaji_harian + $uang_makan) - ($karyawan->tunjangan * 0.25));
+                        $upah_harian = (($gaji_harian + $uang_makan) - ($karyawan->tunjangan * 0.25)) - $uang_makan;
                     }
                 // karyawan harian / lepas
                 } elseif ($karyawan->status_karyawan_id == 2) {
@@ -78,7 +78,7 @@ class UploadAbsenController extends Controller
                     if ($karyawan->tunjangan == 0) {
                         $upah_harian = ($gaji_harian + $uang_makan) - 50000 - $uang_makan;
                     } else {
-                        $upah_harian = (($gaji_harian + $uang_makan) - ($karyawan->tunjangan * 0.25));
+                        $upah_harian = (($gaji_harian + $uang_makan) - ($karyawan->tunjangan * 0.25)) - $uang_makan;
                     }
                 }
             } else {
