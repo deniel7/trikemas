@@ -95,7 +95,7 @@ function getLemburExcel($file)
                 $rows = $reader->all();
 
         foreach ($rows as $row) {
-            $tanggal = $row[5];
+            $tanggal = $row[12];
             break;
         }
 
@@ -110,30 +110,23 @@ function getLemburExcel($file)
 
                     $record->tanggal = $tanggal;
                     $record->karyawan_id = strval($row[1]);
-                    $record->jam_masuk = strval($row[7]);
-                    $record->jam_pulang = strval($row[8]);
-                    $record->jam_kerja = strval($row[6]);
-                    $record->scan_masuk = strval($row[9]);
-                    $record->scan_pulang = strval($row[10]);
-                    $record->terlambat = strval($row[11]);
-                    $record->jam_lembur = strval($row[13]);
-                    $record->plg_cepat = strval($row[12]);
-                    $record->jml_jam_kerja = strval($row[14]);
-                    $record->departemen = strval($row[16]);
-                    $record->jml_kehadiran = strval($row[18]);
+                    // $record->jam_masuk = strval($row[7]);
+                    // $record->jam_pulang = strval($row[8]);
+                    $record->jam_kerja = 'LEMBUR';
+                    $record->scan_masuk = strval($row[4]);
+                    $record->scan_pulang = strval($row[5]);
+                    //$record->terlambat = strval($row[11]);
+                    //$record->jam_lembur = strval($row[13]);
+                    //$record->plg_cepat = strval($row[12]);
+                    $record->jml_jam_kerja = strval($row[10]);
+                    $record->departemen = strval($row[6]);
+                    $record->jml_kehadiran = strval($row[11]);
 
-                    $ambil_jam_kerja = substr(strval($row[14]), -8);
+                    $ambil_jam_kerja = substr(strval($row[10]), -8);
                     $jam_exp = explode(':', $ambil_jam_kerja);
                     $jam = isset($jam_exp[0]) ? $jam_exp[0] : '';
                     $menit = isset($jam_exp[1]) ? $jam_exp[1] : '';
 
-                    //pembulatan jam dan menit jika terlambat
-                    if ($jam == 7) {
-                        if ($menit > 44) {
-                            $jam = 8;
-                            $menit = 00;
-                        }
-                    }
                     if (empty($record->karyawan_id)) {
                         return;
                     }
