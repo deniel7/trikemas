@@ -810,6 +810,7 @@ class ReportController extends Controller
                 ->where('karyawans.nik', '=', $item->nik)
                 ->where('absensi_harians.status', '=', 2)
                 ->where('karyawans.status_karyawan_id', '=', 1)
+                ->where('absensi_harians.jam_kerja', '!=', 'LEMBUR')
                 ->count('karyawans.nik');
 
                 //  1=rutin 2= biasa 3= off
@@ -1528,6 +1529,7 @@ class ReportController extends Controller
                 ->where('absensi_harians.status', '=', 2)
                 ->where('karyawans.status_karyawan_id', '=', 3)
                 ->whereNotNull('absensi_harians.scan_masuk')
+                ->where('absensi_harians.jam_kerja', '!=', 'LEMBUR')
                 ->count('karyawans.nik');
 
                 //  1=rutin 2= biasa 3= off
