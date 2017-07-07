@@ -173,15 +173,28 @@ class UploadAbsenController extends Controller
                     // karyawan harian / lepas
                 } elseif ($karyawan->status_karyawan_id == 2) {
                     // PERHITUNGAN LEMBUR
-                    $gaji_jam = ($gaji / 7) * $absensies->jam;
-                    if ($jenis_lembur == 1) {
-                        $lembur_rutin = $konfirmasi_lembur * 11700;
-                    } elseif ($jenis_lembur == 2) {
-                        $lembur_biasa = $konfirmasi_lembur * 17600;
+                    // jika absen nya normal yaitu 8 jam, selain itu ga dapet uang makan
+                    if ($absensies->jam >= 8) {
+                        $gaji_jam = ($gaji / 7) * ($absensies->jam - 1);
+
+                        if ($jenis_lembur == 1) {
+                            $lembur_rutin = $konfirmasi_lembur * 11700;
+                        } elseif ($jenis_lembur == 2) {
+                            $lembur_biasa = $konfirmasi_lembur * 17600;
+                        }
+
+                        $upah_harian = ($gaji_jam + $uang_makan + $lembur_rutin + $lembur_biasa);
+                    } else {
+                        $gaji_jam = ($gaji / 7) * $absensies->jam;
+
+                        if ($jenis_lembur == 1) {
+                            $lembur_rutin = $konfirmasi_lembur * 11700;
+                        } elseif ($jenis_lembur == 2) {
+                            $lembur_biasa = $konfirmasi_lembur * 17600;
+                        }
+
+                        $upah_harian = ($gaji_jam + $lembur_rutin + $lembur_biasa);
                     }
-
-                    $upah_harian = ($gaji_jam + $uang_makan + $lembur_rutin + $lembur_biasa);
-
                     //karyawan Staff
                 } elseif ($karyawan->status_karyawan_id == 3) {
                     $gaji_harian = $gaji / 30;
