@@ -980,12 +980,12 @@ class ReportController extends Controller
     }
 
     // preview
-    public function previewAbsensiKaryawanHarian($tanggal_awal, $tanggal_akhir)
+    public function previewAbsensiKaryawanHarian($tanggal_awal, $tanggal_akhir, $potongan)
     {
         $tgl_awal = Carbon::createFromFormat('d-m-Y', $tanggal_awal)->format('Y-m-d');
         $tgl_akhir = Carbon::createFromFormat('d-m-Y', $tanggal_akhir)->format('Y-m-d');
 
-        $data = AbsensiHarian::select('absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.nik', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.jenis_lembur', 'absensi_harians.status', 'absensi_harians.pot_absensi', 'absensi_harians.upah_harian', 'karyawans.nik', 'karyawans.nama', 'karyawans.norek', 'karyawans.nilai_upah', 'karyawans.pot_koperasi', 'karyawans.tgl_masuk')
+        $data = AbsensiHarian::select('absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.nik', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.jenis_lembur', 'absensi_harians.status', 'absensi_harians.pot_absensi', 'absensi_harians.upah_harian', 'karyawans.nik', 'karyawans.nama', 'karyawans.norek', 'karyawans.nilai_upah', 'karyawans.pot_koperasi', 'karyawans.tgl_masuk', 'karyawans.pot_bpjs')
         ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
         ->whereBetween('absensi_harians.tanggal', [$tgl_awal, $tgl_akhir])
         ->where('absensi_harians.status', '=', 2)
@@ -1038,7 +1038,12 @@ class ReportController extends Controller
         PDF::SetFont('', 'B', 14);
 
         // Cell ($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='', $stretch=0, $ignore_min_height=false, $calign='T', $valign='M')
-        PDF::Cell(0, 0, 'LAPORAN ABSENSI PEGAWAI HARIAN', 0, 0, 'C', 0, '', 0);
+        if ($potongan == '0') {
+            $ket = '';
+        } else {
+            $ket = '(termasuk potongan '.$potongan.' )';
+        }
+        PDF::Cell(0, 0, 'LAPORAN ABSENSI PEGAWAI HARIAN '.$ket, 0, 0, 'C', 0, '', 0);
         PDF::Ln(8);
 
         PDF::SetFont('', '', 14);
@@ -1058,6 +1063,7 @@ class ReportController extends Controller
         if ($count > 0) {
             $checkInvoice = '';
 
+            $t_upah = 0;
             foreach ($data as $item) {
                 $total = DB::table('absensi_harians')
                     ->select('absensi_harians.pot_absensi')
@@ -1068,28 +1074,31 @@ class ReportController extends Controller
                     ->where('karyawans.nik', '=', $item->nik)
                     ->sum('absensi_harians.upah_harian');
 
-                $totals = 0;
-                $totals = DB::table('absensi_harians')
-                    ->select('absensi_harians.pot_absensi')
-                    ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
-                    ->whereBetween('absensi_harians.tanggal', [$tgl_awal, $tgl_akhir])
-                    ->where('absensi_harians.status', '=', 2)
-                    ->where('karyawans.status_karyawan_id', '=', 2)
-                    ->sum('absensi_harians.upah_harian');
                 // Cell ($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='', $stretch=0,
                 PDF::SetFont('', 'B', 14);
                 PDF::Cell(180, 5, $item->nama, 1, 0, 'L', 0, '', 1);
 
-                PDF::Cell(180, 5, number_format($total, 0, '.', ','), 1, 0, 'R', 0, '', 1);
-
+                if ($potongan == 'bpjs') {
+                    $total = $total - $item->pot_bpjs;
+                    PDF::Cell(180, 5, number_format($total, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+                } else {
+                    PDF::Cell(180, 5, number_format($total, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+                }
                 PDF::Ln();
-
-                //$checkInvoice = $item->no_invoice;
+                $t_upah = $t_upah + $total;
             }
+
+            //dd($t_upah);
             PDF::SetFont('', 'B', 14);
             // grand total
+
             PDF::Cell(180, 5, 'TOTAL ', 1, 0, 'R', 0, '', 1);
-            PDF::Cell(180, 5, number_format($totals, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+            if ($potongan == 'bpjs') {
+                PDF::Cell(180, 5, number_format($t_upah, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+            } else {
+                PDF::Cell(180, 5, number_format($t_upah, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+            }
+
             PDF::Ln();
             PDF::SetFont('', '', 10);
         } else {

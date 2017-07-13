@@ -66,6 +66,17 @@
                     </div>
                   </div>
                 </div>
+                <div class="form-group">
+                  <label for="tanggal_lahir" class="col-sm-2 control-label">Potongan</label>
+                  <div class="col-sm-10">
+                    <div class="input-group date">
+                      <select name="potongan" id="potongan">
+                        <option value="0">tidak ada</option>
+                        <option value="bpjs">BPJS</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
                 
               </div>
               <!-- /.box-body -->

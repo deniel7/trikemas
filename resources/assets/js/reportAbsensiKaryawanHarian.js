@@ -38,7 +38,7 @@ var reportAbsensiKaryawanHarianModule = (function(commonModule) {
                 },
                 icon: null,
                 fields: {
-                bulan: {
+                    bulan: {
                         validators: {
                             notEmpty: {
                                 message: 'Bulan harus diisi'
@@ -60,8 +60,9 @@ var reportAbsensiKaryawanHarianModule = (function(commonModule) {
 
                 var tanggal = $("#tanggal").val();
                 var hingga = $("#hingga").val();
+                var potongan = $("#potongan").val();
 
-                var url = "/report/absensi-karyawan-harian/preview/" + tanggal + "/" + hingga;
+                var url = "/report/absensi-karyawan-harian/preview/" + tanggal + "/" + hingga + "/" + potongan;
 
 
                 window.open(url, "_blank");
