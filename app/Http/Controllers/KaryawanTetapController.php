@@ -27,7 +27,8 @@ class KaryawanTetapController extends Controller
         $karyawans = DB::table('karyawans')
         ->select(['karyawans.id', 'status_karyawans.keterangan', 'karyawans.nik', 'karyawans.nama', 'karyawans.alamat', 'karyawans.phone', 'karyawans.lulusan', 'karyawans.tgl_masuk', 'karyawans.nilai_upah', 'karyawans.uang_makan', 'karyawans.pot_koperasi', 'karyawans.pot_bpjs', 'karyawans.tunjangan', 'karyawans.norek'])
         ->join('status_karyawans', 'karyawans.status_karyawan_id', '=', 'status_karyawans.id')
-        ->where('karyawans.status_karyawan_id', '=', 1);
+        ->where('karyawans.status_karyawan_id', '=', 1)
+        ->orderby('karyawans.id');
 
         return Datatables::of($karyawans)
 
@@ -143,6 +144,7 @@ class KaryawanTetapController extends Controller
         $karyawan->uang_makan = $uang_makan;
         $karyawan->tunjangan = $tunjangan_jabatan;
         $karyawan->pot_koperasi = $pot_koperasi;
+        $karyawan->pot_bpjs = $pot_bpjs;
         $karyawan->status_karyawan_id = $request->input('status_karyawan_id');
         $karyawan->nama = $request->input('nama');
         $karyawan->alamat = $request->input('alamat');
@@ -189,96 +191,100 @@ class KaryawanTetapController extends Controller
 
     public function doPrint(Request $request)
     {
-        $id = $request->input('id');
+        $nik = $request->input('id');
         $start_date = $request->input('dari');
         $end_date = $request->input('ke');
 
-        $karyawan = Karyawan::find($id);
+        $karyawan = DB::table('karyawans')
+         ->where('karyawans.nik', '=', $nik)
+         ->first();
 
-        $gaji = $karyawan->nilai_upah;
+        $gaji = $karyawan->nilai_upah / 30;
 
         //HITUNG TOTAL JAM KERJA
         $total_jam = DB::table('absensi_harians')
-        ->where('absensi_harians.karyawan_id', '=', $id)
+        ->where('absensi_harians.karyawan_id', '=', $nik)
         ->where('absensi_harians.status', '=', 2)
         ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
         ->sum('jam');
 
-        $nilai_upah = $total_jam * $gaji;
+        //HITUNG JUMLAH ABSEN SELURUHNYA (include izin / ga masuk)
 
-        //HITUNG JUMLAH MASUK KERJA
+        $starts = new Carbon($start_date);
+        $ends = new Carbon($end_date);
+
+        $jml_absen = DB::select(DB::raw("SELECT COUNT(id) counter
+        FROM `absensi_harians` where `karyawan_id` = :nik AND `status` = 2 AND (`jam_kerja` !='LEMBUR' OR `jam_kerja` IS NULL) AND `tanggal` between :starts AND :ends
+        "), ['nik' => $nik, 'starts' => $starts, 'ends' => $ends]);
+
+        //HITUNG JUMLAH MASUK KERJA (tidak termasuk izin / ga absen)
         $hari_kerja = DB::table('absensi_harians')
         ->where('jml_kehadiran', '!=', '00:00:00')
-        ->where('absensi_harians.karyawan_id', '=', $id)
+        ->where('absensi_harians.karyawan_id', '=', $nik)
         ->where('absensi_harians.status', '=', 2)
         ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
         ->count('jml_kehadiran');
 
         //HITUNG JUMLAH TIDAK MASUK KERJA
         $hari_off = DB::table('absensi_harians')
-        ->where('jml_kehadiran', '=', '00:00:00')
-        ->where('absensi_harians.karyawan_id', '=', $id)
+        ->whereNull('jml_kehadiran')
+        ->where('absensi_harians.karyawan_id', '=', $nik)
         ->where('absensi_harians.status', '=', 2)
         ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
-        ->count('jml_kehadiran');
+        ->count('id');
 
         //      KARYAWAN BULANAN
-        // UPAH = UMK x 1
-        // T.Jab = Kebijakan perush
-        // U.makan = hari kerja x uang makan (15000 / 5000)
-        // L Rutin = UMK / 173 x jumlah Lembur
-        // L Biasa = UMK / 173 x jumlah lembur x 1,5
-        // L Off = UMK / 173 x jumlah lembur x 2
 
+        $nilai_upah = $jml_absen[0]->counter * ($gaji + $karyawan->uang_makan);
         // HITUNG UANG MAKAN
         $uang_makan = $hari_kerja * $karyawan->uang_makan;
 
         // PERHITUNGAN LEMBUR
         $total_lembur_rutin = DB::table('absensi_harians')
-        ->where('absensi_harians.karyawan_id', '=', $id)
+        ->where('absensi_harians.karyawan_id', '=', $nik)
         ->where('absensi_harians.jenis_lembur', '=', 1)
         ->where('absensi_harians.status', '=', 2)
         ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
         ->sum('konfirmasi_lembur');
 
-        $lembur_rutin = ($gaji / 173) * $total_lembur_rutin;
+        $lembur_rutin = 14200 * $total_lembur_rutin;
 
         $total_lembur_biasa = DB::table('absensi_harians')
-        ->where('absensi_harians.karyawan_id', '=', $id)
+        ->where('absensi_harians.karyawan_id', '=', $nik)
         ->where('absensi_harians.jenis_lembur', '=', 2)
         ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
         ->sum('konfirmasi_lembur');
 
-        $lembur_biasa = ($gaji / 173) * $total_lembur_biasa * 1.5;
+        $lembur_biasa = 21300 * $total_lembur_biasa;
 
         $total_lembur_off = DB::table('absensi_harians')
-        ->where('absensi_harians.karyawan_id', '=', $id)
+        ->where('absensi_harians.karyawan_id', '=', $nik)
         ->where('absensi_harians.jenis_lembur', '=', 3)
         ->where('absensi_harians.status', '=', 2)
         ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
         ->sum('konfirmasi_lembur');
 
-        $lembur_off = ($gaji / 173) * $total_lembur_off * 2;
+        $lembur_off = 28400 * $total_lembur_off;
 
         // PERHITUNGAN POTONGAN JABATAN
         $pot_jabatan = (0.25 * $karyawan->tunjangan) * $hari_off;
 
         // PERHITUNGAN POTONGAN UMK
-        $pot_umk = ($gaji / 31) * $hari_off;
+        $pot_umk = (50000 + $karyawan->uang_makan) * $hari_off;
 
         // PENJUMLAHAN POTONGAN ABSENSI
         $total_pot_absensi = DB::table('absensi_harians')
-        ->where('absensi_harians.karyawan_id', '=', $id)
+        ->where('absensi_harians.karyawan_id', '=', $nik)
         ->where('absensi_harians.status', '=', 2)
         ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
         ->sum('pot_absensi');
 
         // PERHITUNGAN TOTAL
-        $total = ($gaji + $karyawan->tunjangan + $uang_makan + $lembur_rutin + $lembur_biasa + $lembur_off) - $pot_jabatan - $pot_umk - $karyawan->pot_koperasi - $karyawan->pot_bpjs - $total_pot_absensi;
-
+        $total = ($nilai_upah + $lembur_rutin + $lembur_biasa + $lembur_off) - ($pot_jabatan + $pot_umk + $total_pot_absensi + $karyawan->pot_bpjs + $karyawan->pot_koperasi);
+        //$total = 0;
         // set document information
         PDF::SetAuthor('PT. TRIMITRA KEMASINDO');
-        PDF::SetTitle('Print Slip Gaji - Trimitra Kemasindo');
+        PDF::SetTitle('print Slip Gaji - Trimitra Kemasindo');
         PDF::SetSubject('Slip Gaji Karyawan');
         PDF::SetKeywords('Slip Gaji Karyawan Trimitra Kemasindo');
 
@@ -318,7 +324,7 @@ class KaryawanTetapController extends Controller
         PDF::setY($curY);
 
         PDF::SetFont('', '', 9);
-        PDF::Cell(90, 0, 'Periode (bulanan):', 0, 'L', false, 0);
+        PDF::Cell(90, 0, 'Periode(bulanan):', 0, 'L', false, 0);
         PDF::Cell(0, 0, ' '.$start_date.' s/d '.$end_date, 0, 0, 'L', 0, '', 0);
         PDF::Ln();
 
@@ -336,7 +342,7 @@ class KaryawanTetapController extends Controller
         PDF::Ln();
 
         PDF::Cell(90, 0, 'Upah', 0, 0, 'L', 0, '', 0);
-        PDF::Cell(0, 0, ' '.number_format($karyawan->nilai_upah, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' '.number_format($nilai_upah, 0, '.', ','), 0, 0, 'L', 0, '', 0);
         PDF::Ln();
 
         PDF::Cell(90, 0, 'Tunj.Jab', 0, 0, 'L', 0, '', 0);

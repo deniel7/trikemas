@@ -1,6 +1,6 @@
 <div class="modal fade" id="print_modal" tabindex="-1" role="dialog">
   
-  <form action="karyawan-harian/print" method="post">
+  <form action="karyawan-harian/print" method="post" target="_blank"> 
     
     <input type="hidden" name="_token" value="{{ csrf_token() }}">
     <div class="modal-dialog" role="document">
@@ -25,6 +25,20 @@
 
         <div class="col-lg-6">Ke : <input type="text" name="ke" class="datepicker form-control" value="{{ date('Y-m-d') }}"  }}"></div>
 
+        </div>
+        </div>
+        <br/>
+        <div class="row">
+        <div class="col-lg-12">
+          <label for="tanggal_lahir" class="col-sm-2 control-label">Potongan</label>
+          <div class="col-sm-10">
+            <div class="input-group date">
+              <select name="potongan" id="potongan">
+                <option value="0">tidak ada</option>
+                <option value="bpjs">BPJS</option>
+              </select>
+            </div>
+          </div>
         </div>
         </div>
         </div>

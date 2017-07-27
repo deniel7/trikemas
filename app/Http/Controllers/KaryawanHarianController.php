@@ -26,7 +26,8 @@ class KaryawanHarianController extends Controller
         $karyawan_harians = DB::table('karyawans')
         ->select(['karyawans.id', 'karyawans.status_karyawan_id', 'status_karyawans.keterangan', 'karyawans.nik', 'karyawans.nama', 'karyawans.alamat', 'karyawans.phone', 'karyawans.lulusan', 'karyawans.tgl_masuk', 'karyawans.nilai_upah', 'karyawans.uang_makan', 'karyawans.pot_koperasi', 'karyawans.pot_bpjs', 'karyawans.tunjangan', 'karyawans.norek'])
         ->join('status_karyawans', 'karyawans.status_karyawan_id', '=', 'status_karyawans.id')
-        ->where('karyawans.status_karyawan_id', '=', 2);
+        ->where('karyawans.status_karyawan_id', '=', 2)
+        ->orderby('karyawans.id');
 
         return Datatables::of($karyawan_harians)
 
@@ -94,29 +95,29 @@ class KaryawanHarianController extends Controller
 
     public function doPrint(Request $request)
     {
-        $id = $request->input('id');
+        $nik = $request->input('id');
         $start_date = $request->input('dari');
         $end_date = $request->input('ke');
+        $potongan = $request->input('potongan');
 
-        $karyawan = Karyawan::find($id);
+        $karyawan = DB::table('karyawans')
+         ->where('karyawans.nik', '=', $nik)
+         ->first();
 
         $gaji = $karyawan->nilai_upah;
 
-        //HITUNG JUMLAH MASUK KERJA
+        if ($potongan == 'bpjs') {
+            $pot_bpjs = $karyawan->pot_bpjs;
+        } else {
+            $pot_bpjs = 0;
+        }
+
+        //HITUNG JUMLAH KERJA
         $hari_kerja = DB::table('absensi_harians')
         ->where('jml_kehadiran', '!=', '00:00:00')
-        ->where('absensi_harians.karyawan_id', '=', $id)
+        ->where('absensi_harians.karyawan_id', '=', $nik)
         ->where('absensi_harians.status', '=', 2)
-        ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
-        ->count('jml_kehadiran');
-
-        $nilai_upah = $hari_kerja * $gaji;
-
-        //HITUNG JUMLAH TIDAK MASUK KERJA
-        $hari_off = DB::table('absensi_harians')
-        ->where('jml_kehadiran', '=', '00:00:00')
-        ->where('absensi_harians.karyawan_id', '=', $id)
-        ->where('absensi_harians.status', '=', 2)
+        ->whereNotNull('absensi_harians.jml_jam_kerja')
         ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
         ->count('jml_kehadiran');
 
@@ -125,38 +126,41 @@ class KaryawanHarianController extends Controller
 
         // PERHITUNGAN LEMBUR
         $total_lembur_rutin = DB::table('absensi_harians')
-        ->where('absensi_harians.karyawan_id', '=', $id)
+        ->where('absensi_harians.karyawan_id', '=', $nik)
         ->where('absensi_harians.jenis_lembur', '=', 1)
         ->where('absensi_harians.status', '=', 2)
         ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
         ->sum('konfirmasi_lembur');
 
-        $lembur_rutin = $total_lembur_rutin * 10500;
+        $lembur_rutin = $total_lembur_rutin * 11700;
 
         $total_lembur_biasa = DB::table('absensi_harians')
-        ->where('absensi_harians.karyawan_id', '=', $id)
+        ->where('absensi_harians.karyawan_id', '=', $nik)
         ->where('absensi_harians.jenis_lembur', '=', 2)
         ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
         ->sum('konfirmasi_lembur');
 
-        $lembur_biasa = $total_lembur_biasa * 15700;
+        $lembur_biasa = $total_lembur_biasa * 17600;
 
         // PENJUMLAHAN POTONGAN ABSENSI
         $total_pot_absensi = DB::table('absensi_harians')
-        ->where('absensi_harians.karyawan_id', '=', $id)
+        ->where('absensi_harians.karyawan_id', '=', $nik)
         ->where('absensi_harians.status', '=', 2)
         ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
         ->sum('pot_absensi');
 
         $total_upah_harian = DB::table('absensi_harians')
-                    ->leftjoin('karyawans', 'karyawans.id', '=', 'absensi_harians.karyawan_id')
-                    ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
+                    ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
+                    ->whereBetween('absensi_harians.tanggal', [new Carbon($start_date), new Carbon($end_date)])
                     ->where('absensi_harians.status', '=', 2)
-                    ->where('karyawans.id', '=', $id)
+                    ->where('karyawans.nik', '=', $nik)
                     ->sum('absensi_harians.upah_harian');
-        //dd($total_upah_harian);
+        // dd($total_upah_harian);
+
+        $nilai_upah = $total_upah_harian - $uang_makan - ($lembur_rutin + $lembur_biasa);
+
         // PERHITUNGAN TOTAL
-        $total = ($nilai_upah + $uang_makan + $lembur_rutin + $lembur_biasa) - $karyawan->pot_bpjs - $total_pot_absensi;
+        $total = $nilai_upah + $uang_makan + $lembur_rutin + $lembur_biasa - ($total_pot_absensi + $pot_bpjs);
 
         // set document information
         PDF::SetAuthor('PT. TRIMITRA KEMASINDO');
@@ -238,7 +242,7 @@ class KaryawanHarianController extends Controller
         PDF::Ln();
 
         PDF::Cell(90, 0, 'Potongan BPJS', 0, 0, 'L', 0, '', 0);
-        PDF::Cell(0, 0, ' '.number_format($karyawan->pot_bpjs, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' '.number_format($pot_bpjs, 0, '.', ','), 0, 0, 'L', 0, '', 0);
         PDF::Ln();
 
         PDF::Cell(90, 0, 'Total', 0, 0, 'L', 0, '', 0);

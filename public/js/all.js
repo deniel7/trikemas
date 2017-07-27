@@ -103,6 +103,16 @@ var karyawanModule = (function(commonModule) {
         });
 
         var table = $('#datatable').DataTable({
+            stateSave: true,
+
+            fnStateSave: function(oSettings, oData) {
+                localStorage.setItem('DataTables_' + window.location.pathname, JSON.stringify(oData));
+            },
+            fnStateLoad: function(oSettings) {
+                var data = localStorage.getItem('DataTables_' + window.location.pathname);
+                return JSON.parse(data);
+            },
+
             processing: true,
             serverSide: true,
             ajax: {
@@ -238,7 +248,7 @@ var karyawanModule = (function(commonModule) {
                 $('#print_modal').find(".modal-body").append('<table class="table table-bordered table-striped"><thead><tr><th>NIK</th><th>Nama</th><th>Status</th><th>Norek</th></thead><tbody>');
 
                 $.each(response.records, function(i, record) {
-                    $('#print_modal').find("tbody").append("<tr><td><input name ='id' type='hidden' value='" + record.id + "' />" + record.nik + "</td><td>" + record.nama + "</td><td>" + record.keterangan + "</td><td>" + record.norek + "</td></tr>");
+                    $('#print_modal').find("tbody").append("<tr><td><input name ='id' type='hidden' value='" + record.nik + "' />" + record.nik + "</td><td>" + record.nama + "</td><td>" + record.keterangan + "</td><td>" + record.norek + "</td></tr>");
 
                 });
 
@@ -364,6 +374,16 @@ var karyawanHarianModule = (function(commonModule) {
         });
 
         var table = $('#datatable').DataTable({
+            stateSave: true,
+
+            fnStateSave: function(oSettings, oData) {
+                localStorage.setItem('DataTables_' + window.location.pathname, JSON.stringify(oData));
+            },
+            fnStateLoad: function(oSettings) {
+                var data = localStorage.getItem('DataTables_' + window.location.pathname);
+                return JSON.parse(data);
+            },
+
             processing: true,
             serverSide: true,
             ajax: {
@@ -459,7 +479,7 @@ var karyawanHarianModule = (function(commonModule) {
                 $('#print_modal').find(".modal-body").append('<table class="table table-bordered table-striped"><thead><tr><th>NIK</th><th>Nama</th><th>Status</th><th>Norek</th></thead><tbody>');
 
                 $.each(response.records, function(i, record) {
-                    $('#print_modal').find("tbody").append("<tr><td><input name ='id' type='hidden' value='" + record.id + "' />" + record.nik + "</td><td>" + record.nama + "</td><td>" + record.keterangan + "</td><td>" + record.norek + "</td></tr>");
+                    $('#print_modal').find("tbody").append("<tr><td><input name ='id' type='hidden' value='" + record.nik + "' />" + record.nik + "</td><td>" + record.nama + "</td><td>" + record.keterangan + "</td><td>" + record.norek + "</td></tr>");
 
                 });
 
@@ -584,6 +604,16 @@ var karyawanStaffModule = (function(commonModule) {
         });
 
         var table = $('#datatable').DataTable({
+            stateSave: true,
+
+            fnStateSave: function(oSettings, oData) {
+                localStorage.setItem('DataTables_' + window.location.pathname, JSON.stringify(oData));
+            },
+            fnStateLoad: function(oSettings) {
+                var data = localStorage.getItem('DataTables_' + window.location.pathname);
+                return JSON.parse(data);
+            },
+
             processing: true,
             serverSide: true,
             ajax: {

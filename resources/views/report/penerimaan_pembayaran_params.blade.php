@@ -46,7 +46,7 @@
               
               <div class="box-body">
                 
-                <div class="form-group">
+                <!-- <div class="form-group">
                   <label for="bulan" class="col-sm-2 control-label">Bulan *</label>
                   <div class="col-sm-10">
                     <select name="bulan" id="bulan" class="form-control selectpicker" title="-- Pilih Bulan --">
@@ -74,9 +74,51 @@
                         @endfor
                     </select>
                   </div>
+                </div> -->
+                
+              </div>
+
+
+               <div class="form-group">
+                  <label for="angkutan" class="col-sm-2 control-label">Angkutan </label>
+                  <div class="col-sm-10">
+                    <select name="angkutan" id="angkutan" class="form-control selectpicker">
+                      <option value="0">-- Semua --</option>
+                      @foreach($angkutan as $item)
+                        
+                        <option value="{{ $item->id }}">{{ $item->nama }}</option>
+                      @endforeach
+                    </select>
+                  </div>
+                </div>
+
+
+
+              <div class="form-group">
+                  <label for="tanggal" class="col-sm-2 control-label">Tanggal *</label>
+                  <div class="col-sm-10">
+                    <div class="input-group date">
+                      <div class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                      </div>
+                      <input type="text" class="form-control" name="tanggal" id="tanggal" placeholder="Tanggal" value="{{ $default_date }}">
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="hingga" class="col-sm-2 control-label">Hingga *</label>
+                  <div class="col-sm-10">
+                    <div class="input-group date">
+                      <div class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                      </div>
+                      <input type="text" class="form-control" name="hingga" id="hingga" placeholder="Hingga">
+                    </div>
+                  </div>
                 </div>
                 
               </div>
+
               <!-- /.box-body -->
               
               <div class="box-footer">

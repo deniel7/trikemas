@@ -8,6 +8,7 @@ use PDF;
 use App\AbsensiHarian;
 use App\AbsensiPacking;
 use DateTime;
+use App\Angkutan;
 
 class ReportController extends Controller
 {
@@ -69,36 +70,67 @@ class ReportController extends Controller
 
     public function penerimaanPembayaranAngkutan()
     {
+        $data['angkutan'] = Angkutan::select('id', 'nama')->orderBy('nama')->get();
+        $data['default_date'] = date('d-m-Y');
         $data['default_year'] = date('Y');
 
         return view('report.penerimaan_pembayaran_params', $data);
     }
 
     // preview
-    public function previewPenerimaanPembayaranAngkutan($bulan, $tahun)
+    public function previewPenerimaanPembayaranAngkutan($angkutan, $tanggal, $hingga)
     {
-        $period = $tahun.$bulan;
+        //$period = $tahun.$bulan;
 
-        $data = DB::table('invoice_penjualans')
-            ->join('angkutans', 'angkutans.id', '=', 'invoice_penjualans.angkutan_id')
-            ->join('tujuans', 'tujuans.id', '=', 'invoice_penjualans.tujuan_id')
-            ->select(
-                'invoice_penjualans.id',
-                'invoice_penjualans.tanggal',
-                'invoice_penjualans.no_surat_jalan',
-                'angkutans.nama as nama_angkutan',
-                'invoice_penjualans.no_mobil',
-                'tujuans.kota as nama_tujuan',
-                'invoice_penjualans.harga_angkutan',
-                'invoice_penjualans.diskon_bayar_angkutan',
-                'invoice_penjualans.jumlah_bayar_angkutan',
-                'invoice_penjualans.status_bayar_angkutan',
-                'invoice_penjualans.tanggal_bayar_angkutan',
-                'invoice_penjualans.keterangan_bayar_angkutan'
-            )
-            ->where(DB::raw("date_format(invoice_penjualans.tanggal, '%Y%m')"), $period)
-            ->orderBy('invoice_penjualans.tanggal')->orderBy('invoice_penjualans.no_surat_jalan')
-            ->get();
+        $tanggal_en = DateTime::createFromFormat('d-m-Y', $tanggal)->format('Y-m-d');
+
+        if ($angkutan !== '0') {
+            $hingga_en = DateTime::createFromFormat('d-m-Y', $hingga)->format('Y-m-d');
+
+            $data = DB::table('invoice_penjualans')
+                ->join('angkutans', 'angkutans.id', '=', 'invoice_penjualans.angkutan_id')
+                ->join('tujuans', 'tujuans.id', '=', 'invoice_penjualans.tujuan_id')
+                ->select(
+                    'invoice_penjualans.id',
+                    'invoice_penjualans.tanggal',
+                    'invoice_penjualans.no_surat_jalan',
+                    'angkutans.nama as nama_angkutan',
+                    'invoice_penjualans.no_mobil',
+                    'tujuans.kota as nama_tujuan',
+                    'invoice_penjualans.harga_angkutan',
+                    'invoice_penjualans.diskon_bayar_angkutan',
+                    'invoice_penjualans.jumlah_bayar_angkutan',
+                    'invoice_penjualans.status_bayar_angkutan',
+                    'invoice_penjualans.tanggal_bayar_angkutan',
+                    'invoice_penjualans.keterangan_bayar_angkutan'
+                )
+                ->whereBetween('invoice_penjualans.tanggal', [$tanggal_en, $hingga_en])
+                ->where('angkutans.id', '=', $angkutan)
+                ->orderBy('invoice_penjualans.tanggal')->orderBy('invoice_penjualans.no_surat_jalan')
+                ->get();
+        } else {
+            $hingga_en = DateTime::createFromFormat('d-m-Y', $hingga)->format('Y-m-d');
+            $data = DB::table('invoice_penjualans')
+                ->join('angkutans', 'angkutans.id', '=', 'invoice_penjualans.angkutan_id')
+                ->join('tujuans', 'tujuans.id', '=', 'invoice_penjualans.tujuan_id')
+                ->select(
+                    'invoice_penjualans.id',
+                    'invoice_penjualans.tanggal',
+                    'invoice_penjualans.no_surat_jalan',
+                    'angkutans.nama as nama_angkutan',
+                    'invoice_penjualans.no_mobil',
+                    'tujuans.kota as nama_tujuan',
+                    'invoice_penjualans.harga_angkutan',
+                    'invoice_penjualans.diskon_bayar_angkutan',
+                    'invoice_penjualans.jumlah_bayar_angkutan',
+                    'invoice_penjualans.status_bayar_angkutan',
+                    'invoice_penjualans.tanggal_bayar_angkutan',
+                    'invoice_penjualans.keterangan_bayar_angkutan'
+                )
+                ->whereBetween('invoice_penjualans.tanggal', [$tanggal_en, $hingga_en])
+                ->orderBy('invoice_penjualans.tanggal')->orderBy('invoice_penjualans.no_surat_jalan')
+                ->get();
+        }
 
         // set document information
         PDF::SetAuthor('PT. TRIMITRA KEMASINDO');
@@ -154,11 +186,11 @@ class ReportController extends Controller
 
         PDF::SetFont('', '', 10);
 
-        PDF::Cell(30, 0, 'BULAN', 1, 0, 'C', 0, '', 0);
-        PDF::Cell(30, 0, 'TAHUN', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(30, 0, 'TANGGAL', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(30, 0, 'HINGGA', 1, 0, 'C', 0, '', 0);
         PDF::Ln();
-        PDF::Cell(30, 0, $this->readMonth(intval($bulan)), 1, 0, 'C', 0, '', 0);
-        PDF::Cell(30, 0, $tahun, 1, 0, 'C', 0, '', 0);
+        PDF::Cell(30, 0, $tanggal, 1, 0, 'C', 0, '', 0);
+        PDF::Cell(30, 0, $hingga, 1, 0, 'C', 0, '', 0);
         PDF::Ln(8);
 
         PDF::Cell(25, 0, 'TANGGAL', 1, 0, 'C', 0, '', 0);
@@ -215,11 +247,11 @@ class ReportController extends Controller
             PDF::Ln();
         }
 
-        // Output ($name='doc.pdf', $dest='I'), I=inline, D=Download
-        PDF::Output('laporan_pembayaran_angkutan.pdf');
+            // Output ($name='doc.pdf', $dest='I'), I=inline, D=Download
+            PDF::Output('laporan_pembayaran_angkutan.pdf');
 
-        // need to call exit, i don't know why
-        exit;
+            // need to call exit, i don't know why
+            exit;
     }
 
     public function penjualan()

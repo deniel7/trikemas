@@ -1,6 +1,6 @@
 <div class="modal fade" id="print_modal" tabindex="-1" role="dialog">
   
-  <form action="karyawan-tetap/print" method="post">
+  <form action="karyawan-tetap/print" method="post" target="_blank">
     
     <input type="hidden" name="_token" value="{{ csrf_token() }}">
     <div class="modal-dialog" role="document">

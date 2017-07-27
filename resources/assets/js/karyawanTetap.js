@@ -164,6 +164,7 @@ var datatables = (function() {
     var _applyDatatable = function() {
 
         table = $('#list').DataTable({
+
             'processing': true,
             'serverSide': true,
             'paging': true,

@@ -32,7 +32,8 @@ class KaryawanStaffController extends Controller
         $karyawans = DB::table('karyawans')
         ->select(['karyawans.id', 'status_karyawans.keterangan', 'karyawans.nik', 'karyawans.nama', 'karyawans.alamat', 'karyawans.phone', 'karyawans.lulusan', 'karyawans.tgl_masuk', 'karyawans.nilai_upah', 'karyawans.uang_makan', 'karyawans.pot_koperasi', 'karyawans.pot_bpjs', 'karyawans.tunjangan', 'karyawans.norek'])
         ->join('status_karyawans', 'karyawans.status_karyawan_id', '=', 'status_karyawans.id')
-        ->where('karyawans.status_karyawan_id', '=', 3);
+        ->where('karyawans.status_karyawan_id', '=', 3)
+        ->orderby('karyawans.id');
 
         return Datatables::of($karyawans)
 
