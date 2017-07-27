@@ -10,7 +10,7 @@
           </button>
           
           <div class="modal-body">
-          {{ url('absensi-harian/upload') }}
+<!--           {{ url('absensi-harian/upload') }} -->
             <div class="row">
               <div class="col-lg-12">
                 <div class="col-lg-6">

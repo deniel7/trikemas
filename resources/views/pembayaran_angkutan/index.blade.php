@@ -185,9 +185,9 @@
                   </div>
               </div>
               <div class="form-group">
-                  <label class="col-xs-4 control-label">Discount</label>
+                  <label class="col-xs-4 control-label">Potongan</label>
                   <div class="col-xs-6">
-                      <input type="text" class="form-control text-right" name="discount" id="discount" placeholder="Discount" >
+                      <input type="text" class="form-control text-right" name="discount" id="discount" placeholder="Potongan" >
                   </div>
               </div>
               <div class="form-group">
