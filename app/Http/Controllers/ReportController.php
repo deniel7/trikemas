@@ -194,16 +194,16 @@ class ReportController extends Controller
         PDF::Ln(8);
 
         PDF::Cell(25, 0, 'TANGGAL', 1, 0, 'C', 0, '', 0);
-        PDF::Cell(40, 0, 'NO. SURAT JALAN', 1, 0, 'C', 0, '', 0);
-        PDF::Cell(40, 0, 'NAMA ANGKUTAN', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(35, 0, 'NO. SURAT JALAN', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(25, 0, 'ANGKUTAN', 1, 0, 'C', 0, '', 0);
         PDF::Cell(30, 0, 'NO. MOBIL', 1, 0, 'C', 0, '', 0);
         PDF::Cell(40, 0, 'TUJUAN', 1, 0, 'C', 0, '', 0);
-        PDF::Cell(40, 0, 'BIAYA ANGKUTAN', 1, 0, 'C', 0, '', 0);
-        PDF::Cell(30, 0, 'POTONGAN', 1, 0, 'C', 0, '', 0);
-        PDF::Cell(30, 0, 'JUMLAH', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(20, 0, 'BIAYA', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(20, 0, 'POTONGAN', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(20, 0, 'JUMLAH', 1, 0, 'C', 0, '', 0);
         PDF::Cell(24, 0, 'STATUS', 1, 0, 'C', 0, '', 0);
-        PDF::Cell(26, 0, 'TGL. BAYAR', 1, 0, 'C', 0, '', 0);
-        PDF::Cell(60, 0, 'KETERANGAN', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(20, 0, 'TGL. BYR', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(125, 0, 'KETERANGAN', 1, 0, 'C', 0, '', 0);
         PDF::Ln();
 
         $count = sizeof($data);
@@ -211,16 +211,17 @@ class ReportController extends Controller
             $grandTotal = 0;
             foreach ($data as $item) {
                 PDF::Cell(25, 0, Carbon::createFromFormat('Y-m-d', $item->tanggal)->format('d-m-Y'), 1, 0, 'L', 0, '', 1);
-                PDF::Cell(40, 0, $item->no_surat_jalan, 1, 0, 'L', 0, '', 1);
-                PDF::Cell(40, 0, $item->nama_angkutan, 1, 0, 'L', 0, '', 1);
+                PDF::Cell(35, 0, $item->no_surat_jalan, 1, 0, 'L', 0, '', 1);
+                PDF::Cell(25, 0, $item->nama_angkutan, 1, 0, 'L', 0, '', 1);
                 PDF::Cell(30, 0, $item->no_mobil, 1, 0, 'L', 0, '', 1);
                 PDF::Cell(40, 0, $item->nama_tujuan, 1, 0, 'L', 0, '', 1);
-                PDF::Cell(40, 0, number_format($item->harga_angkutan, 0, '.', ','), 1, 0, 'R', 0, '', 1);
-                PDF::Cell(30, 0, number_format($item->diskon_bayar_angkutan, 0, '.', ','), 1, 0, 'R', 0, '', 1);
-                PDF::Cell(30, 0, number_format($item->jumlah_bayar_angkutan, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+                PDF::Cell(20, 0, number_format($item->harga_angkutan, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+                PDF::Cell(20, 0, number_format($item->diskon_bayar_angkutan, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+                PDF::Cell(20, 0, number_format($item->jumlah_bayar_angkutan, 0, '.', ','), 1, 0, 'R', 0, '', 1);
                 PDF::Cell(24, 0, ($item->status_bayar_angkutan == 1 ? 'Sudah Bayar' : 'Belum Bayar'), 1, 0, 'L', 0, '', 1);
-                PDF::Cell(26, 0, ($item->tanggal_bayar_angkutan ? Carbon::createFromFormat('Y-m-d', $item->tanggal_bayar_angkutan)->format('d-m-Y') : ''), 1, 0, 'L', 0, '', 1);
-                PDF::Cell(60, 0, $item->keterangan_bayar_angkutan, 1, 0, 'L', 0, '', 1);
+                PDF::Cell(20, 0, ($item->tanggal_bayar_angkutan ? Carbon::createFromFormat('Y-m-d', $item->tanggal_bayar_angkutan)->format('d-m-Y') : ''), 1, 0, 'C', 0, '', 1);
+
+                PDF::Cell(125, 0, $item->keterangan_bayar_angkutan, 1, 0, 'J', 0, '', 1);
                 PDF::Ln();
 
                 $grandTotal += $item->jumlah_bayar_angkutan;
