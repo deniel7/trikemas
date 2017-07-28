@@ -228,23 +228,23 @@ class ReportController extends Controller
             }
             PDF::SetFont('', 'B', 10);
             // grand total
-            PDF::Cell(245, 0, 'TOTAL ', 1, 0, 'R', 0, '', 1);
-            PDF::Cell(30, 0, number_format($grandTotal, 0, '.', ','), 1, 0, 'R', 0, '', 1);
-            PDF::Cell(110, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(115, 0, 'TOTAL ', 1, 0, 'R', 0, '', 1);
+            PDF::Cell(60, 0, number_format($grandTotal, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+            PDF::Cell(209, 0, '', 1, 0, 'C', 0, '', 0);
             PDF::Ln();
             PDF::SetFont('', '', 10);
         } else {
             PDF::Cell(25, 0, '', 1, 0, 'C', 0, '', 0);
-            PDF::Cell(40, 0, '', 1, 0, 'C', 0, '', 0);
-            PDF::Cell(40, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(35, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(25, 0, '', 1, 0, 'C', 0, '', 0);
             PDF::Cell(30, 0, '', 1, 0, 'C', 0, '', 0);
             PDF::Cell(40, 0, '', 1, 0, 'C', 0, '', 0);
             PDF::Cell(40, 0, '', 1, 0, 'C', 0, '', 0);
-            PDF::Cell(30, 0, '', 1, 0, 'C', 0, '', 0);
-            PDF::Cell(30, 0, '', 1, 0, 'C', 0, '', 0);
             PDF::Cell(20, 0, '', 1, 0, 'C', 0, '', 0);
-            PDF::Cell(30, 0, '', 1, 0, 'C', 0, '', 0);
-            PDF::Cell(60, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(20, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(24, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(20, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(125, 0, '', 1, 0, 'C', 0, '', 0);
             PDF::Ln();
         }
 
