@@ -26,10 +26,13 @@
                 <i class="fa fa-upload fa-fw"></i> Upload Excel Absensi
                 </button>
                  
-                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#lembur_modal">
+                <!-- <button type="button" class="btn btn-info" data-toggle="modal" data-target="#lembur_modal">
                 <i class="fa fa-upload fa-fw"></i> Upload Excel Lembur
-                </button>
+                </button> -->
                
+          </div>
+          <div style="float:right">
+          <a class="btn btn-primary" href="{{ url('/absensi-harian/tambah-absensi') }}"><i class="fa fa-check fa-plus"></i> Tambah Lembur</a>
           </div>
           <br><br>
           

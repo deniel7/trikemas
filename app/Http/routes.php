@@ -132,6 +132,8 @@ Route::group(['middleware' => 'auth'], function () {
 
     /* Absensi */
     //Route::post('absensi-harian', 'AbsensiHarianController@postLembur');
+    Route::get('/absensi-harian/tambah-absensi', 'AbsensiHarianController@getTambahAbsensi');
+    Route::get('nik-drop', 'AbsensiHarianController@categoryDropDownData');
     Route::resource('absensi-harian', 'AbsensiHarianController');
     Route::controller('absensi-harian', 'AbsensiHarianController');
     Route::resource('absensi-packing', 'AbsensiPackingController');

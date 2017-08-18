@@ -24,8 +24,9 @@ function getAbsenExcel($file, $status_karyawan_id)
 
         foreach ($karyawan_absens as $karyawan_absen) {
             $found = false;
+            //dd($rows);
             foreach ($rows as $row) {
-                if ($karyawan_absen->nik == intval($row[1])) {
+                if ($karyawan_absen->nik == strval($row[1])) {
                     //dd($karyawan_absen->nik);
                     $record = new AbsensiHarian();
 

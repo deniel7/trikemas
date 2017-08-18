@@ -281,4 +281,23 @@ class KaryawanHarianController extends Controller
             echo 'Error ('.$e->errorInfo[1].'): '.$e->errorInfo[2].'.';
         }
     }
+
+    /**
+     * Get Brands by Family ID.
+     *
+     * For AJAX managing NIK on tambah lembur page
+     */
+    public function getNiks($nik)
+    {
+        $namas = Karyawan::select('nama', 'nik')
+        ->get();
+
+        if ($namas->count() > 0) {
+            /* Return Brands for the Family */
+            return json_encode(['status' => 1, 'records' => $namas->lists('nama')]);
+        } else {
+            /* No Brands for the Family */
+            return json_encode(['status' => 0, 'message' => []]);
+        }
+    }
 }

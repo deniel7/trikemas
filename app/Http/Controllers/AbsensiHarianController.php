@@ -8,6 +8,8 @@ use Carbon\Carbon;
 use App\AbsensiHarian;
 use Illuminate\Http\Request;
 use Flash;
+use App\Karyawan;
+use DB;
 
 class AbsensiHarianController extends Controller
 {
@@ -20,6 +22,18 @@ class AbsensiHarianController extends Controller
     {
         return view('absensi-harian.date-result');
     }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    // public function show()
+    // {
+    //     return redirect('absensi-harian');
+    // }
 
     public function datatable()
     {
@@ -100,15 +114,78 @@ class AbsensiHarianController extends Controller
 
     public function postLembur(Request $request)
     {
-        $file = $request->file('file');
+        // $file = $request->file('file');
 
-        if (!empty($file)) {
-            getLemburExcel($file);
-            Flash::success('Absen Karyawan Lembur berhasil ditambahkan');
-        } else {
-            Flash::error('File karyawan Lembur belum dipilih');
-        }
+        // if (!empty($file)) {
+        //     getLemburExcel($file);
+        //     Flash::success('Absen Karyawan Lembur berhasil ditambahkan');
+        // } else {
+        //     Flash::error('File karyawan Lembur belum dipilih');
+        // }
+        $jam = $request->input('jam');
+
+        $record = new AbsensiHarian();
+
+        $record->tanggal = $request->input('tgl_lembur');
+        $record->karyawan_id = $request->input('karyawan');
+        $record->jenis_lembur = $request->input('jenis_lembur');
+        $record->jam_kerja = 'LEMBUR';
+
+        $record->jam = $jam;
+        $record->menit = 0;
+
+        $record->jam_lembur = $jam.':00:00';
+
+        $record->save();
+
+        DB::commit();
+        Flash::success('Absensi Lembur Berhasil Disimpan');
 
         return redirect('absensi-harian');
+    }
+
+    public function getTambahAbsensi()
+    {
+
+        // $products = Product::select('id', 'article_code', 'brand', 'product_name', 'status')->distinct('article_code');
+
+        $data['nik'] = 0;
+
+        // /* Jika Ada Family ID */
+        // if (! is_null($request->input('family_id')) && $request->input('family_id') != 'ANY') {
+        //     $products = $products->where('family_id', $request->input('family_id'));
+        //     $data['family_id'] = $request->input('family_id');
+        // } else {
+        //     $products = $products->where('brand', 'XYZ');
+        // }
+
+        // /* Jika Ada Brand */
+        // if (! is_null($request->input('brand')) && $request->input('brand') != 'ANY') {
+        //     $products = $products->where('brand', $request->input('brand'));
+        //     $data['brand'] = $request->input('brand');
+        // }
+
+        // $products = $products->orderBy('status', 'DESC')
+        // ->orderBy('article_code', 'ASC')
+        // ->get();
+
+        // $data['products'] = $products;
+        $data['karyawans'] = Karyawan::all();
+        //$data['brand'] = '-';
+
+        return view('absensi-harian.tambah-absen', $data);
+    }
+
+    public function categoryDropDownData()
+    {
+        $subcategories = DB::table('karyawans')
+                // ->join('natural_accounts', 'reduction_items.natural_account_id', '=', 'natural_accounts.code')
+                // ->join('cost_centers', 'reduction_items.cost_center_id', '=', 'cost_centers.code')
+                // ->join('products', 'reduction_items.product_id', '=', 'products.code')
+                // ->select('reduction_items.*', 'natural_accounts.description as nat_account_desc', 'cost_centers.description as cost_center_desc', 'products.description as product_desc')
+                // ->where('reduction_items.id', '=', $cat_id)
+                ->get();
+
+        return Response::json($subcategories);
     }
 }
