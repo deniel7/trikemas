@@ -106,6 +106,8 @@ class ReportController extends Controller
                 )
                 ->whereBetween('invoice_penjualans.tanggal', [$tanggal_en, $hingga_en])
                 ->where('angkutans.id', '=', $angkutan)
+                ->where('invoice_penjualans.status_bayar_angkutan', '!=', 2)
+                ->orWhereNull('invoice_penjualans.status_bayar_angkutan')
                 ->orderBy('invoice_penjualans.tanggal')->orderBy('invoice_penjualans.no_surat_jalan')
                 ->get();
         } else {
@@ -128,6 +130,8 @@ class ReportController extends Controller
                     'invoice_penjualans.keterangan_bayar_angkutan'
                 )
                 ->whereBetween('invoice_penjualans.tanggal', [$tanggal_en, $hingga_en])
+                ->where('invoice_penjualans.status_bayar_angkutan', '!=', 2)
+                ->orWhereNull('invoice_penjualans.status_bayar_angkutan')
                 ->orderBy('invoice_penjualans.tanggal')->orderBy('invoice_penjualans.no_surat_jalan')
                 ->get();
         }
@@ -694,65 +698,27 @@ class ReportController extends Controller
     }
 
     // preview
-    public function previewAbsensiKaryawanTetap($bulan)
+    public function previewAbsensiKaryawanTetap($tanggal_awal, $tanggal_akhir)
     {
-        $tahun_skrg = date('Y');
+        // $tahun_skrg = date('Y');
 
-        //$tahun_skrg = 2016;
-
-        $bulanLbl = '';
-        switch ($bulan) {
-            case 1:
-                $bulanLbl = 'Januari';
-                break;
-            case 2:
-                $bulanLbl = 'Februari';
-                break;
-            case 3:
-                $bulanLbl = 'Maret';
-                break;
-            case 4:
-                $bulanLbl = 'April';
-                break;
-            case 5:
-                $bulanLbl = 'Mei';
-                break;
-            case 6:
-                $bulanLbl = 'Juni';
-                break;
-            case 7:
-                $bulanLbl = 'Juli';
-                break;
-            case 8:
-                $bulanLbl = 'Agustus';
-                break;
-            case 9:
-                $bulanLbl = 'September';
-                break;
-            case 10:
-                $bulanLbl = 'Oktober';
-                break;
-            case 11:
-                $bulanLbl = 'November';
-                break;
-            case 12:
-                $bulanLbl = 'Desember';
-                break;
-        }
-        //DB::connection()->enableQueryLog();
+        $tgl_awal = Carbon::createFromFormat('d-m-Y', $tanggal_awal)->format('Y-m-d');
+        $tgl_akhir = Carbon::createFromFormat('d-m-Y', $tanggal_akhir)->format('Y-m-d');
+        
+        
+        DB::connection()->enableQueryLog();
         $data = AbsensiHarian::select('absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.nik', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.jenis_lembur', 'absensi_harians.status', 'absensi_harians.pot_absensi', 'karyawans.nik', 'karyawans.nama', 'karyawans.norek', 'karyawans.uang_makan', 'karyawans.nilai_upah', 'karyawans.pot_koperasi', 'karyawans.tgl_masuk', 'karyawans.tunjangan')
         ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
-        ->whereMonth('absensi_harians.tanggal', '=', $bulan)
-        ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
+        ->whereBetween('absensi_harians.tanggal', [$tgl_awal, $tgl_akhir])
         ->where('absensi_harians.status', '=', 2)
         ->where('karyawans.status_karyawan_id', '=', 1)
         //->where('karyawans.nik', '=', 267)
         ->groupBy('karyawans.nik')
         ->get();
-        // $queries = DB::getQueryLog();
+         $queries = DB::getQueryLog();
 
-         //dd($data);
-
+         dd($queries);
+        
         // set document information
         PDF::SetAuthor('PT. TRIMITRA KEMASINDO');
         PDF::SetTitle('Laporan Absensi Karyawan Tetap / Kontrak - Trimitra Kemasindo');
@@ -807,9 +773,9 @@ class ReportController extends Controller
 
         PDF::SetFont('', '', 10);
 
-        PDF::Cell(30, 0, 'BULAN', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(30, 0, 'PERIODE', 1, 0, 'C', 0, '', 0);
         PDF::Ln();
-        PDF::Cell(30, 0, $bulanLbl, 1, 0, 'C', 0, '', 0);
+        PDF::Cell(30, 0, $tanggal_awal.' hingga '.$tanggal_akhir, 1, 0, 'C', 0, '', 0);
 
         PDF::Ln(8);
 
@@ -838,8 +804,7 @@ class ReportController extends Controller
             foreach ($data as $item) {
                 $total_absensi = AbsensiHarian::select('absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.nik', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.jenis_lembur', 'absensi_harians.status', 'absensi_harians.pot_absensi', 'absensi_harians.upah_harian', 'karyawans.nik', 'karyawans.nama', 'karyawans.norek', 'karyawans.nilai_upah', 'karyawans.pot_koperasi', 'karyawans.tunjangan', 'karyawans.tgl_masuk', 'karyawans.uang_makan')
                 ->join('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
-                ->whereMonth('absensi_harians.tanggal', '=', $bulan)
-                ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
+                ->whereBetween('absensi_harians.tanggal', [$tgl_awal, $tgl_akhir])
                 ->where('karyawans.nik', '=', $item->nik)
                 ->where('absensi_harians.status', '=', 2)
                 ->where('karyawans.status_karyawan_id', '=', 1)
@@ -851,8 +816,7 @@ class ReportController extends Controller
                 $data_lembur_rutin = DB::table('absensi_harians')
                     ->select('*')
                     ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
-                    ->whereMonth('absensi_harians.tanggal', '=', $bulan)
-                    ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
+                     ->whereBetween('absensi_harians.tanggal', [$tgl_awal, $tgl_akhir])
                     ->where('absensi_harians.jenis_lembur', '=', 1)
                     ->where('karyawans.nik', '=', $item->nik)
                     ->where('absensi_harians.status', '=', 2)
@@ -862,8 +826,7 @@ class ReportController extends Controller
                 $data_lembur_biasa = DB::table('absensi_harians')
                     ->select('*')
                     ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
-                    ->whereMonth('absensi_harians.tanggal', '=', $bulan)
-                    ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
+                     ->whereBetween('absensi_harians.tanggal', [$tgl_awal, $tgl_akhir])
                     ->where('absensi_harians.jenis_lembur', '=', 2)
                     ->where('karyawans.nik', '=', $item->nik)
                     ->where('absensi_harians.status', '=', 2)
@@ -873,8 +836,7 @@ class ReportController extends Controller
                 $data_lembur_off = DB::table('absensi_harians')
                     ->select('*')
                     ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
-                    ->whereMonth('absensi_harians.tanggal', '=', $bulan)
-                    ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
+                     ->whereBetween('absensi_harians.tanggal', [$tgl_awal, $tgl_akhir])
                     ->where('absensi_harians.jenis_lembur', '=', 3)
                     ->where('karyawans.nik', '=', $item->nik)
                     ->where('absensi_harians.status', '=', 2)
@@ -884,8 +846,7 @@ class ReportController extends Controller
                 $pot_absensi = DB::table('absensi_harians')
                     ->select('absensi_harians.pot_absensi')
                     ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
-                    ->whereMonth('absensi_harians.tanggal', '=', $bulan)
-                    ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
+                     ->whereBetween('absensi_harians.tanggal', [$tgl_awal, $tgl_akhir])
                     ->where('karyawans.nik', '=', $item->nik)
                     ->where('absensi_harians.status', '=', 2)
                     ->where('karyawans.status_karyawan_id', '=', 1)
@@ -894,8 +855,7 @@ class ReportController extends Controller
                 $total_upah_harian = DB::table('absensi_harians')
                     ->select('absensi_harians.pot_absensi')
                     ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
-                    ->whereMonth('absensi_harians.tanggal', '=', $bulan)
-                    ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
+                     ->whereBetween('absensi_harians.tanggal', [$tgl_awal, $tgl_akhir])
                     ->where('absensi_harians.status', '=', 2)
                     ->where('karyawans.status_karyawan_id', '=', 1)
                     ->where('karyawans.nik', '=', $item->nik)
@@ -905,8 +865,7 @@ class ReportController extends Controller
                 $hari_off = DB::table('absensi_harians')
                 ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                 ->whereNull('jml_kehadiran')
-                ->whereMonth('absensi_harians.tanggal', '=', $bulan)
-                ->whereYear('absensi_harians.tanggal', '=', $tahun_skrg)
+                 ->whereBetween('absensi_harians.tanggal', [$tgl_awal, $tgl_akhir])
                 ->where('absensi_harians.status', '=', 2)
                 ->where('karyawans.status_karyawan_id', '=', 1)
                 ->where('karyawans.nik', '=', $item->nik)
@@ -926,7 +885,7 @@ class ReportController extends Controller
                 $total_upah = DB::table('absensi_harians')
                     ->select('absensi_harians.pot_absensi')
                     ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
-                    ->whereMonth('absensi_harians.tanggal', '=', $bulan)
+                     ->whereBetween('absensi_harians.tanggal', [$tgl_awal, $tgl_akhir])
                     ->where('absensi_harians.status', '=', 2)
                     ->where('karyawans.status_karyawan_id', '=', 1)
                     ->sum('absensi_harians.upah_harian');
@@ -934,7 +893,7 @@ class ReportController extends Controller
                 $total_pot_koperasi = DB::table('absensi_harians')
                     ->select('absensi_harians.pot_absensi')
                     ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
-                    ->whereMonth('absensi_harians.tanggal', '=', $bulan)
+                     ->whereBetween('absensi_harians.tanggal', [$tgl_awal, $tgl_akhir])
                     ->where('absensi_harians.status', '=', 2)
                     ->where('karyawans.status_karyawan_id', '=', 1)
                     ->sum('karyawans.pot_koperasi');
@@ -942,7 +901,7 @@ class ReportController extends Controller
                 $total_pot_absensi = DB::table('absensi_harians')
                     ->select('absensi_harians.pot_absensi')
                     ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
-                    ->whereMonth('absensi_harians.tanggal', '=', $bulan)
+                     ->whereBetween('absensi_harians.tanggal', [$tgl_awal, $tgl_akhir])
                     ->where('absensi_harians.status', '=', 2)
                     ->where('karyawans.status_karyawan_id', '=', 1)
                     ->sum('absensi_harians.pot_absensi');

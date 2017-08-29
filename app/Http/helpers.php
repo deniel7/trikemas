@@ -49,13 +49,24 @@ function getAbsenExcel($file, $status_karyawan_id)
                     $jam = isset($jam_exp[0]) ? $jam_exp[0] : '';
                     $menit = isset($jam_exp[1]) ? $jam_exp[1] : '';
 
-                    //pembulatan jam dan menit jika terlambat
-                    if ($jam == 7) {
-                        if ($menit > 44) {
-                            $jam = 8;
-                            $menit = 00;
-                        }
+                    //pembulatan jam dan menit
+                    // if ($jam == 7) {
+                    //     if ($menit > 44) {
+                    //         $jam = 8;
+                    //         $menit = 00;
+                    //     }
+                    // } else {
+                    //     $jam = $jam;
+                    //     $menit = $menit;
+                    // }
+
+                    if ($menit > 44) {
+                        $jam = $jam + 1;
+                    } else {
+                        $jam = $jam;
+                        $menit = $menit;
                     }
+
                     if (empty($record->karyawan_id)) {
                         return;
                     }

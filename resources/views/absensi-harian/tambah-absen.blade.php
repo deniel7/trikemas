@@ -4,8 +4,8 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
   <h1>
-  Product
-  <small>Manage Published Products</small>
+  Absensi Harian
+  <small>Tambah Absensi Lembur</small>
   </h1>
   <ol class="breadcrumb">
     <li><a href="{{ url('/') }}"><i class="fa fa-tachometer"></i> Dashboard</a></li>

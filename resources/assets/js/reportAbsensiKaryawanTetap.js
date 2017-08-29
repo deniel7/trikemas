@@ -4,7 +4,28 @@ var reportAbsensiKaryawanTetapModule = (function(commonModule) {
 
     var init = function() {
         _applyValidation();
+        _applyDatePicker();
     };
+
+    var _applyDatePicker = function() {
+
+        $("#tanggal").datepicker({
+            format: 'dd-mm-yyyy',
+            autoclose: true
+        }).on("change", function() {
+            // Revalidate form
+            $('#frmData').formValidation('revalidateField', 'tanggal');
+        });
+
+        $("#hingga").datepicker({
+            format: 'dd-mm-yyyy',
+            autoclose: true
+        }).on("change", function() {
+            // Revalidate form
+            $('#frmData').formValidation('revalidateField', 'tanggal');
+        });
+    };
+
 
     var _applyValidation = function() {
 
@@ -16,13 +37,20 @@ var reportAbsensiKaryawanTetapModule = (function(commonModule) {
                 },
                 icon: null,
                 fields: {
-                    bulan: {
+                    tanggal: {
                         validators: {
                             notEmpty: {
-                                message: 'Bulan harus diisi'
+                                message: 'Tanggal awal harus diisi'
                             }
                         }
-                    }
+                    },
+                    hingga: {
+                        validators: {
+                            notEmpty: {
+                                message: 'Tanggal akhir harus diisi'
+                            }
+                        }
+                    },
                 }
             })
             // submit button always enable
@@ -37,9 +65,10 @@ var reportAbsensiKaryawanTetapModule = (function(commonModule) {
                 e.preventDefault();
 
 
-                var bulan = $("#bulan").val();
+                var tanggal = $("#tanggal").val();
+                var hingga = $("#hingga").val();
 
-                var url = "/report/absensi-karyawan-tetap/preview/" + bulan;
+                var url = "/report/absensi-karyawan-tetap/preview/" + tanggal + "/" + hingga;
 
 
                 window.open(url, "_blank");

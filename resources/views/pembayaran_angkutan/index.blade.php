@@ -211,6 +211,15 @@
                       <textarea class="form-control" name="keterangan" id="keterangan" placeholder="Keterangan" maxlength="255"></textarea>
                   </div>
               </div>
+              <div class="form-group">
+                  <label class="col-xs-4 control-label">Confirm Bayar</label>
+                  <div class="col-xs-6">
+                      <select name="confirm" id="confirm">
+                        <option value="0">tidak ada</option>
+                        <option value="1">Ya</option>
+                      </select>
+                  </div>
+              </div>
             
             </div>
             <!-- /.modal-body -->

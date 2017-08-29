@@ -19,44 +19,69 @@ use DB;
 class PembayaranAngkutanController extends Controller
 {
     
-    public function datatables(Request $request) {
+    public function datatables(Request $request)
+    {
         $list = DB::table('invoice_penjualans')
                 ->join('konsumens', 'konsumens.id', '=', 'invoice_penjualans.konsumen_id')
                 ->join('angkutans', 'angkutans.id', '=', 'invoice_penjualans.angkutan_id')
                 ->join('tujuans', 'tujuans.id', '=', 'invoice_penjualans.tujuan_id')
-                ->select('invoice_penjualans.id', 'invoice_penjualans.tanggal', 'invoice_penjualans.no_surat_jalan', 'invoice_penjualans.harga_angkutan', 
-                         'invoice_penjualans.no_mobil', 'konsumens.nama as nama_konsumen', 'angkutans.nama as nama_angkutan', 'tujuans.kota as nama_tujuan',
-                         'invoice_penjualans.tanggal_bayar_angkutan', 'invoice_penjualans.diskon_bayar_angkutan', 'invoice_penjualans.jumlah_bayar_angkutan',
-                         'invoice_penjualans.status_bayar_angkutan', 'invoice_penjualans.bank_tujuan_bayar_angkutan', 'invoice_penjualans.keterangan_bayar_angkutan');
+                ->select(
+                    'invoice_penjualans.id',
+                    'invoice_penjualans.tanggal',
+                    'invoice_penjualans.no_surat_jalan',
+                    'invoice_penjualans.harga_angkutan',
+                    'invoice_penjualans.no_mobil',
+                    'konsumens.nama as nama_konsumen',
+                    'angkutans.nama as nama_angkutan',
+                    'tujuans.kota as nama_tujuan',
+                    'invoice_penjualans.tanggal_bayar_angkutan',
+                    'invoice_penjualans.diskon_bayar_angkutan',
+                    'invoice_penjualans.jumlah_bayar_angkutan',
+                    'invoice_penjualans.status_bayar_angkutan',
+                    'invoice_penjualans.bank_tujuan_bayar_angkutan',
+                    'invoice_penjualans.keterangan_bayar_angkutan'
+                )
+                ->orderBy('invoice_penjualans.id', 'DESC');
         
         return Datatables::of($list)
                 ->addColumn('action', function ($list) {
                     $html  = '<div class="text-center btn-group btn-group-justified">';
                     if (in_array(341, session()->get('allowed_menus'))) {
                         if ($list->status_bayar_angkutan == 0) {
-                            $html .= '<a href="/pembayaran-angkutan/complete/' . $list->id . '" title="Konfirmasi Pembayaran" onclick="confirmComplete(event, \'' . $list->id . '\', \'' . $list->no_surat_jalan . '\', \'' . $list->harga_angkutan . '\');"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-flag"></i></button></a>';    
+                            $html .= '<a href="/pembayaran-angkutan/complete/' . $list->id . '" title="Konfirmasi Pembayaran" onclick="confirmComplete(event, \'' . $list->id . '\', \'' . $list->no_surat_jalan . '\', \'' . $list->harga_angkutan . '\');"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-flag"></i></button></a>';
                         }
                     }
                     $html .= '</div>';
                     
                     return $html;
                 })
-                ->editColumn('tanggal', function($list) {
+                ->editColumn('tanggal', function ($list) {
                     return with(new Carbon($list->tanggal))->format('d-m-Y');
                 })
                 ->editColumn('harga_angkutan', '{{ number_format($harga_angkutan, "2", ".", ",") }}')
                 ->editColumn('diskon_bayar_angkutan', '{{ number_format($diskon_bayar_angkutan, "2", ".", ",") }}')
                 ->editColumn('jumlah_bayar_angkutan', '{{ number_format($jumlah_bayar_angkutan, "2", ".", ",") }}')
-                ->editColumn('status_bayar_angkutan', '{{ $status_bayar_angkutan == 1 ? "Sudah Bayar" : "Belum Bayar" }}')
-                ->editColumn('tanggal_bayar_angkutan', function($list) {
-                    if ($list->tanggal_bayar_angkutan == '0000-00-00' || $list->tanggal_bayar_angkutan == null) {
-                        return '';   
-                    }
-                    else {
-                        return with(new Carbon($list->tanggal_bayar_angkutan))->format('d-m-Y');    
+                // ->editColumn('status_bayar_angkutan', '{{ $status_bayar_angkutan == 1 ? "Sudah Bayar" : "Belum Bayar" }}')
+
+                ->editColumn('status_bayar_angkutan', function ($list) {
+                    if ($list->status_bayar_angkutan == 1) {
+                        return 'Sudah dibayar';
+                    } elseif ($list->status_bayar_angkutan == 2) {
+                        return 'Confirm bayar';
+                    } else {
+                        return 'Belum dibayar';
                     }
                 })
-                ->filter(function($query) use ($request) {
+
+
+                ->editColumn('tanggal_bayar_angkutan', function ($list) {
+                    if ($list->tanggal_bayar_angkutan == '0000-00-00' || $list->tanggal_bayar_angkutan == null) {
+                        return '';
+                    } else {
+                        return with(new Carbon($list->tanggal_bayar_angkutan))->format('d-m-Y');
+                    }
+                })
+                ->filter(function ($query) use ($request) {
                     if ($request->has('no_surat_jalan')) {
                         $query->where('invoice_penjualans.no_surat_jalan', 'like', '%'.$request->get('no_surat_jalan').'%');
                     }
@@ -90,8 +115,7 @@ class PembayaranAngkutanController extends Controller
             $data['tujuan'] = Tujuan::select('id', 'kota as nama')->orderBy('nama')->get();
             
             return view('pembayaran_angkutan.index', $data);
-        }
-        else {
+        } else {
             //
         }
     }
@@ -162,21 +186,36 @@ class PembayaranAngkutanController extends Controller
         //
     }
     
-    public function complete(Request $request, $id) {
+    public function complete(Request $request, $id)
+    {
+        
         try {
-            $invoice = InvoicePenjualan::find($id);
-            $invoice->status_bayar_angkutan = 1;
-            $invoice->tanggal_bayar_angkutan = Carbon::createFromFormat('d/m/Y', $request->tanggal_bayar)->format('Y-m-d');
-            $invoice->diskon_bayar_angkutan = str_replace(',', '', $request->discount); 
-            $invoice->jumlah_bayar_angkutan = str_replace(',', '', $request->jumlah_bayar); 
-            //$invoice->bank_tujuan_bayar_angkutan = $request->bank_tujuan_bayar;
-            $invoice->keterangan_bayar_angkutan = $request->keterangan;
-            $invoice->save();
+            if ($request->confirm == 0) {
+                $invoice = InvoicePenjualan::find($id);
+                $invoice->status_bayar_angkutan = 1;
+                $invoice->tanggal_bayar_angkutan = Carbon::createFromFormat('d/m/Y', $request->tanggal_bayar)->format('Y-m-d');
+                $invoice->diskon_bayar_angkutan = str_replace(',', '', $request->discount);
+                $invoice->jumlah_bayar_angkutan = str_replace(',', '', $request->jumlah_bayar);
+                //$invoice->bank_tujuan_bayar_angkutan = $request->bank_tujuan_bayar;
+                $invoice->keterangan_bayar_angkutan = $request->keterangan;
+                $invoice->save();
             
-            echo 'success';
-        }
-        catch(\Illuminate\Database\QueryException $e) {
+                echo 'success';
+            } else {
+                $invoice = InvoicePenjualan::find($id);
+                $invoice->status_bayar_angkutan = 2;
+                $invoice->tanggal_bayar_angkutan = Carbon::createFromFormat('d/m/Y', $request->tanggal_bayar)->format('Y-m-d');
+                $invoice->diskon_bayar_angkutan = str_replace(',', '', $request->discount);
+                $invoice->jumlah_bayar_angkutan = str_replace(',', '', $request->jumlah_bayar);
+                //$invoice->bank_tujuan_bayar_angkutan = $request->bank_tujuan_bayar;
+                $invoice->keterangan_bayar_angkutan = $request->keterangan;
+                $invoice->save();
+            
+                echo 'success';
+            }
+        } catch (\Illuminate\Database\QueryException $e) {
             echo 'Error (' . $e->errorInfo[1] . '): ' . $e->errorInfo[2] . '.';
         }
+        
     }
 }

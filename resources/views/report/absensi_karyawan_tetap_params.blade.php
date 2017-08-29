@@ -45,33 +45,28 @@
               <div class="box-body">
                 
                 <div class="form-group">
-                  <label for="tanggal_lahir" class="col-sm-2 control-label">Bulan *</label>
+                  <label for="tanggal_lahir" class="col-sm-2 control-label">Tanggal *</label>
                   <div class="col-sm-10">
                     <div class="input-group date">
                       <div class="input-group-addon">
                         <i class="fa fa-calendar"></i>
                       </div>
-                      <select class="form-control" name="bulan" id="bulan">
-
-                           <option value="">-- Pilih Bulan --</option>
-                           <option value="1"> Januari</option>
-                           <option value="2"> Februari</option>
-                           <option value="3"> Maret</option>
-                           <option value="4"> April</option>
-                           <option value="5"> Mei</option>
-                           <option value="6"> Juni</option>
-                           <option value="7"> Juli</option>
-                           <option value="8"> Agustus</option>
-                           <option value="9"> September</option>
-                           <option value="10"> Oktober</option>
-                           <option value="11"> November</option>
-                           <option value="12"> Desember</option>
-                           
-                                 
-                      </select>
+                      <input type="text" class="form-control" name="tanggal_awal" id="tanggal" placeholder="Tanggal" value="{{ $default_date }}">
                     </div>
                   </div>
                 </div>
+                <div class="form-group">
+                  <label for="tanggal_lahir" class="col-sm-2 control-label">Hingga </label>
+                  <div class="col-sm-10">
+                    <div class="input-group date">
+                      <div class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                      </div>
+                      <input type="text" class="form-control" name="tanggal_akhir" id="hingga" placeholder="Hingga">
+                    </div>
+                  </div>
+                </div>
+              </div>
                 
               <!-- /.box-body -->
               
