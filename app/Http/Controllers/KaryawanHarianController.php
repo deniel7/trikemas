@@ -204,48 +204,48 @@ class KaryawanHarianController extends Controller
         PDF::setY($curY);
 
         PDF::SetFont('', '', 9);
-        PDF::Cell(90, 0, 'Periode (Harian):', 0, 'L', false, 0);
+        PDF::Cell(40, 0, 'Periode (Harian):', 0, 'L', false, 0);
         PDF::Cell(0, 0, ' '.$start_date.' s/d '.$end_date, 0, 0, 'L', 0, '', 0);
         PDF::Ln();
 
         PDF::SetFont('', '', 9);
-        PDF::Cell(90, 0, 'Tanggal Cetak :', 0, 'L', false, 0);
+        PDF::Cell(40, 0, 'Tanggal Cetak :', 0, 'L', false, 0);
         PDF::Cell(0, 0, ' '.date('d-m-Y h:m'), 0, 0, 'L', 0, '', 0);
         PDF::Ln(7);
 
-        PDF::Cell(90, 0, 'Nama', 0, 0, 'L', 0, '', 0);
+        PDF::Cell(40, 0, 'Nama', 0, 0, 'L', 0, '', 0);
         PDF::Cell(0, 0, ' '.$karyawan->nama, 0, 0, 'L', 0, '', 0);
         PDF::Ln();
 
-        PDF::Cell(90, 0, 'Bagian', 0, 0, 'L', 0, '', 0);
+        PDF::Cell(40, 0, 'Bagian', 0, 0, 'L', 0, '', 0);
         PDF::Cell(0, 0, ' '.$karyawan->bagian, 0, 0, 'L', 0, '', 0);
         PDF::Ln();
 
-        PDF::Cell(90, 0, 'Upah', 0, 0, 'L', 0, '', 0);
+        PDF::Cell(40, 0, 'Upah', 0, 0, 'L', 0, '', 0);
         PDF::Cell(0, 0, ' '.number_format($nilai_upah, 0, '.', ','), 0, 0, 'L', 0, '', 0);
         PDF::Ln();
 
-        PDF::Cell(90, 0, 'Uang Makan', 0, 0, 'L', 0, '', 0);
+        PDF::Cell(40, 0, 'Uang Makan', 0, 0, 'L', 0, '', 0);
         PDF::Cell(0, 0, ' '.number_format($uang_makan, 0, '.', ','), 0, 0, 'L', 0, '', 0);
         PDF::Ln(7);
 
-        PDF::Cell(90, 0, 'Lbr. Rutin', 0, 0, 'L', 0, '', 0);
+        PDF::Cell(40, 0, 'Lbr. Rutin', 0, 0, 'L', 0, '', 0);
         PDF::Cell(0, 0, ' '.number_format($lembur_rutin, 0, '.', ','), 0, 0, 'L', 0, '', 0);
         PDF::Ln();
 
-        PDF::Cell(90, 0, 'Lbr. Biasa', 0, 0, 'L', 0, '', 0);
+        PDF::Cell(40, 0, 'Lbr. Biasa', 0, 0, 'L', 0, '', 0);
         PDF::Cell(0, 0, ' '.number_format($lembur_biasa, 0, '.', ','), 0, 0, 'L', 0, '', 0);
         PDF::Ln(12);
 
-        PDF::Cell(90, 0, 'Potongan Absensi', 0, 0, 'L', 0, '', 0);
+        PDF::Cell(40, 0, 'Potongan Absensi', 0, 0, 'L', 0, '', 0);
         PDF::Cell(0, 0, ' '.number_format($total_pot_absensi, 0, '.', ','), 0, 0, 'L', 0, '', 0);
         PDF::Ln();
 
-        PDF::Cell(90, 0, 'Potongan BPJS', 0, 0, 'L', 0, '', 0);
+        PDF::Cell(40, 0, 'Potongan BPJS', 0, 0, 'L', 0, '', 0);
         PDF::Cell(0, 0, ' '.number_format($pot_bpjs, 0, '.', ','), 0, 0, 'L', 0, '', 0);
         PDF::Ln();
 
-        PDF::Cell(90, 0, 'Total', 0, 0, 'L', 0, '', 0);
+        PDF::Cell(40, 0, 'Total', 0, 0, 'L', 0, '', 0);
         PDF::Cell(0, 0, ' '.number_format($total, 0, '.', ','), 0, 0, 'L', 0, '', 0);
         PDF::Ln(8);
 
