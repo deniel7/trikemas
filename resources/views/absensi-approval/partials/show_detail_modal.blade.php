@@ -20,7 +20,7 @@
 <!--           Diisi di absensiApproval.js -- show detail() -->
           </div>
         </div>
-         <p style="text-align:right">Potongan Absensi : <input type="text" name="potongan" /></p>
+         <p style="text-align:right">Potongan lain-lain : <input type="text" name="potongan" /></p>
         </div>
 
         <div class="modal-footer">

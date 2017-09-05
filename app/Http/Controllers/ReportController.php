@@ -780,9 +780,9 @@ class ReportController extends Controller
 
         PDF::SetFont('', '', 10);
 
-        PDF::Cell(30, 0, 'PERIODE', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(90, 0, 'PERIODE', 1, 0, 'C', 0, '', 0);
         PDF::Ln();
-        PDF::Cell(30, 0, $tanggal_awal.' hingga '.$tanggal_akhir, 1, 0, 'C', 0, '', 0);
+        PDF::Cell(90, 0, $tanggal_awal.' hingga '.$tanggal_akhir, 1, 0, 'C', 0, '', 0);
 
         PDF::Ln(8);
 

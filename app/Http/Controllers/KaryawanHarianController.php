@@ -239,7 +239,7 @@ class KaryawanHarianController extends Controller
         PDF::Cell(0, 0, ' '.number_format($lembur_biasa, 0, '.', ','), 0, 0, 'L', 0, '', 0);
         PDF::Ln(12);
 
-        PDF::Cell(40, 0, 'Potongan Absensi', 0, 0, 'L', 0, '', 0);
+        PDF::Cell(40, 0, 'Potongan lain-lain', 0, 0, 'L', 0, '', 0);
         PDF::Cell(0, 0, ' '.number_format($total_pot_absensi, 0, '.', ','), 0, 0, 'L', 0, '', 0);
         PDF::Ln();
 
