@@ -150,11 +150,13 @@ class KaryawanHarianController extends Controller
         ->sum('pot_absensi');
 
         $total_upah_harian = DB::table('absensi_harians')
+                    ->select('absensi_harians.pot_absensi')
                     ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                     ->whereBetween('absensi_harians.tanggal', [new Carbon($start_date), new Carbon($end_date)])
                     ->where('absensi_harians.status', '=', 2)
                     ->where('karyawans.nik', '=', $nik)
                     ->sum('absensi_harians.upah_harian');
+
         // dd($total_upah_harian);
 
         $nilai_upah = $total_upah_harian - $uang_makan - ($lembur_rutin + $lembur_biasa);

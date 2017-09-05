@@ -86,7 +86,7 @@ class ReportController extends Controller
 
         if ($angkutan !== '0') {
             $hingga_en = DateTime::createFromFormat('d-m-Y', $hingga)->format('Y-m-d');
-
+            DB::connection()->enableQueryLog();
             $data = DB::table('invoice_penjualans')
                 ->join('angkutans', 'angkutans.id', '=', 'invoice_penjualans.angkutan_id')
                 ->join('tujuans', 'tujuans.id', '=', 'invoice_penjualans.tujuan_id')
@@ -110,8 +110,12 @@ class ReportController extends Controller
                 ->orWhereNull('invoice_penjualans.status_bayar_angkutan')
                 ->orderBy('invoice_penjualans.tanggal')->orderBy('invoice_penjualans.no_surat_jalan')
                 ->get();
+            $queries = DB::getQueryLog();
+
+            dd($queries);
         } else {
             $hingga_en = DateTime::createFromFormat('d-m-Y', $hingga)->format('Y-m-d');
+            //DB::connection()->enableQueryLog();
             $data = DB::table('invoice_penjualans')
                 ->join('angkutans', 'angkutans.id', '=', 'invoice_penjualans.angkutan_id')
                 ->join('tujuans', 'tujuans.id', '=', 'invoice_penjualans.tujuan_id')
@@ -134,6 +138,9 @@ class ReportController extends Controller
                 ->orWhereNull('invoice_penjualans.status_bayar_angkutan')
                 ->orderBy('invoice_penjualans.tanggal')->orderBy('invoice_penjualans.no_surat_jalan')
                 ->get();
+            // $queries = DB::getQueryLog();
+
+            // dd($queries);
         }
 
         // set document information
@@ -706,7 +713,7 @@ class ReportController extends Controller
         $tgl_akhir = Carbon::createFromFormat('d-m-Y', $tanggal_akhir)->format('Y-m-d');
         
         
-        DB::connection()->enableQueryLog();
+        //DB::connection()->enableQueryLog();
         $data = AbsensiHarian::select('absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.nik', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.jenis_lembur', 'absensi_harians.status', 'absensi_harians.pot_absensi', 'karyawans.nik', 'karyawans.nama', 'karyawans.norek', 'karyawans.uang_makan', 'karyawans.nilai_upah', 'karyawans.pot_koperasi', 'karyawans.tgl_masuk', 'karyawans.tunjangan')
         ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
         ->whereBetween('absensi_harians.tanggal', [$tgl_awal, $tgl_akhir])
@@ -715,9 +722,9 @@ class ReportController extends Controller
         //->where('karyawans.nik', '=', 267)
         ->groupBy('karyawans.nik')
         ->get();
-         $queries = DB::getQueryLog();
+         // $queries = DB::getQueryLog();
 
-         dd($queries);
+         // dd($queries);
         
         // set document information
         PDF::SetAuthor('PT. TRIMITRA KEMASINDO');
@@ -1066,14 +1073,25 @@ class ReportController extends Controller
                     ->where('karyawans.nik', '=', $item->nik)
                     ->sum('absensi_harians.upah_harian');
 
+                $total_pot_absensi = DB::table('absensi_harians')
+                    ->select('absensi_harians.pot_absensi')
+                    ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
+                    ->whereBetween('absensi_harians.tanggal', [$tgl_awal, $tgl_akhir])
+                    ->where('absensi_harians.status', '=', 2)
+                    ->where('karyawans.status_karyawan_id', '=', 2)
+                    ->where('karyawans.nik', '=', $item->nik)
+                    ->sum('absensi_harians.pot_absensi');
+
+
                 // Cell ($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='', $stretch=0,
                 PDF::SetFont('', 'B', 14);
                 PDF::Cell(180, 5, $item->nama, 1, 0, 'L', 0, '', 1);
 
                 if ($potongan == 'bpjs') {
-                    $total = $total - $item->pot_bpjs;
+                    $total = $total - ($total_pot_absensi + $item->pot_bpjs);
                     PDF::Cell(180, 5, number_format($total, 0, '.', ','), 1, 0, 'R', 0, '', 1);
                 } else {
+                    $total = $total - $total_pot_absensi;
                     PDF::Cell(180, 5, number_format($total, 0, '.', ','), 1, 0, 'R', 0, '', 1);
                 }
                 PDF::Ln();
