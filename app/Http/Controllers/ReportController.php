@@ -86,33 +86,43 @@ class ReportController extends Controller
 
         if ($angkutan !== '0') {
             $hingga_en = DateTime::createFromFormat('d-m-Y', $hingga)->format('Y-m-d');
-            DB::connection()->enableQueryLog();
-            $data = DB::table('invoice_penjualans')
-                ->join('angkutans', 'angkutans.id', '=', 'invoice_penjualans.angkutan_id')
-                ->join('tujuans', 'tujuans.id', '=', 'invoice_penjualans.tujuan_id')
-                ->select(
-                    'invoice_penjualans.id',
-                    'invoice_penjualans.tanggal',
-                    'invoice_penjualans.no_surat_jalan',
-                    'angkutans.nama as nama_angkutan',
-                    'invoice_penjualans.no_mobil',
-                    'tujuans.kota as nama_tujuan',
-                    'invoice_penjualans.harga_angkutan',
-                    'invoice_penjualans.diskon_bayar_angkutan',
-                    'invoice_penjualans.jumlah_bayar_angkutan',
-                    'invoice_penjualans.status_bayar_angkutan',
-                    'invoice_penjualans.tanggal_bayar_angkutan',
-                    'invoice_penjualans.keterangan_bayar_angkutan'
-                )
-                ->whereBetween('invoice_penjualans.tanggal', [$tanggal_en, $hingga_en])
-                ->where('angkutans.id', '=', $angkutan)
-                ->where('invoice_penjualans.status_bayar_angkutan', '!=', 2)
-                ->orWhereNull('invoice_penjualans.status_bayar_angkutan')
-                ->orderBy('invoice_penjualans.tanggal')->orderBy('invoice_penjualans.no_surat_jalan')
-                ->get();
-            $queries = DB::getQueryLog();
+            //DB::connection()->enableQueryLog();
 
-            dd($queries);
+            $data = DB::select(DB::raw("SELECT `invoice_penjualans`.`id`, `invoice_penjualans`.`tanggal`, `invoice_penjualans`.`no_surat_jalan`, `angkutans`.`nama` as `nama_angkutan`, 
+`invoice_penjualans`.`no_mobil`, `tujuans`.`kota` as `nama_tujuan`, `invoice_penjualans`.`harga_angkutan`, `invoice_penjualans`.`diskon_bayar_angkutan`, 
+`invoice_penjualans`.`jumlah_bayar_angkutan`, `invoice_penjualans`.`status_bayar_angkutan`, `invoice_penjualans`.`tanggal_bayar_angkutan`, `invoice_penjualans`.`keterangan_bayar_angkutan` 
+from `invoice_penjualans` inner join `angkutans` on `angkutans`.`id` = `invoice_penjualans`.`angkutan_id` 
+inner join `tujuans` on `tujuans`.`id` = `invoice_penjualans`.`tujuan_id` 
+where `invoice_penjualans`.`tanggal` between :starts and :ends and `angkutans`.`id` = :angkutan 
+and (`invoice_penjualans`.`status_bayar_angkutan` != 2 or `invoice_penjualans`.`status_bayar_angkutan` is null) order by `invoice_penjualans`.`tanggal` asc, `invoice_penjualans`.`no_surat_jalan` asc"), ['starts'=> $tanggal_en, 'ends' => $hingga_en, 'angkutan' => $angkutan]);
+
+
+            // $data = DB::table('invoice_penjualans')
+            //     ->join('angkutans', 'angkutans.id', '=', 'invoice_penjualans.angkutan_id')
+            //     ->join('tujuans', 'tujuans.id', '=', 'invoice_penjualans.tujuan_id')
+            //     ->select(
+            //         'invoice_penjualans.id',
+            //         'invoice_penjualans.tanggal',
+            //         'invoice_penjualans.no_surat_jalan',
+            //         'angkutans.nama as nama_angkutan',
+            //         'invoice_penjualans.no_mobil',
+            //         'tujuans.kota as nama_tujuan',
+            //         'invoice_penjualans.harga_angkutan',
+            //         'invoice_penjualans.diskon_bayar_angkutan',
+            //         'invoice_penjualans.jumlah_bayar_angkutan',
+            //         'invoice_penjualans.status_bayar_angkutan',
+            //         'invoice_penjualans.tanggal_bayar_angkutan',
+            //         'invoice_penjualans.keterangan_bayar_angkutan'
+            //     )
+            //     ->whereBetween('invoice_penjualans.tanggal', [$tanggal_en, $hingga_en])
+            //     ->where('angkutans.id', '=', $angkutan)
+            //     ->where('invoice_penjualans.status_bayar_angkutan', '!=', 2)
+            //     ->orWhereNull('invoice_penjualans.status_bayar_angkutan')
+            //     ->orderBy('invoice_penjualans.tanggal')->orderBy('invoice_penjualans.no_surat_jalan')
+            //     ->get();
+             //$queries = DB::getQueryLog();
+
+             //dd($queries);
         } else {
             $hingga_en = DateTime::createFromFormat('d-m-Y', $hingga)->format('Y-m-d');
             //DB::connection()->enableQueryLog();
