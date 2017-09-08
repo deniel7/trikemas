@@ -117,10 +117,9 @@ class AbsensiApprovalController extends Controller
         $uang_makan = $karyawan->uang_makan;
 
         $absensies = AbsensiHarian::where('karyawan_id', '=', $nik)->where('tanggal', '=', $tanggal)->get();
-
         if ($absensies->count() == 1) {
             $absensies = $absensies->first();
-
+            //dd($absensies);
             // PENJUMLAHAN POTONGAN ABSENSI
             $absensies->pot_absensi = $potongan;
             $absensies->status = 2;
@@ -143,6 +142,35 @@ class AbsensiApprovalController extends Controller
             $absensies->upah_harian = $upah_harian;
 
             $absensies->save();
+        } else {
+            $cek_apakah_lembur = AbsensiHarian::where('karyawan_id', '=', $nik)->where('tanggal', '=', $tanggal)->where('jam_kerja', '=', 'LEMBUR')->get();
+
+            if ($cek_apakah_lembur->count() == 1) {
+                $cek_apakah_lembur = $cek_apakah_lembur->first();
+                //dd($cek_apakah_lembur);
+            // PENJUMLAHAN POTONGAN ABSENSI
+                $cek_apakah_lembur->pot_absensi = $potongan;
+                $cek_apakah_lembur->status = 2;
+
+            // PERHITUNGAN TOTAL
+
+            //karyawan KONTRAK tetap / bulanan
+                if ($karyawan->status_karyawan_id == 1) {
+                    $upah_harian = $cek_apakah_lembur->upah_harian - $potongan;
+
+                    // karyawan harian / lepas
+                } elseif ($karyawan->status_karyawan_id == 2) {
+                    $upah_harian = $cek_apakah_lembur->upah_harian - $potongan;
+
+                    //karyawan Staff
+                } elseif ($karyawan->status_karyawan_id == 3) {
+                    $upah_harian = $cek_apakah_lembur->upah_harian - $potongan;
+                }
+
+                $cek_apakah_lembur->upah_harian = $upah_harian;
+
+                $cek_apakah_lembur->save();
+            }
         }
 
         Flash::success('Berhasil input Potongan Absensi');
