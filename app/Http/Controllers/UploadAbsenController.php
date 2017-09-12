@@ -225,7 +225,7 @@ class UploadAbsenController extends Controller
             $absensies->save();
         }
 
-        Flash::success('Berhasil input Jam Lembur');
+        Flash::success('Absensi Karyawan Confirmed');
         DB::commit();
 
         return redirect('absensi-harian');
