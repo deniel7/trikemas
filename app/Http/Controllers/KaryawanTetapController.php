@@ -194,12 +194,19 @@ class KaryawanTetapController extends Controller
         $nik = $request->input('id');
         $start_date = $request->input('dari');
         $end_date = $request->input('ke');
+        $potongan = $request->input('potongan');
 
         $karyawan = DB::table('karyawans')
          ->where('karyawans.nik', '=', $nik)
          ->first();
 
         $gaji = $karyawan->nilai_upah / 30;
+
+        if ($potongan == 'bpjs') {
+            $pot_bpjs = $karyawan->pot_bpjs;
+        } else {
+            $pot_bpjs = 0;
+        }
 
         //HITUNG TOTAL JAM KERJA
         $total_jam = DB::table('absensi_harians')
@@ -280,7 +287,7 @@ class KaryawanTetapController extends Controller
         ->sum('pot_absensi');
 
         // PERHITUNGAN TOTAL
-        $total = ($nilai_upah + $lembur_rutin + $lembur_biasa + $lembur_off) - ($pot_jabatan + $pot_umk + $total_pot_absensi + $karyawan->pot_bpjs + $karyawan->pot_koperasi);
+        $total = ($nilai_upah + $lembur_rutin + $lembur_biasa + $lembur_off) - ($pot_jabatan + $pot_umk + $total_pot_absensi + $pot_bpjs + $karyawan->pot_koperasi);
         //$total = 0;
         // set document information
         PDF::SetAuthor('PT. TRIMITRA KEMASINDO');
@@ -378,7 +385,7 @@ class KaryawanTetapController extends Controller
         PDF::Ln();
 
         PDF::Cell(40, 0, 'Potongan BPJS', 0, 0, 'L', 0, '', 0);
-        PDF::Cell(0, 0, ' '.number_format($karyawan->pot_bpjs, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' '.number_format($pot_bpjs, 0, '.', ','), 0, 0, 'L', 0, '', 0);
         PDF::Ln();
 
         PDF::Cell(40, 0, 'Potongan Koperasi', 0, 0, 'L', 0, '', 0);

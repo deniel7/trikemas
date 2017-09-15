@@ -45,7 +45,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/report/absensi-karyawan-staff/preview/{bulan}', 'ReportController@previewAbsensiKaryawanStaff');
 
     Route::get('/report/absensi-karyawan-tetap', 'ReportController@absensiKaryawanTetap');
-    Route::get('/report/absensi-karyawan-tetap/preview/{dari}/{hingga}', 'ReportController@previewAbsensiKaryawanTetap');
+    Route::get('/report/absensi-karyawan-tetap/preview/{dari}/{hingga}/{potongan}', 'ReportController@previewAbsensiKaryawanTetap');
 
     Route::get('/report/absensi-karyawan-harian', 'ReportController@absensiKaryawanHarian');
     Route::get('/report/absensi-karyawan-harian/preview/{dari}/{hingga}/{potongan}', 'ReportController@previewAbsensiKaryawanHarian');

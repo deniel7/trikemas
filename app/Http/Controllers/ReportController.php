@@ -715,7 +715,7 @@ and (`invoice_penjualans`.`status_bayar_angkutan` != 2 or `invoice_penjualans`.`
     }
 
     // preview
-    public function previewAbsensiKaryawanTetap($tanggal_awal, $tanggal_akhir)
+    public function previewAbsensiKaryawanTetap($tanggal_awal, $tanggal_akhir, $potongan)
     {
         // $tahun_skrg = date('Y');
 
@@ -724,7 +724,7 @@ and (`invoice_penjualans`.`status_bayar_angkutan` != 2 or `invoice_penjualans`.`
         
         
         //DB::connection()->enableQueryLog();
-        $data = AbsensiHarian::select('absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.nik', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.jenis_lembur', 'absensi_harians.status', 'absensi_harians.pot_absensi', 'karyawans.nik', 'karyawans.nama', 'karyawans.norek', 'karyawans.uang_makan', 'karyawans.nilai_upah', 'karyawans.pot_koperasi', 'karyawans.tgl_masuk', 'karyawans.tunjangan')
+        $data = AbsensiHarian::select('absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.nik', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.jenis_lembur', 'absensi_harians.status', 'absensi_harians.pot_absensi', 'karyawans.nik', 'karyawans.nama', 'karyawans.norek', 'karyawans.uang_makan', 'karyawans.nilai_upah', 'karyawans.pot_koperasi', 'karyawans.tgl_masuk', 'karyawans.tunjangan', 'karyawans.pot_bpjs')
         ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
         ->whereBetween('absensi_harians.tanggal', [$tgl_awal, $tgl_akhir])
         ->where('absensi_harians.status', '=', 2)
@@ -802,15 +802,13 @@ and (`invoice_penjualans`.`status_bayar_angkutan` != 2 or `invoice_penjualans`.`
         PDF::Cell(30, 0, 'TOTAL UPAH', 1, 0, 'C', 0, '', 0);
         PDF::Cell(45, 0, 'POTONGAN KOPERASI', 1, 0, 'C', 0, '', 0);
         PDF::Cell(40, 0, 'POTONGAN ABSENSI', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(40, 0, 'POTONGAN BPJS', 1, 0, 'C', 0, '', 0);
         PDF::Cell(35, 0, 'SETELAH DI POT', 1, 0, 'C', 0, '', 0);
         PDF::Cell(30, 0, 'TOTAL ABSEN', 1, 0, 'C', 0, '', 0);
         PDF::Cell(30, 0, 'LEMBUR RUTIN', 1, 0, 'C', 0, '', 0);
         PDF::Cell(50, 0, 'LEMBUR BIASA / NERUS', 1, 0, 'C', 0, '', 0);
         PDF::Cell(30, 0, 'LEMBUR OFF', 1, 0, 'C', 0, '', 0);
-        PDF::Cell(30, 0, 'SAKIT', 1, 0, 'C', 0, '', 0);
         PDF::Cell(30, 0, 'IZIN', 1, 0, 'C', 0, '', 0);
-        PDF::Cell(30, 0, 'ALFA', 1, 0, 'C', 0, '', 0);
-        PDF::Cell(30, 0, 'CUTI', 1, 0, 'C', 0, '', 0);
         PDF::Ln();
 
         $count = sizeof($data);
@@ -892,10 +890,10 @@ and (`invoice_penjualans`.`status_bayar_angkutan` != 2 or `invoice_penjualans`.`
                 // 0 krn sudah langsung perhitungan ketika confirm di absensi harian
                 $pot_umk = 0;
 
-                //dd($pot_umk);
-
-                // PERHITUNGAN POTONGAN JABATAN
-                //$pot_jabatan = (0.25 * $item->tunjangan) * $hari_off;
+                // PERHITUNGAN POTONGAN BPJS JIKA DIHITUNG
+                if ($potongan != 'bpjs') {
+                    $item->pot_bpjs = 0;
+                }
 
                 $setelah_dipot = $total_upah_harian - $pot_umk - $item->pot_koperasi - $item->pot_bpjs;
 
@@ -923,22 +921,21 @@ and (`invoice_penjualans`.`status_bayar_angkutan` != 2 or `invoice_penjualans`.`
                     ->where('karyawans.status_karyawan_id', '=', 1)
                     ->sum('absensi_harians.pot_absensi');
 
-                //dd($hari_off);
+
+                
                 PDF::Cell(40, 0, $item->nama, 1, 0, 'L', 0, '', 1);
                 PDF::Cell(40, 0, $item->tgl_masuk, 1, 0, 'R', 0, '', 1);
                 PDF::Cell(50, 0, $item->norek, 1, 0, 'R', 0, '', 1);
                 PDF::Cell(30, 0, number_format($total_upah_harian, 0, '.', ','), 1, 0, 'R', 0, '', 1);
                 PDF::Cell(45, 0, number_format($item->pot_koperasi, 0, '.', ','), 1, 0, 'R', 0, '', 1);
                 PDF::Cell(40, 0, number_format($pot_absensi, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+                PDF::Cell(40, 0, number_format($item->pot_bpjs, 0, '.', ','), 1, 0, 'R', 0, '', 1);
                 PDF::Cell(35, 0, number_format($setelah_dipot, 0, '.', ','), 1, 0, 'R', 0, '', 1);
                 PDF::Cell(30, 0, $total_absensi, 1, 0, 'R', 0, '', 1);
                 PDF::Cell(30, 0, $data_lembur_rutin, 1, 0, 'R', 0, '', 1);
                 PDF::Cell(50, 0, $data_lembur_biasa, 1, 0, 'R', 0, '', 1);
                 PDF::Cell(30, 0, $data_lembur_off, 1, 0, 'R', 0, '', 1);
-                PDF::Cell(30, 0, 0, 1, 0, 'R', 0, '', 1);
                 PDF::Cell(30, 0, $hari_off, 1, 0, 'R', 0, '', 1);
-                PDF::Cell(30, 0, 0, 1, 0, 'R', 0, '', 1);
-                PDF::Cell(30, 0, 0, 1, 0, 'R', 0, '', 1);
                 PDF::Ln();
 
                 $total_setelah_dipot += $setelah_dipot;
@@ -950,8 +947,8 @@ and (`invoice_penjualans`.`status_bayar_angkutan` != 2 or `invoice_penjualans`.`
             PDF::Cell(30, 0, number_format($total_upah, 0, '.', ','), 1, 0, 'R', 0, '', 1);
             PDF::Cell(45, 0, number_format($total_pot_koperasi, 0, '.', ','), 1, 0, 'R', 0, '', 1);
             PDF::Cell(40, 0, number_format($total_pot_absensi, 0, '.', ','), 1, 0, 'R', 0, '', 1);
-            PDF::Cell(35, 0, number_format($total_setelah_dipot, 0, '.', ','), 1, 0, 'R', 0, '', 1);
-            PDF::Cell(260, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Cell(75, 0, number_format($total_setelah_dipot, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+            PDF::Cell(170, 0, '', 1, 0, 'C', 0, '', 0);
             PDF::Ln();
             PDF::SetFont('', '', 10);
         } else {
@@ -964,8 +961,6 @@ and (`invoice_penjualans`.`status_bayar_angkutan` != 2 or `invoice_penjualans`.`
             PDF::Cell(12, 0, '', 1, 0, 'C', 0, '', 0);
             PDF::Cell(12, 0, '', 1, 0, 'C', 0, '', 0);
             PDF::Cell(20, 0, '', 1, 0, 'C', 0, '', 0);
-            PDF::Cell(24, 0, '', 1, 0, 'C', 0, '', 0);
-            PDF::Cell(24, 0, '', 1, 0, 'C', 0, '', 0);
             PDF::Cell(24, 0, '', 1, 0, 'C', 0, '', 0);
             PDF::Cell(24, 0, '', 1, 0, 'C', 0, '', 0);
             PDF::Cell(24, 0, '', 1, 0, 'C', 0, '', 0);

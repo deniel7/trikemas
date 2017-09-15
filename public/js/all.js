@@ -2229,8 +2229,9 @@ var reportAbsensiKaryawanTetapModule = (function(commonModule) {
 
                 var tanggal = $("#tanggal").val();
                 var hingga = $("#hingga").val();
+                var potongan = $("#potongan").val();
 
-                var url = "/report/absensi-karyawan-tetap/preview/" + tanggal + "/" + hingga;
+                var url = "/report/absensi-karyawan-tetap/preview/" + tanggal + "/" + hingga + "/" + potongan;
 
 
                 window.open(url, "_blank");
