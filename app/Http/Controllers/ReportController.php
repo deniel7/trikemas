@@ -95,8 +95,17 @@ from `invoice_penjualans` inner join `angkutans` on `angkutans`.`id` = `invoice_
 inner join `tujuans` on `tujuans`.`id` = `invoice_penjualans`.`tujuan_id` 
 where `invoice_penjualans`.`tanggal` between :starts and :ends and `angkutans`.`id` = :angkutan 
 and (`invoice_penjualans`.`status_bayar_angkutan` != 2 or `invoice_penjualans`.`status_bayar_angkutan` is null) order by `invoice_penjualans`.`tanggal` asc, `invoice_penjualans`.`no_surat_jalan` asc"), ['starts'=> $tanggal_en, 'ends' => $hingga_en, 'angkutan' => $angkutan]);
+        
+            $data_unpaid = DB::select(DB::raw("SELECT `invoice_penjualans`.`id`, `invoice_penjualans`.`tanggal`, `invoice_penjualans`.`no_surat_jalan`, `angkutans`.`nama` as `nama_angkutan`, 
+`invoice_penjualans`.`no_mobil`, `tujuans`.`kota` as `nama_tujuan`, `invoice_penjualans`.`harga_angkutan`, `invoice_penjualans`.`diskon_bayar_angkutan`, 
+`invoice_penjualans`.`jumlah_bayar_angkutan`, `invoice_penjualans`.`status_bayar_angkutan`, `invoice_penjualans`.`tanggal_bayar_angkutan`, `invoice_penjualans`.`keterangan_bayar_angkutan` 
+from `invoice_penjualans` inner join `angkutans` on `angkutans`.`id` = `invoice_penjualans`.`angkutan_id` 
+inner join `tujuans` on `tujuans`.`id` = `invoice_penjualans`.`tujuan_id` 
+where `invoice_penjualans`.`tanggal` between :starts and :ends and `angkutans`.`id` = :angkutan 
+and (`invoice_penjualans`.`status_bayar_angkutan` != 1 and `invoice_penjualans`.`status_bayar_angkutan` != 2 or `invoice_penjualans`.`status_bayar_angkutan` is null) order by `invoice_penjualans`.`tanggal` asc, `invoice_penjualans`.`no_surat_jalan` asc"), ['starts'=> $tanggal_en, 'ends' => $hingga_en, 'angkutan' => $angkutan]);
         } else {
             $hingga_en = DateTime::createFromFormat('d-m-Y', $hingga)->format('Y-m-d');
+            
             $data = DB::select(DB::raw("SELECT `invoice_penjualans`.`id`, `invoice_penjualans`.`tanggal`, `invoice_penjualans`.`no_surat_jalan`, `angkutans`.`nama` as `nama_angkutan`, 
 `invoice_penjualans`.`no_mobil`, `tujuans`.`kota` as `nama_tujuan`, `invoice_penjualans`.`harga_angkutan`, `invoice_penjualans`.`diskon_bayar_angkutan`, 
 `invoice_penjualans`.`jumlah_bayar_angkutan`, `invoice_penjualans`.`status_bayar_angkutan`, `invoice_penjualans`.`tanggal_bayar_angkutan`, `invoice_penjualans`.`keterangan_bayar_angkutan` 
@@ -104,6 +113,14 @@ from `invoice_penjualans` inner join `angkutans` on `angkutans`.`id` = `invoice_
 inner join `tujuans` on `tujuans`.`id` = `invoice_penjualans`.`tujuan_id` 
 where `invoice_penjualans`.`tanggal` between :starts and :ends 
 and (`invoice_penjualans`.`status_bayar_angkutan` != 2 or `invoice_penjualans`.`status_bayar_angkutan` is null) order by `invoice_penjualans`.`tanggal` asc, `invoice_penjualans`.`no_surat_jalan` asc"), ['starts'=> $tanggal_en, 'ends' => $hingga_en]);
+
+            $data_unpaid = DB::select(DB::raw("SELECT `invoice_penjualans`.`id`, `invoice_penjualans`.`tanggal`, `invoice_penjualans`.`no_surat_jalan`, `angkutans`.`nama` as `nama_angkutan`, 
+`invoice_penjualans`.`no_mobil`, `tujuans`.`kota` as `nama_tujuan`, `invoice_penjualans`.`harga_angkutan`, `invoice_penjualans`.`diskon_bayar_angkutan`, 
+`invoice_penjualans`.`jumlah_bayar_angkutan`, `invoice_penjualans`.`status_bayar_angkutan`, `invoice_penjualans`.`tanggal_bayar_angkutan`, `invoice_penjualans`.`keterangan_bayar_angkutan` 
+from `invoice_penjualans` inner join `angkutans` on `angkutans`.`id` = `invoice_penjualans`.`angkutan_id` 
+inner join `tujuans` on `tujuans`.`id` = `invoice_penjualans`.`tujuan_id` 
+where `invoice_penjualans`.`tanggal` between :starts and :ends 
+and (`invoice_penjualans`.`status_bayar_angkutan` != 1 and `invoice_penjualans`.`status_bayar_angkutan` != 2 or `invoice_penjualans`.`status_bayar_angkutan` is null) order by `invoice_penjualans`.`tanggal` asc, `invoice_penjualans`.`no_surat_jalan` asc"), ['starts'=> $tanggal_en, 'ends' => $hingga_en]);
         }
 
         // set document information
@@ -183,6 +200,7 @@ and (`invoice_penjualans`.`status_bayar_angkutan` != 2 or `invoice_penjualans`.`
         $count = sizeof($data);
         if ($count > 0) {
             $grandTotal = 0;
+            $grandTotalUnpaid = 0;
             foreach ($data as $item) {
                 PDF::Cell(25, 0, Carbon::createFromFormat('Y-m-d', $item->tanggal)->format('d-m-Y'), 1, 0, 'L', 0, '', 1);
                 PDF::Cell(35, 0, $item->no_surat_jalan, 1, 0, 'L', 0, '', 1);
@@ -200,10 +218,18 @@ and (`invoice_penjualans`.`status_bayar_angkutan` != 2 or `invoice_penjualans`.`
 
                 $grandTotal += $item->jumlah_bayar_angkutan;
             }
+
+            foreach ($data_unpaid as $item_unpaid) {
+                $grandTotalUnpaid += $item_unpaid->harga_angkutan;
+            }
             PDF::SetFont('', 'B', 10);
             // grand total
             PDF::Cell(115, 0, 'TOTAL ', 1, 0, 'R', 0, '', 1);
             PDF::Cell(60, 0, number_format($grandTotal, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+            PDF::Cell(209, 0, '', 1, 0, 'C', 0, '', 0);
+            PDF::Ln();
+            PDF::Cell(115, 0, 'TOTAL BELUM BAYAR', 1, 0, 'R', 0, '', 1);
+            PDF::Cell(60, 0, number_format($grandTotalUnpaid, 0, '.', ','), 1, 0, 'R', 0, '', 1);
             PDF::Cell(209, 0, '', 1, 0, 'C', 0, '', 0);
             PDF::Ln();
             PDF::SetFont('', '', 10);
