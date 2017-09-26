@@ -200,7 +200,7 @@ class KaryawanTetapController extends Controller
          ->where('karyawans.nik', '=', $nik)
          ->first();
 
-        $gaji = $karyawan->nilai_upah / 30;
+        $gaji = $karyawan->nilai_upah;
 
         if ($potongan == 'bpjs') {
             $pot_bpjs = $karyawan->pot_bpjs;
@@ -242,7 +242,8 @@ class KaryawanTetapController extends Controller
 
         //      KARYAWAN BULANAN
 
-        $nilai_upah = $jml_absen[0]->counter * ($gaji + $karyawan->uang_makan);
+        //$nilai_upah = $jml_absen[0]->counter * ($gaji + $karyawan->uang_makan);
+        $nilai_upah = $gaji;
         // HITUNG UANG MAKAN
         $uang_makan = $hari_kerja * $karyawan->uang_makan;
 
@@ -287,7 +288,7 @@ class KaryawanTetapController extends Controller
         ->sum('pot_absensi');
 
         // PERHITUNGAN TOTAL
-        $total = ($nilai_upah + $lembur_rutin + $lembur_biasa + $lembur_off) - ($pot_jabatan + $pot_umk + $total_pot_absensi + $pot_bpjs + $karyawan->pot_koperasi);
+        $total = ($nilai_upah + $lembur_rutin + $uang_makan + $lembur_biasa + $lembur_off) - ($pot_jabatan + $pot_umk + $total_pot_absensi + $pot_bpjs + $karyawan->pot_koperasi);
         //$total = 0;
         // set document information
         PDF::SetAuthor('PT. TRIMITRA KEMASINDO');

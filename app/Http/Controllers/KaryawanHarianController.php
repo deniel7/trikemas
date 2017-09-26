@@ -159,10 +159,10 @@ class KaryawanHarianController extends Controller
 
         // dd($total_upah_harian);
 
-        $nilai_upah = $total_upah_harian - $uang_makan - ($lembur_rutin + $lembur_biasa);
+        $nilai_upah = $total_upah_harian + $total_pot_absensi - ($uang_makan + $lembur_rutin + $lembur_biasa);
 
         // PERHITUNGAN TOTAL
-        $total = $nilai_upah + $uang_makan + $lembur_rutin + $lembur_biasa - ($total_pot_absensi + $pot_bpjs);
+        $total = $nilai_upah + $uang_makan + $lembur_rutin + $lembur_biasa - ($pot_bpjs + $total_pot_absensi);
 
         // set document information
         PDF::SetAuthor('PT. TRIMITRA KEMASINDO');

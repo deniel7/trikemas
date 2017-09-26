@@ -795,6 +795,7 @@ and (`invoice_penjualans`.`status_bayar_angkutan` != 1 and `invoice_penjualans`.
             $checkInvoice = '';
             $grandTotal = 0;
             $total_setelah_dipot = 0;
+            $total_upah = 0;
             foreach ($data as $item) {
                 $total_absensi = AbsensiHarian::select('absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.nik', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.jenis_lembur', 'absensi_harians.status', 'absensi_harians.pot_absensi', 'absensi_harians.upah_harian', 'karyawans.nik', 'karyawans.nama', 'karyawans.norek', 'karyawans.nilai_upah', 'karyawans.pot_koperasi', 'karyawans.tunjangan', 'karyawans.tgl_masuk', 'karyawans.uang_makan')
                 ->join('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
@@ -807,7 +808,7 @@ and (`invoice_penjualans`.`status_bayar_angkutan` != 1 and `invoice_penjualans`.
 
                 //  1=rutin 2= biasa 3= off
 
-                $data_lembur_rutin = DB::table('absensi_harians')
+                $total_lembur_rutin = DB::table('absensi_harians')
                     ->select('*')
                     ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                      ->whereBetween('absensi_harians.tanggal', [$tgl_awal, $tgl_akhir])
@@ -816,8 +817,9 @@ and (`invoice_penjualans`.`status_bayar_angkutan` != 1 and `invoice_penjualans`.
                     ->where('absensi_harians.status', '=', 2)
                     ->where('karyawans.status_karyawan_id', '=', 1)
                     ->sum('absensi_harians.konfirmasi_lembur');
+                $lembur_rutin = 14200 * $total_lembur_rutin;
 
-                $data_lembur_biasa = DB::table('absensi_harians')
+                $total_lembur_biasa = DB::table('absensi_harians')
                     ->select('*')
                     ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                      ->whereBetween('absensi_harians.tanggal', [$tgl_awal, $tgl_akhir])
@@ -827,7 +829,9 @@ and (`invoice_penjualans`.`status_bayar_angkutan` != 1 and `invoice_penjualans`.
                     ->where('karyawans.status_karyawan_id', '=', 1)
                     ->sum('absensi_harians.konfirmasi_lembur');
 
-                $data_lembur_off = DB::table('absensi_harians')
+                $lembur_biasa = 21300 * $total_lembur_biasa;
+
+                $total_lembur_off = DB::table('absensi_harians')
                     ->select('*')
                     ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                      ->whereBetween('absensi_harians.tanggal', [$tgl_awal, $tgl_akhir])
@@ -837,7 +841,11 @@ and (`invoice_penjualans`.`status_bayar_angkutan` != 1 and `invoice_penjualans`.
                     ->where('karyawans.status_karyawan_id', '=', 1)
                     ->sum('absensi_harians.konfirmasi_lembur');
 
-                $pot_absensi = DB::table('absensi_harians')
+                $lembur_off = 28400 * $total_lembur_off;
+
+                
+
+                $total_pot_absensi = DB::table('absensi_harians')
                     ->select('absensi_harians.pot_absensi')
                     ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                      ->whereBetween('absensi_harians.tanggal', [$tgl_awal, $tgl_akhir])
@@ -846,14 +854,14 @@ and (`invoice_penjualans`.`status_bayar_angkutan` != 1 and `invoice_penjualans`.
                     ->where('karyawans.status_karyawan_id', '=', 1)
                     ->sum('absensi_harians.pot_absensi');
 
-                $total_upah_harian = DB::table('absensi_harians')
-                    ->select('absensi_harians.pot_absensi')
-                    ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
-                     ->whereBetween('absensi_harians.tanggal', [$tgl_awal, $tgl_akhir])
-                    ->where('absensi_harians.status', '=', 2)
-                    ->where('karyawans.status_karyawan_id', '=', 1)
-                    ->where('karyawans.nik', '=', $item->nik)
-                    ->sum('absensi_harians.upah_harian');
+                // $total_upah_harian = DB::table('absensi_harians')
+                //     ->select('absensi_harians.pot_absensi')
+                //     ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
+                //      ->whereBetween('absensi_harians.tanggal', [$tgl_awal, $tgl_akhir])
+                //     ->where('absensi_harians.status', '=', 2)
+                //     ->where('karyawans.status_karyawan_id', '=', 1)
+                //     ->where('karyawans.nik', '=', $item->nik)
+                //     ->sum('absensi_harians.upah_harian');
 
                 //HITUNG JUMLAH TIDAK MASUK KERJA
                 $hari_off = DB::table('absensi_harians')
@@ -865,25 +873,34 @@ and (`invoice_penjualans`.`status_bayar_angkutan` != 1 and `invoice_penjualans`.
                 ->where('karyawans.nik', '=', $item->nik)
                 ->count('absensi_harians.id');
 
+                $hari_kerja = DB::table('absensi_harians')
+                ->where('jml_kehadiran', '!=', '00:00:00')
+                ->where('absensi_harians.karyawan_id', '=', $item->nik)
+                ->where('absensi_harians.status', '=', 2)
+                ->whereBetween('absensi_harians.tanggal', [$tgl_awal, $tgl_akhir])
+                ->count('jml_kehadiran');
+
+                // PERHITUNGAN POTONGAN JABATAN
+                $pot_jabatan = (0.25 * $item->tunjangan) * $hari_off;
+
                 // PERHITUNGAN POTONGAN UMK
-                // 0 krn sudah langsung perhitungan ketika confirm di absensi harian
-                $pot_umk = 0;
+                $pot_umk = (50000 + $item->uang_makan) * $hari_off;
 
                 // PERHITUNGAN POTONGAN BPJS JIKA DIHITUNG
                 if ($potongan != 'bpjs') {
                     $item->pot_bpjs = 0;
                 }
 
-                $setelah_dipot = $total_upah_harian - $pot_umk - $item->pot_koperasi - $item->pot_bpjs;
+                //$setelah_dipot = $total_upah_harian - $pot_umk - $item->pot_koperasi - $item->pot_bpjs;
 
-                $total_upah = DB::table('absensi_harians')
-                    ->select('absensi_harians.pot_absensi')
-                    ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
-                     ->whereBetween('absensi_harians.tanggal', [$tgl_awal, $tgl_akhir])
-                    ->where('absensi_harians.status', '=', 2)
-                    ->where('karyawans.status_karyawan_id', '=', 1)
-                    ->sum('absensi_harians.upah_harian');
-
+                // $total_upah = DB::table('absensi_harians')
+                //     ->select('absensi_harians.pot_absensi')
+                //     ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
+                //      ->whereBetween('absensi_harians.tanggal', [$tgl_awal, $tgl_akhir])
+                //     ->where('absensi_harians.status', '=', 2)
+                //     ->where('karyawans.status_karyawan_id', '=', 1)
+                //     ->sum('absensi_harians.upah_harian');
+                 $uang_makan = $hari_kerja * $item->uang_makan;
                 $total_pot_koperasi = DB::table('absensi_harians')
                     ->select('absensi_harians.pot_absensi')
                     ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
@@ -900,24 +917,26 @@ and (`invoice_penjualans`.`status_bayar_angkutan` != 1 and `invoice_penjualans`.
                     ->where('karyawans.status_karyawan_id', '=', 1)
                     ->sum('absensi_harians.pot_absensi');
 
-
+                // PERHITUNGAN TOTAL
+                $total_upah_harian = ($item->nilai_upah + $lembur_rutin + $uang_makan + $lembur_biasa + $lembur_off) - ($pot_jabatan + $pot_umk + $total_pot_absensi + $item->pot_bpjs + $item->pot_koperasi);
                 
                 PDF::Cell(40, 0, $item->nama, 1, 0, 'L', 0, '', 1);
                 PDF::Cell(40, 0, $item->tgl_masuk, 1, 0, 'R', 0, '', 1);
                 PDF::Cell(50, 0, $item->norek, 1, 0, 'R', 0, '', 1);
-                PDF::Cell(30, 0, number_format($total_upah_harian, 0, '.', ','), 1, 0, 'R', 0, '', 1);
-                PDF::Cell(45, 0, number_format($item->pot_koperasi, 0, '.', ','), 1, 0, 'R', 0, '', 1);
-                PDF::Cell(40, 0, number_format($pot_absensi, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+                PDF::Cell(30, 0, number_format($item->nilai_upah, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+                PDF::Cell(45, 0, number_format($total_pot_koperasi, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+                PDF::Cell(40, 0, number_format($total_pot_absensi, 0, '.', ','), 1, 0, 'R', 0, '', 1);
                 PDF::Cell(40, 0, number_format($item->pot_bpjs, 0, '.', ','), 1, 0, 'R', 0, '', 1);
-                PDF::Cell(35, 0, number_format($setelah_dipot, 0, '.', ','), 1, 0, 'R', 0, '', 1);
+                PDF::Cell(35, 0, number_format($total_upah_harian, 0, '.', ','), 1, 0, 'R', 0, '', 1);
                 PDF::Cell(30, 0, $total_absensi, 1, 0, 'R', 0, '', 1);
-                PDF::Cell(30, 0, $data_lembur_rutin, 1, 0, 'R', 0, '', 1);
-                PDF::Cell(50, 0, $data_lembur_biasa, 1, 0, 'R', 0, '', 1);
-                PDF::Cell(30, 0, $data_lembur_off, 1, 0, 'R', 0, '', 1);
+                PDF::Cell(30, 0, $lembur_rutin, 1, 0, 'R', 0, '', 1);
+                PDF::Cell(50, 0, $lembur_biasa, 1, 0, 'R', 0, '', 1);
+                PDF::Cell(30, 0, $lembur_off, 1, 0, 'R', 0, '', 1);
                 PDF::Cell(30, 0, $hari_off, 1, 0, 'R', 0, '', 1);
                 PDF::Ln();
 
-                $total_setelah_dipot += $setelah_dipot;
+                $total_setelah_dipot += $total_upah_harian;
+                $total_upah += $item->nilai_upah;
                 //$checkInvoice = $item->no_invoice;
             }
             PDF::SetFont('', 'B', 10);
@@ -1072,10 +1091,10 @@ and (`invoice_penjualans`.`status_bayar_angkutan` != 1 and `invoice_penjualans`.
                 PDF::Cell(180, 5, $item->nama, 1, 0, 'L', 0, '', 1);
 
                 if ($potongan == 'bpjs') {
-                    $total = $total - ($total_pot_absensi + $item->pot_bpjs);
+                    $total = $total - $item->pot_bpjs;
                     PDF::Cell(180, 5, number_format($total, 0, '.', ','), 1, 0, 'R', 0, '', 1);
                 } else {
-                    $total = $total - $total_pot_absensi;
+                    //$total = $total - $total_pot_absensi;
                     PDF::Cell(180, 5, number_format($total, 0, '.', ','), 1, 0, 'R', 0, '', 1);
                 }
                 PDF::Ln();
