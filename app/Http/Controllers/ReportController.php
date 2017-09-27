@@ -855,7 +855,8 @@ and (`invoice_penjualans`.`status_bayar_angkutan` != 1 and `invoice_penjualans`.
                 $hari_off = DB::table('absensi_harians')
                 ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
                 ->whereNull('jml_kehadiran')
-                 ->whereBetween('absensi_harians.tanggal', [$tgl_awal, $tgl_akhir])
+                ->whereNull('jam_lembur')
+                ->whereBetween('absensi_harians.tanggal', [$tgl_awal, $tgl_akhir])
                 ->where('absensi_harians.status', '=', 2)
                 ->where('karyawans.status_karyawan_id', '=', 1)
                 ->where('karyawans.nik', '=', $item->nik)
@@ -903,9 +904,9 @@ and (`invoice_penjualans`.`status_bayar_angkutan` != 1 and `invoice_penjualans`.
                 PDF::Cell(40, 0, number_format($item->pot_bpjs, 0, '.', ','), 1, 0, 'R', 0, '', 1);
                 PDF::Cell(35, 0, number_format($total_upah_harian, 0, '.', ','), 1, 0, 'R', 0, '', 1);
                 PDF::Cell(30, 0, $total_absensi, 1, 0, 'R', 0, '', 1);
-                PDF::Cell(30, 0, $lembur_rutin, 1, 0, 'R', 0, '', 1);
-                PDF::Cell(50, 0, $lembur_biasa, 1, 0, 'R', 0, '', 1);
-                PDF::Cell(30, 0, $lembur_off, 1, 0, 'R', 0, '', 1);
+                PDF::Cell(30, 0, $total_lembur_rutin, 1, 0, 'R', 0, '', 1);
+                PDF::Cell(50, 0, $total_lembur_biasa, 1, 0, 'R', 0, '', 1);
+                PDF::Cell(30, 0, $total_lembur_off, 1, 0, 'R', 0, '', 1);
                 PDF::Cell(30, 0, $hari_off, 1, 0, 'R', 0, '', 1);
                 PDF::Ln();
 
