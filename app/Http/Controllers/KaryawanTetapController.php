@@ -288,7 +288,7 @@ class KaryawanTetapController extends Controller
         ->sum('pot_absensi');
 
         // PERHITUNGAN TOTAL
-        $total = ($nilai_upah + $lembur_rutin + $uang_makan + $lembur_biasa + $lembur_off) - ($pot_jabatan + $pot_umk + $total_pot_absensi + $pot_bpjs + $karyawan->pot_koperasi);
+        $total = ($nilai_upah + $karyawan->tunjangan + $lembur_rutin + $uang_makan + $lembur_biasa + $lembur_off) - ($pot_jabatan + $pot_umk + $total_pot_absensi + $pot_bpjs + $karyawan->pot_koperasi);
         //$total = 0;
         // set document information
         PDF::SetAuthor('PT. TRIMITRA KEMASINDO');
