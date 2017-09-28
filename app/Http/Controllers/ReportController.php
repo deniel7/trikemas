@@ -869,12 +869,16 @@ and (`invoice_penjualans`.`status_bayar_angkutan` != 1 and `invoice_penjualans`.
                 ->whereBetween('absensi_harians.tanggal', [$tgl_awal, $tgl_akhir])
                 ->count('jml_kehadiran');
 
+                //CEK DIA PUNYA TUNJANGAN GA
+                if ($item->tunjangan !=0) {
                 // PERHITUNGAN POTONGAN JABATAN
-                $pot_jabatan = (0.25 * $item->tunjangan) * $hari_off;
-
+                    $pot_jabatan = (0.25 * $item->tunjangan) * $hari_off;
+                    $pot_umk = 0;
+                } else {
                 // PERHITUNGAN POTONGAN UMK
-                $pot_umk = (50000 + $item->uang_makan) * $hari_off;
-
+                    $pot_umk = 50000 * $hari_off;
+                    $pot_jabatan = 0;
+                }
                 // PERHITUNGAN POTONGAN BPJS JIKA DIHITUNG
                 if ($potongan != 'bpjs') {
                     $item->pot_bpjs = 0;

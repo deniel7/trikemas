@@ -274,12 +274,18 @@ class KaryawanTetapController extends Controller
 
         $lembur_off = 28400 * $total_lembur_off;
 
+
+        //CEK DIA PUNYA TUNJANGAN GA
+        if ($karyawan->tunjangan !=0) {
         // PERHITUNGAN POTONGAN JABATAN
-        $pot_jabatan = (0.25 * $karyawan->tunjangan) * $hari_off;
-
-        // PERHITUNGAN POTONGAN UMK
-        $pot_umk = (50000 + $karyawan->uang_makan) * $hari_off;
-
+            $pot_jabatan = (0.25 * $karyawan->tunjangan) * $hari_off;
+            $pot_umk = 0;
+        } else {
+            // PERHITUNGAN POTONGAN UMK
+            $pot_umk = 50000 * $hari_off;
+            $pot_jabatan = 0;
+        }
+        
         // PENJUMLAHAN POTONGAN ABSENSI
         $total_pot_absensi = DB::table('absensi_harians')
         ->where('absensi_harians.karyawan_id', '=', $nik)
