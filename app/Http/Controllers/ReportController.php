@@ -780,7 +780,7 @@ and (`invoice_penjualans`.`status_bayar_angkutan` != 1 and `invoice_penjualans`.
         PDF::Cell(50, 0, 'NO. REKENING', 1, 0, 'C', 0, '', 0);
         PDF::Cell(30, 0, 'TOTAL UPAH', 1, 0, 'C', 0, '', 0);
         PDF::Cell(45, 0, 'POTONGAN KOPERASI', 1, 0, 'C', 0, '', 0);
-        PDF::Cell(40, 0, 'POTONGAN ABSENSI', 1, 0, 'C', 0, '', 0);
+        PDF::Cell(40, 0, 'POTONGAN LAIN LAIN', 1, 0, 'C', 0, '', 0);
         PDF::Cell(40, 0, 'POTONGAN BPJS', 1, 0, 'C', 0, '', 0);
         PDF::Cell(35, 0, 'SETELAH DI POT', 1, 0, 'C', 0, '', 0);
         PDF::Cell(30, 0, 'TOTAL ABSEN', 1, 0, 'C', 0, '', 0);

@@ -387,7 +387,7 @@ class KaryawanTetapController extends Controller
         PDF::Cell(0, 0, ' '.number_format($pot_umk, 0, '.', ','), 0, 0, 'L', 0, '', 0);
         PDF::Ln();
 
-        PDF::Cell(40, 0, 'Potongan Absensi', 0, 0, 'L', 0, '', 0);
+        PDF::Cell(40, 0, 'Potongan Lain Lain', 0, 0, 'L', 0, '', 0);
         PDF::Cell(0, 0, ' '.number_format($total_pot_absensi, 0, '.', ','), 0, 0, 'L', 0, '', 0);
         PDF::Ln();
 
