@@ -1,3 +1,8 @@
+insert into sys_menu (id_menu, title, created_at, created_by) values (506, 'Laporan Slip Gaji', current_timestamp, 'system');
+insert into sys_role_dtl (id_hdr, id_menu) values (1, 506);
+
+-- DONE
+
 alter table invoice_penjualans add column ppn_flag integer;
 
 -- DONE

@@ -60,11 +60,11 @@
               @endif
             </ul>
           </li>
-          
+
           @if (in_array(320, session()->get('allowed_menus')))
             <li {{ \Request::segment(1) == 'home' ? 'class=active' : '' }}><a href="{{ url('/absensi-approval') }}"><i class="fa fa-tachometer"></i> <span>Absensi Approval</span></a></li>
           @endif
-          
+
           <li class="treeview {{ in_array(\Request::segment(1), ['invoice']) ? 'active' : '' }}">
             <a href="#"><i class="fa fa-table"></i> <span>Invoice Penjualan</span> <i class="fa fa-angle-left pull-right"></i></a>
             <ul class="treeview-menu">
@@ -82,8 +82,8 @@
               @endif
             </ul>
           </li>
-          
-          <li class="treeview {{ in_array(\Request::segment(2), ['penjualan', 'penerimaan-pembayaran-angkutan', 'absensi-karyawan-staff', 'absensi-karyawan-tetap', 'absensi-karyawan-harian', 'absensi-karyawan-packing']) ? 'active' : '' }}">
+
+          <li class="treeview {{ in_array(\Request::segment(2), ['penjualan', 'penerimaan-pembayaran-angkutan', 'absensi-karyawan-staff', 'absensi-karyawan-tetap', 'absensi-karyawan-harian', 'absensi-karyawan-packing', 'slip-gaji']) ? 'active' : '' }}">
             <a href="#"><i class="fa fa-area-chart"></i> <span>Laporan</span> <i class="fa fa-angle-left pull-right"></i></a>
             <ul class="treeview-menu">
               @if (in_array(500, session()->get('allowed_menus')))
@@ -104,9 +104,12 @@
               @if (in_array(504, session()->get('allowed_menus')))
                 <li {{ \Request::segment(2) == 'absensi-karyawan-packing' ? 'class=active' : '' }}><a href="{{ url('/report/absensi-karyawan-packing') }}">Absensi Karyawan Packing</a></li>
               @endif
+              @if (in_array(506, session()->get('allowed_menus')))
+                <li {{ \Request::segment(2) == 'slip-gaji' ? 'class=active' : '' }}><a href="{{ url('/report/slip-gaji') }}">Slip Gaji</a></li>
+              @endif
             </ul>
           </li>
-          
+
          <li class="treeview {{ in_array(\Request::segment(1), ['system']) ? 'active' : '' }}">
           <a href="#"><i class="fa fa-wrench"></i> <span>Administrasi Sistem</span> <i class="fa fa-angle-left pull-right"></i></a>
           <ul class="treeview-menu">

@@ -59,7 +59,7 @@ insert into sys_menu (id_menu, title, created_at, created_by) values (193, 'Harg
 insert into sys_menu (id_menu, title, created_at, created_by) values (200, 'Upah Jenis Barang - List', current_timestamp, 'system');
 insert into sys_menu (id_menu, title, created_at, created_by) values (201, 'Upah Jenis Barang - Add', current_timestamp, 'system');
 insert into sys_menu (id_menu, title, created_at, created_by) values (202, 'Upah Jenis Barang - Edit', current_timestamp, 'system');
-insert into sys_menu (id_menu, title, created_at, created_by) values (203, 'Upah Jenis Barang - Delete', current_timestamp, 'system');    
+insert into sys_menu (id_menu, title, created_at, created_by) values (203, 'Upah Jenis Barang - Delete', current_timestamp, 'system');
 insert into sys_menu (id_menu, title, created_at, created_by) values (205, 'Upah Jenis Barang - Print', current_timestamp, 'system');
 
 -- TRANSACTION, leads by 3, 4
@@ -92,6 +92,7 @@ insert into sys_menu (id_menu, title, created_at, created_by) values (502, 'Lapo
 insert into sys_menu (id_menu, title, created_at, created_by) values (503, 'Laporan Absensi Karyawan Harian', current_timestamp, 'system');
 insert into sys_menu (id_menu, title, created_at, created_by) values (504, 'Laporan Absensi Karyawan Packing', current_timestamp, 'system');
 insert into sys_menu (id_menu, title, created_at, created_by) values (505, 'Laporan Pembayaran Angkutan', current_timestamp, 'system');
+insert into sys_menu (id_menu, title, created_at, created_by) values (506, 'Laporan Slip Gaji', current_timestamp, 'system');
 
 -- ADMIN, leads by 9
 insert into sys_menu (id_menu, title, created_at, created_by) values (900, 'Administrasi Sistem', current_timestamp, 'system');
@@ -186,5 +187,6 @@ insert into sys_role_dtl (id_hdr, id_menu) values (1, 502);
 insert into sys_role_dtl (id_hdr, id_menu) values (1, 503);
 insert into sys_role_dtl (id_hdr, id_menu) values (1, 504);
 insert into sys_role_dtl (id_hdr, id_menu) values (1, 505);
+insert into sys_role_dtl (id_hdr, id_menu) values (1, 506);
 
 insert into sys_role_dtl (id_hdr, id_menu) values (1, 900);

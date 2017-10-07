@@ -35,6 +35,9 @@ Route::group(['middleware' => 'auth'], function () {
      // laporan
     Route::get('/report', 'ReportController@index');
 
+    Route::get('/report/slip-gaji', 'ReportController@slipGaji');
+    Route::get('/report/slip-gaji/preview/{status}/{dari}/{hingga?}/{potongan?}', 'ReportController@previewSlipGaji');
+
     Route::get('/report/penjualan', 'ReportController@penjualan');
     Route::get('/report/penjualan/preview/{ppn}/{dari}/{hingga?}', 'ReportController@previewPenjualan');
 

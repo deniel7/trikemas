@@ -9,6 +9,11 @@ use App\AbsensiHarian;
 use App\AbsensiPacking;
 use DateTime;
 use App\Angkutan;
+use App\Karyawan;
+
+// jumlah slip gaji per lembar
+const SLIP_PER_PAGE = 4;
+const SLIP_PER_PAGE_ALT = 4;
 
 class ReportController extends Controller
 {
@@ -19,6 +24,7 @@ class ReportController extends Controller
      */
     public function index()
     {
+
     }
 
     private function readMonth($month)
@@ -67,7 +73,362 @@ class ReportController extends Controller
     }
 
     // prompt
+    public function slipGaji()
+    {
+        $data['default_date'] = date('d-m-Y');
 
+        return view('report.slip_gaji_params', $data);
+    }
+
+    // status karyawan: tetap = 1, harian = 2
+    // preview
+    public function previewSlipGaji($status, $tanggal, $hingga = '', $potongan = 0)
+    {
+        if ($hingga == '') $hingga = $tanggal;
+        if ($status == 1) {
+            $this->slipGajiKaryawanTetap($tanggal, $hingga, $potongan);
+        }
+        elseif ($status == 2) {
+            $this->slipGajiKaryawanHarian($tanggal, $hingga, $potongan);
+        }
+    }
+
+    private function slipGajiKaryawanTetap($tanggal, $hingga, $potongan) {
+        $start_date = DateTime::createFromFormat('d-m-Y', $tanggal)->format('Y-m-d');;
+        $end_date = DateTime::createFromFormat('d-m-Y', $hingga)->format('Y-m-d');
+        $potongan = $potongan;
+
+        // set document information
+        PDF::SetAuthor('PT. TRIMITRA KEMASINDO');
+        PDF::SetTitle('Print Slip Gaji - Trimitra Kemasindo');
+        PDF::SetSubject('Slip Gaji Karyawan');
+        PDF::SetKeywords('Slip Gaji Karyawan Trimitra Kemasindo');
+
+        // AddPage ($orientation='', $format='', $keepmargins=false, $tocpage=false)
+        PDF::AddPage('P', 'Legal');
+        PDF::SetMargins(15, 10);
+        PDF::setX(15);
+
+        $karyawans = Karyawan::select('nik')->where('status_karyawan_id', 1)->orderBy('nama')->get();
+        for ($i = 0; $i < sizeof($karyawans); $i++) {
+            if ($i > 0 && $i % SLIP_PER_PAGE == 0) {
+                PDF::AddPage('P', 'Legal');
+                PDF::setX(15);
+            }
+
+            $nik = $karyawans[$i]->nik;
+
+            $karyawan = DB::table('karyawans')->where('karyawans.nik', '=', $nik)->first();
+            $gaji = $karyawan->nilai_upah;
+            if ($potongan == 'bpjs') {
+                $pot_bpjs = $karyawan->pot_bpjs;
+            } else {
+                $pot_bpjs = 0;
+            }
+
+            //HITUNG TOTAL JAM KERJA
+            $total_jam = DB::table('absensi_harians')
+                            ->where('absensi_harians.karyawan_id', '=', $nik)
+                            ->where('absensi_harians.status', '=', 2)
+                            ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
+                            ->sum('jam');
+
+            //HITUNG JUMLAH ABSEN SELURUHNYA (include izin / ga masuk)
+            $starts = new Carbon($start_date);
+            $ends = new Carbon($end_date);
+
+            $jml_absen = DB::select(DB::raw("SELECT COUNT(id) counter
+                            FROM `absensi_harians` where `karyawan_id` = :nik AND `status` = 2 AND (`jam_kerja` !='LEMBUR' OR `jam_kerja` IS NULL) AND `tanggal` between :starts AND :ends
+                            "), ['nik' => $nik, 'starts' => $starts, 'ends' => $ends]);
+
+            //HITUNG JUMLAH MASUK KERJA (tidak termasuk izin / ga absen)
+            $hari_kerja = DB::table('absensi_harians')
+                            ->where('jml_kehadiran', '!=', '00:00:00')
+                            ->where('absensi_harians.karyawan_id', '=', $nik)
+                            ->where('absensi_harians.status', '=', 2)
+                            ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
+                            ->count('jml_kehadiran');
+
+            //HITUNG JUMLAH TIDAK MASUK KERJA
+            $hari_off = DB::table('absensi_harians')
+                            ->whereNull('jml_kehadiran')
+                            ->where('absensi_harians.karyawan_id', '=', $nik)
+                            ->where('absensi_harians.status', '=', 2)
+                            ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
+                            ->count('id');
+
+            //      KARYAWAN BULANAN
+            //$nilai_upah = $jml_absen[0]->counter * ($gaji + $karyawan->uang_makan);
+            $nilai_upah = $gaji;
+            // HITUNG UANG MAKAN
+            $uang_makan = $hari_kerja * $karyawan->uang_makan;
+
+            // PERHITUNGAN LEMBUR
+            $total_lembur_rutin = DB::table('absensi_harians')
+                                    ->where('absensi_harians.karyawan_id', '=', $nik)
+                                    ->where('absensi_harians.jenis_lembur', '=', 1)
+                                    ->where('absensi_harians.status', '=', 2)
+                                    ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
+                                    ->sum('konfirmasi_lembur');
+
+            $lembur_rutin = 14200 * $total_lembur_rutin;
+
+            $total_lembur_biasa = DB::table('absensi_harians')
+                                    ->where('absensi_harians.karyawan_id', '=', $nik)
+                                    ->where('absensi_harians.jenis_lembur', '=', 2)
+                                    ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
+                                    ->sum('konfirmasi_lembur');
+
+            $lembur_biasa = 21300 * $total_lembur_biasa;
+
+            $total_lembur_off = DB::table('absensi_harians')
+                                    ->where('absensi_harians.karyawan_id', '=', $nik)
+                                    ->where('absensi_harians.jenis_lembur', '=', 3)
+                                    ->where('absensi_harians.status', '=', 2)
+                                    ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
+                                    ->sum('konfirmasi_lembur');
+
+            $lembur_off = 28400 * $total_lembur_off;
+
+            //CEK DIA PUNYA TUNJANGAN GA
+            if ($karyawan->tunjangan !=0) {
+            // PERHITUNGAN POTONGAN JABATAN
+                $pot_jabatan = (0.25 * $karyawan->tunjangan) * $hari_off;
+                $pot_umk = 0;
+            } else {
+                // PERHITUNGAN POTONGAN UMK
+                $pot_umk = 50000 * $hari_off;
+                $pot_jabatan = 0;
+            }
+
+            // PENJUMLAHAN POTONGAN ABSENSI
+            $total_pot_absensi = DB::table('absensi_harians')
+                                    ->where('absensi_harians.karyawan_id', '=', $nik)
+                                    ->where('absensi_harians.status', '=', 2)
+                                    ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
+                                    ->sum('pot_absensi');
+
+            // PERHITUNGAN TOTAL
+            $total = ($nilai_upah + $karyawan->tunjangan + $lembur_rutin + $uang_makan + $lembur_biasa + $lembur_off) - ($pot_jabatan + $pot_umk + $total_pot_absensi + $pot_bpjs + $karyawan->pot_koperasi);
+            //$total = 0;
+
+            PDF::SetFont('times', 'B', 10);
+
+            PDF::Cell(0, 0, 'PT. Trimitra Kemasindo', 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            PDF::SetFont('', '', 9);
+            PDF::Cell(0, 0, 'Jalan Raya Sapan KM 1 No. 15, Bandung', 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            PDF::Cell(0, 0, 'Tlp. (022) 87304121, Fax. (022) 87304123', 0, 0, 'L', 0, '', 0);
+            PDF::Ln(6);
+
+            PDF::Cell(40, 0, 'Nama:', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(60, 0, ' '.$karyawan->nama, 0, 0, 'L', 0, '', 0);
+            PDF::Cell(40, 0, 'Periode (bulanan):', 0, 'L', false, 0);
+            PDF::Cell(40, 0, ' '.$start_date.' s/d '.$end_date, 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+
+            PDF::Cell(40, 0, 'Bagian:', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(60, 0, ' '.$karyawan->bagian, 0, 0, 'L', 0, '', 0);
+            PDF::Cell(40, 0, 'Tanggal Cetak:', 0, 'L', false, 0);
+            PDF::Cell(40, 0, ' ' . date('d-m-Y h:m'), 0, 0, 'L', 0, '', 0);
+            PDF::Ln(5);
+
+            PDF::Cell(40, 0, 'Upah:', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(60, 0, ' '.number_format($nilai_upah, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+            PDF::Cell(40, 0, 'Potongan Jab.:', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(40, 0, ' '.number_format($pot_jabatan, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+
+            PDF::Cell(40, 0, 'Tunj. Jab.:', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(60, 0, ' '.number_format($karyawan->tunjangan, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+            PDF::Cell(40, 0, 'Potongan Umk:', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(40, 0, ' '.number_format($pot_umk, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+
+            PDF::Cell(40, 0, 'Uang Makan:', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(60, 0, ' '.number_format($uang_makan, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+            PDF::Cell(40, 0, 'Potongan Lain Lain:', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(40, 0, ' '.number_format($total_pot_absensi, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+
+            PDF::Cell(40, 0, 'Lbr. Rutin:', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(60, 0, ' '.number_format($lembur_rutin, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+            PDF::Cell(40, 0, 'Potongan BPJS:', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(40, 0, ' '.number_format($pot_bpjs, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+
+            PDF::Cell(40, 0, 'Lbr. Biasa:', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(60, 0, ' '.number_format($lembur_biasa, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+            PDF::Cell(40, 0, 'Potongan Koperasi:', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(40, 0, ' '.number_format($karyawan->pot_koperasi, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+            PDF::Ln(5);
+
+            PDF::Cell(40, 0, 'Lembur Off:', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(60, 0, ' '.number_format($lembur_off, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+            PDF::SetFont('times', 'B', 9);
+            PDF::Cell(40, 0, 'Total:', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(40, 0, ' '.number_format($total, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+            PDF::Ln(6);
+            PDF::SetFont('times', '', 9);
+
+            PDF::Cell(0, 0, 'Penerima', 0, 0, 'L', 0, '', 0);
+            PDF::Ln(8);
+            PDF::Cell(0, 0, '(               )', 0, 0, 'L', 0, '', 0);
+            PDF::Ln(10);
+        }
+
+        // Output ($name='doc.pdf', $dest='I'), I=inline, D=Download
+        PDF::Output('slip_gaji.pdf');
+
+        // need to call exit, i don't know why
+        exit;
+    }
+
+    private function slipGajiKaryawanHarian($tanggal, $hingga, $potongan) {
+        $start_date = DateTime::createFromFormat('d-m-Y', $tanggal)->format('Y-m-d');;
+        $end_date = DateTime::createFromFormat('d-m-Y', $hingga)->format('Y-m-d');
+        $potongan = $potongan;
+
+        // set document information
+        PDF::SetAuthor('PT. TRIMITRA KEMASINDO');
+        PDF::SetTitle('Print Slip Gaji - Trimitra Kemasindo');
+        PDF::SetSubject('Slip Gaji Karyawan');
+        PDF::SetKeywords('Slip Gaji Karyawan Trimitra Kemasindo');
+
+        // AddPage ($orientation='', $format='', $keepmargins=false, $tocpage=false)
+        PDF::AddPage('P', 'Legal');
+        PDF::SetMargins(15, 10);
+        PDF::setX(15);
+
+        $karyawans = Karyawan::select('nik')->where('status_karyawan_id', 2)->orderBy('nama')->get();
+        for ($i = 0; $i < sizeof($karyawans); $i++) {
+            if ($i > 0 && $i % SLIP_PER_PAGE_ALT == 0) {
+                PDF::AddPage('P', 'Legal');
+                PDF::setX(15);
+            }
+
+            $nik = $karyawans[$i]->nik;
+
+            $karyawan = DB::table('karyawans')->where('karyawans.nik', '=', $nik)->first();
+            $gaji = $karyawan->nilai_upah;
+            if ($potongan == 'bpjs') {
+                $pot_bpjs = $karyawan->pot_bpjs;
+            } else {
+                $pot_bpjs = 0;
+            }
+
+            //HITUNG JUMLAH KERJA
+            $hari_kerja = DB::table('absensi_harians')
+                            ->where('jml_kehadiran', '!=', '00:00:00')
+                            ->where('absensi_harians.karyawan_id', '=', $nik)
+                            ->where('absensi_harians.status', '=', 2)
+                            ->whereNotNull('absensi_harians.jml_jam_kerja')
+                            ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
+                            ->count('jml_kehadiran');
+
+            // HITUNG UANG MAKAN
+            $uang_makan = $hari_kerja * $karyawan->uang_makan;
+
+            // PERHITUNGAN LEMBUR
+            $total_lembur_rutin = DB::table('absensi_harians')
+                                    ->where('absensi_harians.karyawan_id', '=', $nik)
+                                    ->where('absensi_harians.jenis_lembur', '=', 1)
+                                    ->where('absensi_harians.status', '=', 2)
+                                    ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
+                                    ->sum('konfirmasi_lembur');
+
+            $lembur_rutin = $total_lembur_rutin * 11700;
+
+            $total_lembur_biasa = DB::table('absensi_harians')
+                                    ->where('absensi_harians.karyawan_id', '=', $nik)
+                                    ->where('absensi_harians.jenis_lembur', '=', 2)
+                                    ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
+                                    ->sum('konfirmasi_lembur');
+
+            $lembur_biasa = $total_lembur_biasa * 17600;
+
+            // PENJUMLAHAN POTONGAN ABSENSI
+            $total_pot_absensi = DB::table('absensi_harians')
+                                    ->where('absensi_harians.karyawan_id', '=', $nik)
+                                    ->where('absensi_harians.status', '=', 2)
+                                    ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
+                                    ->sum('pot_absensi');
+
+            $total_upah_harian = DB::table('absensi_harians')
+                                    ->select('absensi_harians.pot_absensi')
+                                    ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
+                                    ->whereBetween('absensi_harians.tanggal', [new Carbon($start_date), new Carbon($end_date)])
+                                    ->where('absensi_harians.status', '=', 2)
+                                    ->where('karyawans.nik', '=', $nik)
+                                    ->sum('absensi_harians.upah_harian');
+
+            // dd($total_upah_harian);
+            $nilai_upah = $total_upah_harian + $total_pot_absensi - ($uang_makan + $lembur_rutin + $lembur_biasa);
+
+            // PERHITUNGAN TOTAL
+            $total = $nilai_upah + $uang_makan + $lembur_rutin + $lembur_biasa - ($pot_bpjs + $total_pot_absensi);
+
+            PDF::SetFont('times', 'B', 10);
+
+            PDF::Cell(0, 0, 'PT. Trimitra Kemasindo', 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            PDF::SetFont('', '', 9);
+            PDF::Cell(0, 0, 'Jalan Raya Sapan KM 1 No. 15, Bandung', 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+            PDF::Cell(0, 0, 'Tlp. (022) 87304121, Fax. (022) 87304123', 0, 0, 'L', 0, '', 0);
+            PDF::Ln(6);
+
+            PDF::Cell(40, 0, 'Nama:', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(60, 0, ' '.$karyawan->nama, 0, 0, 'L', 0, '', 0);
+            PDF::Cell(40, 0, 'Periode (bulanan):', 0, 'L', false, 0);
+            PDF::Cell(40, 0, ' '.$start_date.' s/d '.$end_date, 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+
+            PDF::Cell(40, 0, 'Bagian:', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(60, 0, ' '.$karyawan->bagian, 0, 0, 'L', 0, '', 0);
+            PDF::Cell(40, 0, 'Tanggal Cetak:', 0, 'L', false, 0);
+            PDF::Cell(40, 0, ' ' . date('d-m-Y h:m'), 0, 0, 'L', 0, '', 0);
+            PDF::Ln(5);
+
+            PDF::Cell(40, 0, 'Upah', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(60, 0, ' '.number_format($nilai_upah, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+            PDF::Cell(40, 0, 'Potongan lain-lain', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(40, 0, ' '.number_format($total_pot_absensi, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+
+            PDF::Cell(40, 0, 'Uang Makan', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(60, 0, ' '.number_format($uang_makan, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+            PDF::Cell(40, 0, 'Potongan BPJS', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(40, 0, ' '.number_format($pot_bpjs, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+
+            PDF::Cell(40, 0, 'Lbr. Rutin', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(0, 0, ' '.number_format($lembur_rutin, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+            PDF::Ln();
+
+            PDF::Cell(40, 0, 'Lbr. Biasa', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(60, 0, ' '.number_format($lembur_biasa, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+            PDF::SetFont('times', 'B', 9);
+            PDF::Cell(40, 0, 'Total', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(40, 0, ' '.number_format($total, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+            PDF::Ln(6);
+            PDF::SetFont('times', '', 9);
+
+            PDF::Cell(0, 0, 'Penerima', 0, 0, 'L', 0, '', 0);
+            PDF::Ln(8);
+            PDF::Cell(0, 0, '(               )', 0, 0, 'L', 0, '', 0);
+            PDF::Ln(10);
+        }
+
+        // Output ($name='doc.pdf', $dest='I'), I=inline, D=Download
+        PDF::Output('slip_gaji.pdf');
+
+        // need to call exit, i don't know why
+        exit;
+    }
+
+    // prompt
     public function penerimaanPembayaranAngkutan()
     {
         $data['angkutan'] = Angkutan::select('id', 'nama')->orderBy('nama')->get();
@@ -88,38 +449,38 @@ class ReportController extends Controller
             $hingga_en = DateTime::createFromFormat('d-m-Y', $hingga)->format('Y-m-d');
             //DB::connection()->enableQueryLog();
 
-            $data = DB::select(DB::raw("SELECT `invoice_penjualans`.`id`, `invoice_penjualans`.`tanggal`, `invoice_penjualans`.`no_surat_jalan`, `angkutans`.`nama` as `nama_angkutan`, 
-`invoice_penjualans`.`no_mobil`, `tujuans`.`kota` as `nama_tujuan`, `invoice_penjualans`.`harga_angkutan`, `invoice_penjualans`.`diskon_bayar_angkutan`, 
-`invoice_penjualans`.`jumlah_bayar_angkutan`, `invoice_penjualans`.`status_bayar_angkutan`, `invoice_penjualans`.`tanggal_bayar_angkutan`, `invoice_penjualans`.`keterangan_bayar_angkutan` 
-from `invoice_penjualans` inner join `angkutans` on `angkutans`.`id` = `invoice_penjualans`.`angkutan_id` 
-inner join `tujuans` on `tujuans`.`id` = `invoice_penjualans`.`tujuan_id` 
-where `invoice_penjualans`.`tanggal` between :starts and :ends and `angkutans`.`id` = :angkutan 
+            $data = DB::select(DB::raw("SELECT `invoice_penjualans`.`id`, `invoice_penjualans`.`tanggal`, `invoice_penjualans`.`no_surat_jalan`, `angkutans`.`nama` as `nama_angkutan`,
+`invoice_penjualans`.`no_mobil`, `tujuans`.`kota` as `nama_tujuan`, `invoice_penjualans`.`harga_angkutan`, `invoice_penjualans`.`diskon_bayar_angkutan`,
+`invoice_penjualans`.`jumlah_bayar_angkutan`, `invoice_penjualans`.`status_bayar_angkutan`, `invoice_penjualans`.`tanggal_bayar_angkutan`, `invoice_penjualans`.`keterangan_bayar_angkutan`
+from `invoice_penjualans` inner join `angkutans` on `angkutans`.`id` = `invoice_penjualans`.`angkutan_id`
+inner join `tujuans` on `tujuans`.`id` = `invoice_penjualans`.`tujuan_id`
+where `invoice_penjualans`.`tanggal` between :starts and :ends and `angkutans`.`id` = :angkutan
 and (`invoice_penjualans`.`status_bayar_angkutan` != 2 or `invoice_penjualans`.`status_bayar_angkutan` is null) order by `invoice_penjualans`.`tanggal` asc, `invoice_penjualans`.`no_surat_jalan` asc"), ['starts'=> $tanggal_en, 'ends' => $hingga_en, 'angkutan' => $angkutan]);
-        
-            $data_unpaid = DB::select(DB::raw("SELECT `invoice_penjualans`.`id`, `invoice_penjualans`.`tanggal`, `invoice_penjualans`.`no_surat_jalan`, `angkutans`.`nama` as `nama_angkutan`, 
-`invoice_penjualans`.`no_mobil`, `tujuans`.`kota` as `nama_tujuan`, `invoice_penjualans`.`harga_angkutan`, `invoice_penjualans`.`diskon_bayar_angkutan`, 
-`invoice_penjualans`.`jumlah_bayar_angkutan`, `invoice_penjualans`.`status_bayar_angkutan`, `invoice_penjualans`.`tanggal_bayar_angkutan`, `invoice_penjualans`.`keterangan_bayar_angkutan` 
-from `invoice_penjualans` inner join `angkutans` on `angkutans`.`id` = `invoice_penjualans`.`angkutan_id` 
-inner join `tujuans` on `tujuans`.`id` = `invoice_penjualans`.`tujuan_id` 
-where `invoice_penjualans`.`tanggal` between :starts and :ends and `angkutans`.`id` = :angkutan 
+
+            $data_unpaid = DB::select(DB::raw("SELECT `invoice_penjualans`.`id`, `invoice_penjualans`.`tanggal`, `invoice_penjualans`.`no_surat_jalan`, `angkutans`.`nama` as `nama_angkutan`,
+`invoice_penjualans`.`no_mobil`, `tujuans`.`kota` as `nama_tujuan`, `invoice_penjualans`.`harga_angkutan`, `invoice_penjualans`.`diskon_bayar_angkutan`,
+`invoice_penjualans`.`jumlah_bayar_angkutan`, `invoice_penjualans`.`status_bayar_angkutan`, `invoice_penjualans`.`tanggal_bayar_angkutan`, `invoice_penjualans`.`keterangan_bayar_angkutan`
+from `invoice_penjualans` inner join `angkutans` on `angkutans`.`id` = `invoice_penjualans`.`angkutan_id`
+inner join `tujuans` on `tujuans`.`id` = `invoice_penjualans`.`tujuan_id`
+where `invoice_penjualans`.`tanggal` between :starts and :ends and `angkutans`.`id` = :angkutan
 and (`invoice_penjualans`.`status_bayar_angkutan` != 1 and `invoice_penjualans`.`status_bayar_angkutan` != 2 or `invoice_penjualans`.`status_bayar_angkutan` is null) order by `invoice_penjualans`.`tanggal` asc, `invoice_penjualans`.`no_surat_jalan` asc"), ['starts'=> $tanggal_en, 'ends' => $hingga_en, 'angkutan' => $angkutan]);
         } else {
             $hingga_en = DateTime::createFromFormat('d-m-Y', $hingga)->format('Y-m-d');
-            
-            $data = DB::select(DB::raw("SELECT `invoice_penjualans`.`id`, `invoice_penjualans`.`tanggal`, `invoice_penjualans`.`no_surat_jalan`, `angkutans`.`nama` as `nama_angkutan`, 
-`invoice_penjualans`.`no_mobil`, `tujuans`.`kota` as `nama_tujuan`, `invoice_penjualans`.`harga_angkutan`, `invoice_penjualans`.`diskon_bayar_angkutan`, 
-`invoice_penjualans`.`jumlah_bayar_angkutan`, `invoice_penjualans`.`status_bayar_angkutan`, `invoice_penjualans`.`tanggal_bayar_angkutan`, `invoice_penjualans`.`keterangan_bayar_angkutan` 
-from `invoice_penjualans` inner join `angkutans` on `angkutans`.`id` = `invoice_penjualans`.`angkutan_id` 
-inner join `tujuans` on `tujuans`.`id` = `invoice_penjualans`.`tujuan_id` 
-where `invoice_penjualans`.`tanggal` between :starts and :ends 
+
+            $data = DB::select(DB::raw("SELECT `invoice_penjualans`.`id`, `invoice_penjualans`.`tanggal`, `invoice_penjualans`.`no_surat_jalan`, `angkutans`.`nama` as `nama_angkutan`,
+`invoice_penjualans`.`no_mobil`, `tujuans`.`kota` as `nama_tujuan`, `invoice_penjualans`.`harga_angkutan`, `invoice_penjualans`.`diskon_bayar_angkutan`,
+`invoice_penjualans`.`jumlah_bayar_angkutan`, `invoice_penjualans`.`status_bayar_angkutan`, `invoice_penjualans`.`tanggal_bayar_angkutan`, `invoice_penjualans`.`keterangan_bayar_angkutan`
+from `invoice_penjualans` inner join `angkutans` on `angkutans`.`id` = `invoice_penjualans`.`angkutan_id`
+inner join `tujuans` on `tujuans`.`id` = `invoice_penjualans`.`tujuan_id`
+where `invoice_penjualans`.`tanggal` between :starts and :ends
 and (`invoice_penjualans`.`status_bayar_angkutan` != 2 or `invoice_penjualans`.`status_bayar_angkutan` is null) order by `invoice_penjualans`.`tanggal` asc, `invoice_penjualans`.`no_surat_jalan` asc"), ['starts'=> $tanggal_en, 'ends' => $hingga_en]);
 
-            $data_unpaid = DB::select(DB::raw("SELECT `invoice_penjualans`.`id`, `invoice_penjualans`.`tanggal`, `invoice_penjualans`.`no_surat_jalan`, `angkutans`.`nama` as `nama_angkutan`, 
-`invoice_penjualans`.`no_mobil`, `tujuans`.`kota` as `nama_tujuan`, `invoice_penjualans`.`harga_angkutan`, `invoice_penjualans`.`diskon_bayar_angkutan`, 
-`invoice_penjualans`.`jumlah_bayar_angkutan`, `invoice_penjualans`.`status_bayar_angkutan`, `invoice_penjualans`.`tanggal_bayar_angkutan`, `invoice_penjualans`.`keterangan_bayar_angkutan` 
-from `invoice_penjualans` inner join `angkutans` on `angkutans`.`id` = `invoice_penjualans`.`angkutan_id` 
-inner join `tujuans` on `tujuans`.`id` = `invoice_penjualans`.`tujuan_id` 
-where `invoice_penjualans`.`tanggal` between :starts and :ends 
+            $data_unpaid = DB::select(DB::raw("SELECT `invoice_penjualans`.`id`, `invoice_penjualans`.`tanggal`, `invoice_penjualans`.`no_surat_jalan`, `angkutans`.`nama` as `nama_angkutan`,
+`invoice_penjualans`.`no_mobil`, `tujuans`.`kota` as `nama_tujuan`, `invoice_penjualans`.`harga_angkutan`, `invoice_penjualans`.`diskon_bayar_angkutan`,
+`invoice_penjualans`.`jumlah_bayar_angkutan`, `invoice_penjualans`.`status_bayar_angkutan`, `invoice_penjualans`.`tanggal_bayar_angkutan`, `invoice_penjualans`.`keterangan_bayar_angkutan`
+from `invoice_penjualans` inner join `angkutans` on `angkutans`.`id` = `invoice_penjualans`.`angkutan_id`
+inner join `tujuans` on `tujuans`.`id` = `invoice_penjualans`.`tujuan_id`
+where `invoice_penjualans`.`tanggal` between :starts and :ends
 and (`invoice_penjualans`.`status_bayar_angkutan` != 1 and `invoice_penjualans`.`status_bayar_angkutan` != 2 or `invoice_penjualans`.`status_bayar_angkutan` is null) order by `invoice_penjualans`.`tanggal` asc, `invoice_penjualans`.`no_surat_jalan` asc"), ['starts'=> $tanggal_en, 'ends' => $hingga_en]);
         }
 
@@ -700,8 +1061,8 @@ and (`invoice_penjualans`.`status_bayar_angkutan` != 1 and `invoice_penjualans`.
 
         $tgl_awal = Carbon::createFromFormat('d-m-Y', $tanggal_awal)->format('Y-m-d');
         $tgl_akhir = Carbon::createFromFormat('d-m-Y', $tanggal_akhir)->format('Y-m-d');
-        
-        
+
+
         //DB::connection()->enableQueryLog();
         $data = AbsensiHarian::select('absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'karyawans.nik', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.jenis_lembur', 'absensi_harians.status', 'absensi_harians.pot_absensi', 'karyawans.nik', 'karyawans.nama', 'karyawans.norek', 'karyawans.uang_makan', 'karyawans.nilai_upah', 'karyawans.pot_koperasi', 'karyawans.tgl_masuk', 'karyawans.tunjangan', 'karyawans.pot_bpjs')
         ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
@@ -714,7 +1075,7 @@ and (`invoice_penjualans`.`status_bayar_angkutan` != 1 and `invoice_penjualans`.
          // $queries = DB::getQueryLog();
 
          // dd($queries);
-        
+
         // set document information
         PDF::SetAuthor('PT. TRIMITRA KEMASINDO');
         PDF::SetTitle('Laporan Absensi Karyawan Tetap / Kontrak - Trimitra Kemasindo');
@@ -885,8 +1246,8 @@ and (`invoice_penjualans`.`status_bayar_angkutan` != 1 and `invoice_penjualans`.
                 }
 
                 $uang_makan = $hari_kerja * $item->uang_makan;
-                
-               
+
+
 
                 $sum_pot_absensi = DB::table('absensi_harians')
                     ->select('absensi_harians.pot_absensi')
@@ -898,7 +1259,7 @@ and (`invoice_penjualans`.`status_bayar_angkutan` != 1 and `invoice_penjualans`.
 
                 // PERHITUNGAN TOTAL
                 $total_upah_harian = ($item->nilai_upah + $item->tunjangan + $lembur_rutin + $uang_makan + $lembur_biasa + $lembur_off) - ($pot_jabatan + $pot_umk + $total_pot_absensi + $item->pot_bpjs + $item->pot_koperasi);
-                
+
                 PDF::Cell(40, 0, $item->nama, 1, 0, 'L', 0, '', 1);
                 PDF::Cell(40, 0, $item->tgl_masuk, 1, 0, 'R', 0, '', 1);
                 PDF::Cell(50, 0, $item->norek, 1, 0, 'R', 0, '', 1);
@@ -1157,7 +1518,7 @@ and (`invoice_penjualans`.`status_bayar_angkutan` != 1 and `invoice_penjualans`.
         $report_jenises_total = DB::select('
                 select ap.bagian, rj.nama as jenis, sum(jumlah) jumlah, upah, sum(jumlah)*upah as hasil
                 from absensi_packings ap
-                join report_jenis rj on ap.jenis = rj.id 
+                join report_jenis rj on ap.jenis = rj.id
                 where ap.tanggal >= :awal and ap.tanggal <= :akhir
                 group by ap.bagian, ap.jenis
             ', ['awal' => $tgl_awal, 'akhir' => $tgl_akhir]);
