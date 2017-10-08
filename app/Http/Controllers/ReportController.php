@@ -13,7 +13,7 @@ use App\Karyawan;
 
 // jumlah slip gaji per lembar
 const SLIP_PER_PAGE = 4;
-const SLIP_PER_PAGE_ALT = 4;
+const SLIP_PER_PAGE_ALT = 5;
 
 class ReportController extends Controller
 {
@@ -105,14 +105,15 @@ class ReportController extends Controller
         PDF::SetKeywords('Slip Gaji Karyawan Trimitra Kemasindo');
 
         // AddPage ($orientation='', $format='', $keepmargins=false, $tocpage=false)
-        PDF::AddPage('P', 'Legal');
+        $format = array(216, 356); // legal paper size
+        PDF::AddPage('P', $format);
         PDF::SetMargins(15, 10);
         PDF::setX(15);
 
         $karyawans = Karyawan::select('nik')->where('status_karyawan_id', 1)->orderBy('nama')->get();
         for ($i = 0; $i < sizeof($karyawans); $i++) {
             if ($i > 0 && $i % SLIP_PER_PAGE == 0) {
-                PDF::AddPage('P', 'Legal');
+                PDF::AddPage('P', $format);
                 PDF::setX(15);
             }
 
@@ -297,14 +298,15 @@ class ReportController extends Controller
         PDF::SetKeywords('Slip Gaji Karyawan Trimitra Kemasindo');
 
         // AddPage ($orientation='', $format='', $keepmargins=false, $tocpage=false)
-        PDF::AddPage('P', 'Legal');
+        $format = array(216, 356); // legal paper size
+        PDF::AddPage('P', $format);
         PDF::SetMargins(15, 10);
         PDF::setX(15);
 
         $karyawans = Karyawan::select('nik')->where('status_karyawan_id', 2)->orderBy('nama')->get();
         for ($i = 0; $i < sizeof($karyawans); $i++) {
             if ($i > 0 && $i % SLIP_PER_PAGE_ALT == 0) {
-                PDF::AddPage('P', 'Legal');
+                PDF::AddPage('P', $format);
                 PDF::setX(15);
             }
 
