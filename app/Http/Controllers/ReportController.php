@@ -84,17 +84,20 @@ class ReportController extends Controller
     // preview
     public function previewSlipGaji($status, $tanggal, $hingga = '', $potongan = 0)
     {
-        if ($hingga == '') $hingga = $tanggal;
+        if ($hingga == '') {
+            $hingga = $tanggal;
+        }
         if ($status == 1) {
             $this->slipGajiKaryawanTetap($tanggal, $hingga, $potongan);
-        }
-        elseif ($status == 2) {
+        } elseif ($status == 2) {
             $this->slipGajiKaryawanHarian($tanggal, $hingga, $potongan);
         }
     }
 
-    private function slipGajiKaryawanTetap($tanggal, $hingga, $potongan) {
-        $start_date = DateTime::createFromFormat('d-m-Y', $tanggal)->format('Y-m-d');;
+    private function slipGajiKaryawanTetap($tanggal, $hingga, $potongan)
+    {
+        $start_date = DateTime::createFromFormat('d-m-Y', $tanggal)->format('Y-m-d');
+        ;
         $end_date = DateTime::createFromFormat('d-m-Y', $hingga)->format('Y-m-d');
         $potongan = $potongan;
 
@@ -126,8 +129,9 @@ class ReportController extends Controller
             }
 
             $nik = $karyawans[$i]->nik;
-
+            //dd($karyawans[16]);
             $karyawan = DB::table('karyawans')->where('karyawans.nik', '=', $nik)->first();
+            
             $gaji = $karyawan->nilai_upah;
             if ($potongan == 'bpjs') {
                 $pot_bpjs = $karyawan->pot_bpjs;
@@ -159,12 +163,16 @@ class ReportController extends Controller
                             ->count('jml_kehadiran');
 
             //HITUNG JUMLAH TIDAK MASUK KERJA
+            
             $hari_off = DB::table('absensi_harians')
-                            ->whereNull('jml_kehadiran')
-                            ->where('absensi_harians.karyawan_id', '=', $nik)
-                            ->where('absensi_harians.status', '=', 2)
-                            ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
-                            ->count('id');
+                ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
+                ->whereNull('jml_kehadiran')
+                ->whereNull('jam_lembur')
+                ->whereBetween('absensi_harians.tanggal', [new Carbon($start_date), new Carbon($end_date)])
+                ->where('absensi_harians.status', '=', 2)
+                ->where('karyawans.status_karyawan_id', '=', 1)
+                ->where('karyawans.nik', '=', $nik)
+                ->count('absensi_harians.id');
 
             //      KARYAWAN BULANAN
             //$nilai_upah = $jml_absen[0]->counter * ($gaji + $karyawan->uang_makan);
@@ -310,8 +318,10 @@ class ReportController extends Controller
         exit;
     }
 
-    private function slipGajiKaryawanHarian($tanggal, $hingga, $potongan) {
-        $start_date = DateTime::createFromFormat('d-m-Y', $tanggal)->format('Y-m-d');;
+    private function slipGajiKaryawanHarian($tanggal, $hingga, $potongan)
+    {
+        $start_date = DateTime::createFromFormat('d-m-Y', $tanggal)->format('Y-m-d');
+        ;
         $end_date = DateTime::createFromFormat('d-m-Y', $hingga)->format('Y-m-d');
         $potongan = $potongan;
 
@@ -472,8 +482,10 @@ class ReportController extends Controller
         exit;
     }
 
-    private function slipGajiKaryawanTetap__($tanggal, $hingga, $potongan) {
-        $start_date = DateTime::createFromFormat('d-m-Y', $tanggal)->format('Y-m-d');;
+    private function slipGajiKaryawanTetap__($tanggal, $hingga, $potongan)
+    {
+        $start_date = DateTime::createFromFormat('d-m-Y', $tanggal)->format('Y-m-d');
+        ;
         $end_date = DateTime::createFromFormat('d-m-Y', $hingga)->format('Y-m-d');
         $potongan = $potongan;
 
@@ -665,8 +677,10 @@ class ReportController extends Controller
         exit;
     }
 
-    private function slipGajiKaryawanHarian__($tanggal, $hingga, $potongan) {
-        $start_date = DateTime::createFromFormat('d-m-Y', $tanggal)->format('Y-m-d');;
+    private function slipGajiKaryawanHarian__($tanggal, $hingga, $potongan)
+    {
+        $start_date = DateTime::createFromFormat('d-m-Y', $tanggal)->format('Y-m-d');
+        ;
         $end_date = DateTime::createFromFormat('d-m-Y', $hingga)->format('Y-m-d');
         $potongan = $potongan;
 
