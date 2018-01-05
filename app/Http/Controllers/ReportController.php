@@ -382,7 +382,7 @@ class ReportController extends Controller
                                     ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
                                     ->sum('konfirmasi_lembur');
 
-            $lembur_rutin = $total_lembur_rutin * 11700;
+            $lembur_rutin = $total_lembur_rutin * 12757.14;
 
             $total_lembur_biasa = DB::table('absensi_harians')
                                     ->where('absensi_harians.karyawan_id', '=', $nik)
@@ -390,7 +390,7 @@ class ReportController extends Controller
                                     ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
                                     ->sum('konfirmasi_lembur');
 
-            $lembur_biasa = $total_lembur_biasa * 17600;
+            $lembur_biasa = $total_lembur_biasa * 19135.71;
 
             // PENJUMLAHAN POTONGAN ABSENSI
             $total_pot_absensi = DB::table('absensi_harians')
@@ -733,7 +733,7 @@ class ReportController extends Controller
                                     ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
                                     ->sum('konfirmasi_lembur');
 
-            $lembur_rutin = $total_lembur_rutin * 11700;
+            $lembur_rutin = $total_lembur_rutin * 12757.14;
 
             $total_lembur_biasa = DB::table('absensi_harians')
                                     ->where('absensi_harians.karyawan_id', '=', $nik)
@@ -741,7 +741,7 @@ class ReportController extends Controller
                                     ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
                                     ->sum('konfirmasi_lembur');
 
-            $lembur_biasa = $total_lembur_biasa * 17600;
+            $lembur_biasa = $total_lembur_biasa * 19135.71;
 
             // PENJUMLAHAN POTONGAN ABSENSI
             $total_pot_absensi = DB::table('absensi_harians')

@@ -25,7 +25,7 @@
 <body class="hold-transition login-page">
     <div class="login-box">
       <div class="login-logo">
-        <a href="{{ url('/') }}"><b></b> Apps</a>
+        <a href="{{ url('/') }}"><b>Trimitra Kemasindo Web Apps</b> </a>
     </div>
 
     @yield('content')

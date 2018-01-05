@@ -85,9 +85,9 @@ class UploadAbsenController extends Controller
             } elseif ($karyawan->status_karyawan_id == 2) {
                 // PERHITUNGAN LEMBUR
                 if ($jenis_lembur == 1) {
-                    $lembur_rutin = $konfirmasi_lembur * 11700;
+                    $lembur_rutin = $konfirmasi_lembur * 12757.14;
                 } elseif ($jenis_lembur == 2) {
-                    $lembur_biasa = $konfirmasi_lembur * 17600;
+                    $lembur_biasa = $konfirmasi_lembur * 19135.71;
                 }
 
                 $upah_harian = ($lembur_rutin + $lembur_biasa);
@@ -178,9 +178,9 @@ class UploadAbsenController extends Controller
                         $gaji_jam = ($gaji / 7) * ($absensies->jam - 1);
 
                         if ($jenis_lembur == 1) {
-                            $lembur_rutin = $konfirmasi_lembur * 11700;
+                            $lembur_rutin = $konfirmasi_lembur * 12757.14;
                         } elseif ($jenis_lembur == 2) {
-                            $lembur_biasa = $konfirmasi_lembur * 17600;
+                            $lembur_biasa = $konfirmasi_lembur * 19135.71;
                         }
 
                         $upah_harian = ($gaji_jam + $uang_makan + $lembur_rutin + $lembur_biasa);
@@ -188,9 +188,9 @@ class UploadAbsenController extends Controller
                         $gaji_jam = ($gaji / 7) * $absensies->jam;
 
                         if ($jenis_lembur == 1) {
-                            $lembur_rutin = $konfirmasi_lembur * 11700;
+                            $lembur_rutin = $konfirmasi_lembur * 12757.14;
                         } elseif ($jenis_lembur == 2) {
-                            $lembur_biasa = $konfirmasi_lembur * 17600;
+                            $lembur_biasa = $konfirmasi_lembur * 19135.71;
                         }
 
                         $upah_harian = ($gaji_jam + $lembur_rutin + $lembur_biasa);
