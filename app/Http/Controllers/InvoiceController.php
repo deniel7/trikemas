@@ -680,22 +680,36 @@ class InvoiceController extends Controller
             PDF::SetFont('', '', 10);
 
             //MultiCell ($w, $h, $txt, $border=0, $align=‘J’, $fill=false, $ln=1, $x=“, $y=”, $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0, $valign=’T’, $fitcell=false)
-
+            PDF::Ln();
             PDF::setY($curY);
             PDF::MultiCell(120, 0, 'Pembayaran untuk invoice ini mohon ditransfer ke rekening di bawah ini:', 0, 'L', false, 0);
             PDF::Ln(7);
-            PDF::Cell(90, 0, 'BRI', 0, 0, 'L', 0, '', 0);
+
+            
+            
+
+            
+            PDF::Cell(60, 0, 'BNI', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(0, 0, 'BNI (PPN)', 0, 0, 'L', 0, '', 0);
             PDF::Ln();
-            PDF::Cell(90, 0, 'No. Rek: 0286.01.000829.30.7', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(60, 0, 'No. Rek: 656.565.2008', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(0, 0, 'No. Rek: 695.374.543', 0, 0, 'L', 0, '', 0);
+            
+
             PDF::Ln();
-            PDF::Cell(90, 0, 'a/n: PT. Trimitra Kemasindo', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(60, 0, 'a/n: PT. Trimitra Kemasindo', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(0, 0, 'a/n: PT. Trimitra Kemasindo', 0, 0, 'L', 0, '', 0);
             PDF::Ln(7);
-            PDF::Cell(90, 0, 'BCA', 0, 0, 'L', 0, '', 0);
+
+
+            PDF::Cell(60, 0, 'BCA', 0, 0, 'L', 0, '', 0);
             PDF::Ln();
-            PDF::Cell(90, 0, 'No. Rek: 775.0366.800', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(60, 0, 'No. Rek: 775.0366.800', 0, 0, 'L', 0, '', 0);
             PDF::Ln();
-            PDF::Cell(90, 0, 'a/n: Ety Juniati Buntaran', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(60, 0, 'a/n: Ety Juniati Buntaran', 0, 0, 'L', 0, '', 0);
+            
             PDF::Ln();
+            
 
             // -- copy page --
 
@@ -848,17 +862,23 @@ class InvoiceController extends Controller
             PDF::setY($curY);
             PDF::MultiCell(120, 0, 'Pembayaran untuk invoice ini mohon ditransfer ke rekening di bawah ini:', 0, 'L', false, 0);
             PDF::Ln(7);
-            PDF::Cell(90, 0, 'BRI', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(60, 0, 'BNI', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(0, 0, 'BNI (PPN)', 0, 0, 'L', 0, '', 0);
             PDF::Ln();
-            PDF::Cell(90, 0, 'No. Rek: 0286.01.000829.30.7', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(60, 0, 'No. Rek: 656.565.2008', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(0, 0, 'No. Rek: 695.374.543', 0, 0, 'L', 0, '', 0);
             PDF::Ln();
-            PDF::Cell(90, 0, 'a/n: PT. Trimitra Kemasindo', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(60, 0, 'a/n: PT. Trimitra Kemasindo', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(0, 0, 'a/n: PT. Trimitra Kemasindo', 0, 0, 'L', 0, '', 0);
             PDF::Ln(7);
-            PDF::Cell(90, 0, 'BCA', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(60, 0, 'BCA', 0, 0, 'L', 0, '', 0);
             PDF::Ln();
-            PDF::Cell(90, 0, 'No. Rek: 775.0366.800', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(60, 0, 'No. Rek: 775.0366.800', 0, 0, 'L', 0, '', 0);
             PDF::Ln();
-            PDF::Cell(90, 0, 'a/n: Ety Juniati Buntaran', 0, 0, 'L', 0, '', 0);
+            PDF::Cell(60, 0, 'a/n: Ety Juniati Buntaran', 0, 0, 'L', 0, '', 0);
+
+
+
             PDF::Ln();
 
              # -- TEXT watermark section -- #
