@@ -255,7 +255,7 @@ class KaryawanTetapController extends Controller
         ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
         ->sum('konfirmasi_lembur');
 
-        $lembur_rutin = 15479.94 * $total_lembur_rutin;
+        $lembur_rutin = 18100 * $total_lembur_rutin;
 
         $total_lembur_biasa = DB::table('absensi_harians')
         ->where('absensi_harians.karyawan_id', '=', $nik)
@@ -263,7 +263,7 @@ class KaryawanTetapController extends Controller
         ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
         ->sum('konfirmasi_lembur');
 
-        $lembur_biasa = 23219.90 * $total_lembur_biasa;
+        $lembur_biasa = 27200 * $total_lembur_biasa;
 
         $total_lembur_off = DB::table('absensi_harians')
         ->where('absensi_harians.karyawan_id', '=', $nik)
@@ -272,7 +272,7 @@ class KaryawanTetapController extends Controller
         ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
         ->sum('konfirmasi_lembur');
 
-        $lembur_off = 30959.87 * $total_lembur_off;
+        $lembur_off = 36200 * $total_lembur_off;
 
 
         //CEK DIA PUNYA TUNJANGAN GA
