@@ -14,20 +14,20 @@ class UploadAbsenController extends Controller
     public function show($id)
     {
         $details = AbsensiHarian::select(['absensi_harians.id as id_absen', 'absensi_harians.tanggal', 'absensi_harians.karyawan_id', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.jam_kerja', 'absensi_harians.scan_masuk', 'absensi_harians.scan_pulang', 'absensi_harians.terlambat', 'absensi_harians.plg_cepat', 'absensi_harians.jml_jam_kerja', 'absensi_harians.departemen', 'absensi_harians.jml_kehadiran', 'absensi_harians.upah_harian', 'absensi_harians.jenis_lembur', 'karyawans.nik', 'karyawans.nama', 'karyawans.bagian', 'karyawans.nilai_upah', 'karyawans.uang_makan', 'karyawans.pot_koperasi', 'karyawans.pot_bpjs', 'karyawans.tunjangan', 'absensi_harians.jam_masuk', 'absensi_harians.jam_pulang', 'absensi_harians.jam_lembur', 'absensi_harians.konfirmasi_lembur', 'absensi_harians.status', 'karyawans.nama'])
-        ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
-        ->where('absensi_harians.id', '=', $id)
-        ->get();
+            ->leftjoin('karyawans', 'karyawans.nik', '=', 'absensi_harians.karyawan_id')
+            ->where('absensi_harians.id', '=', $id)
+            ->get();
 
         if (count($details) > 0) {
             return response()->json([
                 'status' => 1,
                 'records' => $details,
-                ]);
+            ]);
         } else {
             return response()->json([
                 'status' => 0,
                 'message' => 'Failed',
-                ]);
+            ]);
         }
     }
 
@@ -85,9 +85,9 @@ class UploadAbsenController extends Controller
             } elseif ($karyawan->status_karyawan_id == 2) {
                 // PERHITUNGAN LEMBUR
                 if ($jenis_lembur == 1) {
-                    $lembur_rutin = $konfirmasi_lembur * 14900;
+                    $lembur_rutin = $konfirmasi_lembur * 15400;
                 } elseif ($jenis_lembur == 2) {
-                    $lembur_biasa = $konfirmasi_lembur * 22400;
+                    $lembur_biasa = $konfirmasi_lembur * 23100;
                 }
 
                 $upah_harian = ($lembur_rutin + $lembur_biasa);
@@ -120,7 +120,7 @@ class UploadAbsenController extends Controller
             $lemburs->save();
         } else {
             // if ($absensies->count() == 1) {
-             // JIKA BUKAN LEMBUR UPLOAD EXCEL
+            // JIKA BUKAN LEMBUR UPLOAD EXCEL
             $absensies = $absensies->first();
 
             // PERHITUNGAN GA MASUK
@@ -134,11 +134,11 @@ class UploadAbsenController extends Controller
                     } else {
                         $upah_harian = (($gaji_harian + $uang_makan) - ($karyawan->tunjangan * 0.25)) - $uang_makan;
                     }
-                // karyawan harian / lepas
+                    // karyawan harian / lepas
                 } elseif ($karyawan->status_karyawan_id == 2) {
                     $upah_harian = 0;
 
-                //karyawan Staff
+                    //karyawan Staff
                 } elseif ($karyawan->status_karyawan_id == 3) {
                     $gaji_harian = $gaji / 30;
                     if ($karyawan->tunjangan == 0) {
@@ -150,7 +150,7 @@ class UploadAbsenController extends Controller
             } else {
                 // PERHITUNGAN TOTAL
 
-            //karyawan KONTRAK tetap / bulanan
+                //karyawan KONTRAK tetap / bulanan
                 if ($karyawan->status_karyawan_id == 1) {
                     $gaji_harian = $gaji / 30;
 
@@ -178,9 +178,9 @@ class UploadAbsenController extends Controller
                         $gaji_jam = ($gaji / 7) * ($absensies->jam - 1);
 
                         if ($jenis_lembur == 1) {
-                            $lembur_rutin = $konfirmasi_lembur * 14900;
+                            $lembur_rutin = $konfirmasi_lembur * 15400;
                         } elseif ($jenis_lembur == 2) {
-                            $lembur_biasa = $konfirmasi_lembur * 22400;
+                            $lembur_biasa = $konfirmasi_lembur * 23100;
                         }
 
                         $upah_harian = ($gaji_jam + $uang_makan + $lembur_rutin + $lembur_biasa);
@@ -188,9 +188,9 @@ class UploadAbsenController extends Controller
                         $gaji_jam = ($gaji / 7) * $absensies->jam;
 
                         if ($jenis_lembur == 1) {
-                            $lembur_rutin = $konfirmasi_lembur * 14900;
+                            $lembur_rutin = $konfirmasi_lembur * 15400;
                         } elseif ($jenis_lembur == 2) {
-                            $lembur_biasa = $konfirmasi_lembur * 22400;
+                            $lembur_biasa = $konfirmasi_lembur * 23100;
                         }
 
                         $upah_harian = ($gaji_jam + $lembur_rutin + $lembur_biasa);
