@@ -66,15 +66,15 @@ class UploadAbsenController extends Controller
                 $gaji_harian = $gaji / 30;
 
                 if ($jenis_lembur == 1) {
-                    $lembur_rutin = $konfirmasi_lembur * 18100;
+                    $lembur_rutin = $konfirmasi_lembur * 18700;
                     $lembur_biasa = 0;
                     $lembur_off = 0;
                 } elseif ($jenis_lembur == 2) {
-                    $lembur_biasa = $konfirmasi_lembur * 27200;
+                    $lembur_biasa = $konfirmasi_lembur * 28100;
                     $lembur_rutin = 0;
                     $lembur_off = 0;
                 } else {
-                    $lembur_off = $konfirmasi_lembur * 36200;
+                    $lembur_off = $konfirmasi_lembur * 37450;
                     $lembur_rutin = 0;
                     $lembur_biasa = 0;
                 }
@@ -97,15 +97,15 @@ class UploadAbsenController extends Controller
                 $gaji_harian = $gaji / 30;
 
                 if ($jenis_lembur == 1) {
-                    $lembur_rutin = $konfirmasi_lembur * 18100;
+                    $lembur_rutin = $konfirmasi_lembur * 18700;
                     $lembur_biasa = 0;
                     $lembur_off = 0;
                 } elseif ($jenis_lembur == 2) {
-                    $lembur_biasa = $konfirmasi_lembur * 27200;
+                    $lembur_biasa = $konfirmasi_lembur * 28100;
                     $lembur_rutin = 0;
                     $lembur_off = 0;
                 } else {
-                    $lembur_off = $konfirmasi_lembur * 36200;
+                    $lembur_off = $konfirmasi_lembur * 37450;
                     $lembur_rutin = 0;
                     $lembur_biasa = 0;
                 }
@@ -155,15 +155,15 @@ class UploadAbsenController extends Controller
                     $gaji_harian = $gaji / 30;
 
                     if ($jenis_lembur == 1) {
-                        $lembur_rutin = $konfirmasi_lembur * 18100;
+                        $lembur_rutin = $konfirmasi_lembur * 18700;
                         $lembur_biasa = 0;
                         $lembur_off = 0;
                     } elseif ($jenis_lembur == 2) {
-                        $lembur_biasa = $konfirmasi_lembur * 27200;
+                        $lembur_biasa = $konfirmasi_lembur * 28100;
                         $lembur_rutin = 0;
                         $lembur_off = 0;
                     } else {
-                        $lembur_off = $konfirmasi_lembur * 36200;
+                        $lembur_off = $konfirmasi_lembur * 37450;
                         $lembur_rutin = 0;
                         $lembur_biasa = 0;
                     }
@@ -200,15 +200,15 @@ class UploadAbsenController extends Controller
                     $gaji_harian = $gaji / 30;
 
                     if ($jenis_lembur == 1) {
-                        $lembur_rutin = $konfirmasi_lembur * 18100;
+                        $lembur_rutin = $konfirmasi_lembur * 18700;
                         $lembur_biasa = 0;
                         $lembur_off = 0;
                     } elseif ($jenis_lembur == 2) {
-                        $lembur_biasa = $konfirmasi_lembur * 27200;
+                        $lembur_biasa = $konfirmasi_lembur * 28100;
                         $lembur_rutin = 0;
                         $lembur_off = 0;
                     } else {
-                        $lembur_off = $konfirmasi_lembur * 36200;
+                        $lembur_off = $konfirmasi_lembur * 37450;
                         $lembur_rutin = 0;
                         $lembur_biasa = 0;
                     }

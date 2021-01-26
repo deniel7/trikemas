@@ -25,49 +25,49 @@ class KaryawanTetapController extends Controller
     public function datatable()
     {
         $karyawans = DB::table('karyawans')
-        ->select(['karyawans.id', 'status_karyawans.keterangan', 'karyawans.nik', 'karyawans.nama', 'karyawans.alamat', 'karyawans.phone', 'karyawans.lulusan', 'karyawans.tgl_masuk', 'karyawans.nilai_upah', 'karyawans.uang_makan', 'karyawans.pot_koperasi', 'karyawans.pot_bpjs', 'karyawans.tunjangan', 'karyawans.norek'])
-        ->join('status_karyawans', 'karyawans.status_karyawan_id', '=', 'status_karyawans.id')
-        ->where('karyawans.status_karyawan_id', '=', 1)
-        ->orderby('karyawans.id');
+            ->select(['karyawans.id', 'status_karyawans.keterangan', 'karyawans.nik', 'karyawans.nama', 'karyawans.alamat', 'karyawans.phone', 'karyawans.lulusan', 'karyawans.tgl_masuk', 'karyawans.nilai_upah', 'karyawans.uang_makan', 'karyawans.pot_koperasi', 'karyawans.pot_bpjs', 'karyawans.tunjangan', 'karyawans.norek'])
+            ->join('status_karyawans', 'karyawans.status_karyawan_id', '=', 'status_karyawans.id')
+            ->where('karyawans.status_karyawan_id', '=', 1)
+            ->orderby('karyawans.id');
 
         return Datatables::of($karyawans)
 
-        ->editColumn('status_karyawan_id', '<span class="pull-right">{{ App\Karyawan::find($id)->statusKaryawan->keterangan }}</span>')
-        ->editColumn('nama', '<span class="pull-right">{{ $nama }}</span>')
-        ->editColumn('alamat', '<span class="pull-right">{{ $alamat }}</span>')
-        ->editColumn('phone', '<span class="pull-right">{{ $phone }}</span>')
-        ->editColumn('lulusan', '<span class="pull-right">{{ $lulusan }}</span>')
-        ->editColumn('tgl_masuk', '<span class="pull-right">{{ $tgl_masuk }}</span>')
+            ->editColumn('status_karyawan_id', '<span class="pull-right">{{ App\Karyawan::find($id)->statusKaryawan->keterangan }}</span>')
+            ->editColumn('nama', '<span class="pull-right">{{ $nama }}</span>')
+            ->editColumn('alamat', '<span class="pull-right">{{ $alamat }}</span>')
+            ->editColumn('phone', '<span class="pull-right">{{ $phone }}</span>')
+            ->editColumn('lulusan', '<span class="pull-right">{{ $lulusan }}</span>')
+            ->editColumn('tgl_masuk', '<span class="pull-right">{{ $tgl_masuk }}</span>')
 
-        ->editColumn('nilai_upah', '<span class="pull-right">{{ number_format($nilai_upah,0,".",",") }}</span>')
+            ->editColumn('nilai_upah', '<span class="pull-right">{{ number_format($nilai_upah,0,".",",") }}</span>')
 
-        ->editColumn('uang_makan', '<span class="pull-right">{{ number_format($uang_makan,0,".",",") }}</span>')
+            ->editColumn('uang_makan', '<span class="pull-right">{{ number_format($uang_makan,0,".",",") }}</span>')
 
-        ->editColumn('tunjangan', '<span class="pull-right">{{ number_format($tunjangan,0,".",",") }}</span>')
+            ->editColumn('tunjangan', '<span class="pull-right">{{ number_format($tunjangan,0,".",",") }}</span>')
 
-        ->editColumn('pot_koperasi', '<span class="pull-right">{{ number_format($pot_koperasi,0,".",",") }}</span>')
+            ->editColumn('pot_koperasi', '<span class="pull-right">{{ number_format($pot_koperasi,0,".",",") }}</span>')
 
-        ->editColumn('pot_bpjs', '<span class="pull-right">{{ number_format($pot_bpjs,0,".",",") }}</span>')
+            ->editColumn('pot_bpjs', '<span class="pull-right">{{ number_format($pot_bpjs,0,".",",") }}</span>')
 
-        ->editColumn('norek', '<span class="pull-right">{{ $norek }}</span>')
-        ->addColumn('action', function ($karyawan) {
+            ->editColumn('norek', '<span class="pull-right">{{ $norek }}</span>')
+            ->addColumn('action', function ($karyawan) {
 
-            $html = '<div class="text-center btn-group btn-group-justified">';
+                $html = '<div class="text-center btn-group btn-group-justified">';
 
-            if (in_array(112, session()->get('allowed_menus'))) {
-                $html .= '<a href="karyawan-tetap/'.$karyawan->id.'/edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a>';
-            }
-            if (in_array(115, session()->get('allowed_menus'))) {
-                $html .= '<a href="javascript:;" onClick="karyawanModule.showPrint('.$karyawan->id.');"><button type="button" class="btn btn-sm"><i class="fa fa-print"></i></button></a>';
-            }
-            if (in_array(113, session()->get('allowed_menus'))) {
-                $html .= '<a href="javascript:;" onclick="karyawanModule.confirmDelete(event, \''.$karyawan->id.'\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
-            }
-            $html .= '</div>';
+                if (in_array(112, session()->get('allowed_menus'))) {
+                    $html .= '<a href="karyawan-tetap/' . $karyawan->id . '/edit"><button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button></a>';
+                }
+                if (in_array(115, session()->get('allowed_menus'))) {
+                    $html .= '<a href="javascript:;" onClick="karyawanModule.showPrint(' . $karyawan->id . ');"><button type="button" class="btn btn-sm"><i class="fa fa-print"></i></button></a>';
+                }
+                if (in_array(113, session()->get('allowed_menus'))) {
+                    $html .= '<a href="javascript:;" onclick="karyawanModule.confirmDelete(event, \'' . $karyawan->id . '\');"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></a>';
+                }
+                $html .= '</div>';
 
-            return $html;
-        })
-        ->make(true);
+                return $html;
+            })
+            ->make(true);
     }
 
     public function create()
@@ -170,22 +170,22 @@ class KaryawanTetapController extends Controller
         $id = $karyawan_tetap->id;
 
         $details = DB::table('karyawans')
-        ->select('karyawans.id', 'nik', 'nama', 'norek', 'status_karyawans.keterangan')
-        ->join('status_karyawans', 'status_karyawans.id', '=', 'karyawans.status_karyawan_id')
-        ->where('karyawans.id', '=', $id)
-        ->get();
+            ->select('karyawans.id', 'nik', 'nama', 'norek', 'status_karyawans.keterangan')
+            ->join('status_karyawans', 'status_karyawans.id', '=', 'karyawans.status_karyawan_id')
+            ->where('karyawans.id', '=', $id)
+            ->get();
 
         // $test = Karyawan::find($id);
         if (count($details) == 1) {
             return response()->json([
                 'status' => 1,
                 'records' => $details,
-                ]);
+            ]);
         } else {
             return response()->json([
                 'status' => 0,
                 'message' => 'Failed',
-                ]);
+            ]);
         }
     }
 
@@ -197,8 +197,8 @@ class KaryawanTetapController extends Controller
         $potongan = $request->input('potongan');
 
         $karyawan = DB::table('karyawans')
-         ->where('karyawans.nik', '=', $nik)
-         ->first();
+            ->where('karyawans.nik', '=', $nik)
+            ->first();
 
         $gaji = $karyawan->nilai_upah;
 
@@ -210,10 +210,10 @@ class KaryawanTetapController extends Controller
 
         //HITUNG TOTAL JAM KERJA
         $total_jam = DB::table('absensi_harians')
-        ->where('absensi_harians.karyawan_id', '=', $nik)
-        ->where('absensi_harians.status', '=', 2)
-        ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
-        ->sum('jam');
+            ->where('absensi_harians.karyawan_id', '=', $nik)
+            ->where('absensi_harians.status', '=', 2)
+            ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
+            ->sum('jam');
 
         //HITUNG JUMLAH ABSEN SELURUHNYA (include izin / ga masuk)
 
@@ -226,19 +226,19 @@ class KaryawanTetapController extends Controller
 
         //HITUNG JUMLAH MASUK KERJA (tidak termasuk izin / ga absen)
         $hari_kerja = DB::table('absensi_harians')
-        ->where('jml_kehadiran', '!=', '00:00:00')
-        ->where('absensi_harians.karyawan_id', '=', $nik)
-        ->where('absensi_harians.status', '=', 2)
-        ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
-        ->count('jml_kehadiran');
+            ->where('jml_kehadiran', '!=', '00:00:00')
+            ->where('absensi_harians.karyawan_id', '=', $nik)
+            ->where('absensi_harians.status', '=', 2)
+            ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
+            ->count('jml_kehadiran');
 
         //HITUNG JUMLAH TIDAK MASUK KERJA
         $hari_off = DB::table('absensi_harians')
-        ->whereNull('jml_kehadiran')
-        ->where('absensi_harians.karyawan_id', '=', $nik)
-        ->where('absensi_harians.status', '=', 2)
-        ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
-        ->count('id');
+            ->whereNull('jml_kehadiran')
+            ->where('absensi_harians.karyawan_id', '=', $nik)
+            ->where('absensi_harians.status', '=', 2)
+            ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
+            ->count('id');
 
         //      KARYAWAN BULANAN
 
@@ -249,35 +249,35 @@ class KaryawanTetapController extends Controller
 
         // PERHITUNGAN LEMBUR
         $total_lembur_rutin = DB::table('absensi_harians')
-        ->where('absensi_harians.karyawan_id', '=', $nik)
-        ->where('absensi_harians.jenis_lembur', '=', 1)
-        ->where('absensi_harians.status', '=', 2)
-        ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
-        ->sum('konfirmasi_lembur');
+            ->where('absensi_harians.karyawan_id', '=', $nik)
+            ->where('absensi_harians.jenis_lembur', '=', 1)
+            ->where('absensi_harians.status', '=', 2)
+            ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
+            ->sum('konfirmasi_lembur');
 
         $lembur_rutin = 18100 * $total_lembur_rutin;
 
         $total_lembur_biasa = DB::table('absensi_harians')
-        ->where('absensi_harians.karyawan_id', '=', $nik)
-        ->where('absensi_harians.jenis_lembur', '=', 2)
-        ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
-        ->sum('konfirmasi_lembur');
+            ->where('absensi_harians.karyawan_id', '=', $nik)
+            ->where('absensi_harians.jenis_lembur', '=', 2)
+            ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
+            ->sum('konfirmasi_lembur');
 
-        $lembur_biasa = 27200 * $total_lembur_biasa;
+        $lembur_biasa = 28100 * $total_lembur_biasa;
 
         $total_lembur_off = DB::table('absensi_harians')
-        ->where('absensi_harians.karyawan_id', '=', $nik)
-        ->where('absensi_harians.jenis_lembur', '=', 3)
-        ->where('absensi_harians.status', '=', 2)
-        ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
-        ->sum('konfirmasi_lembur');
+            ->where('absensi_harians.karyawan_id', '=', $nik)
+            ->where('absensi_harians.jenis_lembur', '=', 3)
+            ->where('absensi_harians.status', '=', 2)
+            ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
+            ->sum('konfirmasi_lembur');
 
-        $lembur_off = 36200 * $total_lembur_off;
+        $lembur_off = 37450 * $total_lembur_off;
 
 
         //CEK DIA PUNYA TUNJANGAN GA
-        if ($karyawan->tunjangan !=0) {
-        // PERHITUNGAN POTONGAN JABATAN
+        if ($karyawan->tunjangan != 0) {
+            // PERHITUNGAN POTONGAN JABATAN
             $pot_jabatan = (0.25 * $karyawan->tunjangan) * $hari_off;
             $pot_umk = 0;
         } else {
@@ -285,13 +285,13 @@ class KaryawanTetapController extends Controller
             $pot_umk = 50000 * $hari_off;
             $pot_jabatan = 0;
         }
-        
+
         // PENJUMLAHAN POTONGAN ABSENSI
         $total_pot_absensi = DB::table('absensi_harians')
-        ->where('absensi_harians.karyawan_id', '=', $nik)
-        ->where('absensi_harians.status', '=', 2)
-        ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
-        ->sum('pot_absensi');
+            ->where('absensi_harians.karyawan_id', '=', $nik)
+            ->where('absensi_harians.status', '=', 2)
+            ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
+            ->sum('pot_absensi');
 
         // PERHITUNGAN TOTAL
         $total = ($nilai_upah + $karyawan->tunjangan + $lembur_rutin + $uang_makan + $lembur_biasa + $lembur_off) - ($pot_jabatan + $pot_umk + $total_pot_absensi + $pot_bpjs + $karyawan->pot_koperasi);
@@ -339,68 +339,68 @@ class KaryawanTetapController extends Controller
 
         PDF::SetFont('', '', 9);
         PDF::Cell(40, 0, 'Periode(bulanan):', 0, 'L', false, 0);
-        PDF::Cell(0, 0, ' '.$start_date.' s/d '.$end_date, 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' ' . $start_date . ' s/d ' . $end_date, 0, 0, 'L', 0, '', 0);
         PDF::Ln();
 
         PDF::SetFont('', '', 9);
         PDF::Cell(40, 0, 'Tanggal Cetak :', 0, 'L', false, 0);
-        PDF::Cell(0, 0, ' '.date('d-m-Y h:m'), 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' ' . date('d-m-Y h:m'), 0, 0, 'L', 0, '', 0);
         PDF::Ln(7);
 
         PDF::Cell(40, 0, 'Nama', 0, 0, 'L', 0, '', 0);
-        PDF::Cell(0, 0, ' '.$karyawan->nama, 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' ' . $karyawan->nama, 0, 0, 'L', 0, '', 0);
         PDF::Ln();
 
         PDF::Cell(40, 0, 'Bagian', 0, 0, 'L', 0, '', 0);
-        PDF::Cell(0, 0, ' '.$karyawan->bagian, 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' ' . $karyawan->bagian, 0, 0, 'L', 0, '', 0);
         PDF::Ln();
 
         PDF::Cell(40, 0, 'Upah', 0, 0, 'L', 0, '', 0);
-        PDF::Cell(0, 0, ' '.number_format($nilai_upah, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' ' . number_format($nilai_upah, 0, '.', ','), 0, 0, 'L', 0, '', 0);
         PDF::Ln();
 
         PDF::Cell(40, 0, 'Tunj.Jab', 0, 0, 'L', 0, '', 0);
-        PDF::Cell(0, 0, ' '.number_format($karyawan->tunjangan, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' ' . number_format($karyawan->tunjangan, 0, '.', ','), 0, 0, 'L', 0, '', 0);
         PDF::Ln();
 
         PDF::Cell(40, 0, 'Uang Makan', 0, 0, 'L', 0, '', 0);
-        PDF::Cell(0, 0, ' '.number_format($uang_makan, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' ' . number_format($uang_makan, 0, '.', ','), 0, 0, 'L', 0, '', 0);
         PDF::Ln(7);
 
         PDF::Cell(40, 0, 'Lbr. Rutin', 0, 0, 'L', 0, '', 0);
-        PDF::Cell(0, 0, ' '.number_format($lembur_rutin, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' ' . number_format($lembur_rutin, 0, '.', ','), 0, 0, 'L', 0, '', 0);
         PDF::Ln();
 
         PDF::Cell(40, 0, 'Lbr. Biasa', 0, 0, 'L', 0, '', 0);
-        PDF::Cell(0, 0, ' '.number_format($lembur_biasa, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' ' . number_format($lembur_biasa, 0, '.', ','), 0, 0, 'L', 0, '', 0);
         PDF::Ln();
 
         PDF::Cell(40, 0, 'Lembur Off', 0, 0, 'L', 0, '', 0);
-        PDF::Cell(0, 0, ' '.number_format($lembur_off, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' ' . number_format($lembur_off, 0, '.', ','), 0, 0, 'L', 0, '', 0);
         PDF::Ln(7);
 
         PDF::Cell(40, 0, 'Potongan Jab', 0, 0, 'L', 0, '', 0);
-        PDF::Cell(0, 0, ' '.number_format($pot_jabatan, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' ' . number_format($pot_jabatan, 0, '.', ','), 0, 0, 'L', 0, '', 0);
         PDF::Ln();
 
         PDF::Cell(40, 0, 'Potongan Umk', 0, 0, 'L', 0, '', 0);
-        PDF::Cell(0, 0, ' '.number_format($pot_umk, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' ' . number_format($pot_umk, 0, '.', ','), 0, 0, 'L', 0, '', 0);
         PDF::Ln();
 
         PDF::Cell(40, 0, 'Potongan Lain Lain', 0, 0, 'L', 0, '', 0);
-        PDF::Cell(0, 0, ' '.number_format($total_pot_absensi, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' ' . number_format($total_pot_absensi, 0, '.', ','), 0, 0, 'L', 0, '', 0);
         PDF::Ln();
 
         PDF::Cell(40, 0, 'Potongan BPJS', 0, 0, 'L', 0, '', 0);
-        PDF::Cell(0, 0, ' '.number_format($pot_bpjs, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' ' . number_format($pot_bpjs, 0, '.', ','), 0, 0, 'L', 0, '', 0);
         PDF::Ln();
 
         PDF::Cell(40, 0, 'Potongan Koperasi', 0, 0, 'L', 0, '', 0);
-        PDF::Cell(0, 0, ' '.number_format($karyawan->pot_koperasi, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' ' . number_format($karyawan->pot_koperasi, 0, '.', ','), 0, 0, 'L', 0, '', 0);
         PDF::Ln(12);
 
         PDF::Cell(40, 0, 'Total', 0, 0, 'L', 0, '', 0);
-        PDF::Cell(0, 0, ' '.number_format($total, 0, '.', ','), 0, 0, 'L', 0, '', 0);
+        PDF::Cell(0, 0, ' ' . number_format($total, 0, '.', ','), 0, 0, 'L', 0, '', 0);
         PDF::Ln(8);
 
         PDF::Cell(120, 0, 'Penerima', 0, 0, 'L', 0, '', 0);
@@ -432,7 +432,7 @@ class KaryawanTetapController extends Controller
             echo 'success';
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
-            echo 'Error ('.$e->errorInfo[1].'): '.$e->errorInfo[2].'.';
+            echo 'Error (' . $e->errorInfo[1] . '): ' . $e->errorInfo[2] . '.';
         }
     }
 }

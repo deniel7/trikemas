@@ -194,7 +194,7 @@ class ReportController extends Controller
                 ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
                 ->sum('konfirmasi_lembur');
 
-            $lembur_biasa = 27200 * $total_lembur_biasa;
+            $lembur_biasa = 28100 * $total_lembur_biasa;
 
             $total_lembur_off = DB::table('absensi_harians')
                 ->where('absensi_harians.karyawan_id', '=', $nik)
@@ -203,7 +203,7 @@ class ReportController extends Controller
                 ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
                 ->sum('konfirmasi_lembur');
 
-            $lembur_off = 36200 * $total_lembur_off;
+            $lembur_off = 37450 * $total_lembur_off;
 
             //CEK DIA PUNYA TUNJANGAN GA
             if ($karyawan->tunjangan != 0) {
@@ -567,7 +567,7 @@ class ReportController extends Controller
                 ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
                 ->sum('konfirmasi_lembur');
 
-            $lembur_biasa = 27200 * $total_lembur_biasa;
+            $lembur_biasa = 28100 * $total_lembur_biasa;
 
             $total_lembur_off = DB::table('absensi_harians')
                 ->where('absensi_harians.karyawan_id', '=', $nik)
@@ -576,7 +576,7 @@ class ReportController extends Controller
                 ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
                 ->sum('konfirmasi_lembur');
 
-            $lembur_off = 36200 * $total_lembur_off;
+            $lembur_off = 37450 * $total_lembur_off;
 
             //CEK DIA PUNYA TUNJANGAN GA
             if ($karyawan->tunjangan != 0) {
@@ -1582,7 +1582,7 @@ and (`invoice_penjualans`.`status_bayar_angkutan` != 1 and `invoice_penjualans`.
                     ->where('karyawans.status_karyawan_id', '=', 1)
                     ->sum('absensi_harians.konfirmasi_lembur');
 
-                $lembur_biasa = 27200 * $total_lembur_biasa;
+                $lembur_biasa = 28100 * $total_lembur_biasa;
 
                 $total_lembur_off = DB::table('absensi_harians')
                     ->select('*')
@@ -1594,7 +1594,7 @@ and (`invoice_penjualans`.`status_bayar_angkutan` != 1 and `invoice_penjualans`.
                     ->where('karyawans.status_karyawan_id', '=', 1)
                     ->sum('absensi_harians.konfirmasi_lembur');
 
-                $lembur_off = 36200 * $total_lembur_off;
+                $lembur_off = 37450 * $total_lembur_off;
 
                 $total_pot_absensi = DB::table('absensi_harians')
                     ->where('absensi_harians.karyawan_id', '=', $item->nik)
