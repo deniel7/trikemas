@@ -186,7 +186,7 @@ class ReportController extends Controller
                 ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
                 ->sum('konfirmasi_lembur');
 
-            $lembur_rutin = 18100 * $total_lembur_rutin;
+            $lembur_rutin = 18700 * $total_lembur_rutin;
 
             $total_lembur_biasa = DB::table('absensi_harians')
                 ->where('absensi_harians.karyawan_id', '=', $nik)
@@ -559,7 +559,7 @@ class ReportController extends Controller
                 ->whereBetween('tanggal', [new Carbon($start_date), new Carbon($end_date)])
                 ->sum('konfirmasi_lembur');
 
-            $lembur_rutin = 18100 * $total_lembur_rutin;
+            $lembur_rutin = 18700 * $total_lembur_rutin;
 
             $total_lembur_biasa = DB::table('absensi_harians')
                 ->where('absensi_harians.karyawan_id', '=', $nik)
@@ -1570,7 +1570,7 @@ and (`invoice_penjualans`.`status_bayar_angkutan` != 1 and `invoice_penjualans`.
                     ->where('absensi_harians.status', '=', 2)
                     ->where('karyawans.status_karyawan_id', '=', 1)
                     ->sum('absensi_harians.konfirmasi_lembur');
-                $lembur_rutin = 18100 * $total_lembur_rutin;
+                $lembur_rutin = 18700 * $total_lembur_rutin;
 
                 $total_lembur_biasa = DB::table('absensi_harians')
                     ->select('*')
